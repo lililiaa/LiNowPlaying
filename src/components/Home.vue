@@ -1,13 +1,14 @@
 <template>
   <div class="song-container">
     <img
+      id="cover"
       :src="songData?.track.cover"
       alt="cover"
     />
     <div class="basic-info">
       <div>
-        <span>{{ songData?.track.title }}</span>
-        <span>{{ songData?.track.author }}</span>
+        <span :title="songData?.track.title">{{ songData?.track.title }}</span>
+        <span :title="songData?.track.author">{{ songData?.track.author }}</span>
       </div>
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -21,9 +22,6 @@
           d="M16 9h-3v5.5a2.5 2.5 0 0 1-2.5 2.5A2.5 2.5 0 0 1 8 14.5a2.5 2.5 0 0 1 2.5-2.5c.57 0 1.08.19 1.5.5V7h4zm-4-7a10 10 0 0 1 10 10a10 10 0 0 1-10 10A10 10 0 0 1 2 12A10 10 0 0 1 12 2m0 2a8 8 0 0 0-8 8a8 8 0 0 0 8 8a8 8 0 0 0 8-8a8 8 0 0 0-8-8"
         />
       </svg>
-    </div>
-    <div class="pic">
-      
     </div>
   </div>
 </template>
@@ -95,36 +93,41 @@ onBeforeUnmount(() => {
     .box();
     width: 200px;
     box-sizing: border-box;
-    padding: 15px 20px;
+    padding: 10px 15px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     background-color: #000;
 
     &>div {
+      width: calc(100% - 50px);
       display: flex;
       flex-direction: column;
 
+      span {
+        width: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
       span:nth-child(1) {
-        font-size: 20px;
+        font-size: 18px;
         font-weight: bold;
       }
 
       span:nth-child(2) {
-        font-size: 18px;
+        font-size: 16px;
         color: #eee;
       }
     }
 
     svg {
-      width: 50px;
-      height: 50px;
+      width: 45px;
+      height: 45px;
       animation: rotate 3s linear infinite;
       animation-play-state: var(--animation-play-state);
     }
-  }
-  .pic{
-    
   }
 }
 </style>

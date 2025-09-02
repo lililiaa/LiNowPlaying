@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "colorthief": "^2.6.0",
     "less": "^4.4.1",
     "less-loader": "^12.3.0",
     "vue": "^3.5.18"

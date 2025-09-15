@@ -102,8 +102,8 @@
 import ColorThief from 'colorthief';
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
-// const gameName = ref('都市天际线1');
-// const PC = ref('9600X | 5070 | 64G');
+const gameName = ref('都市天际线1');
+const PC = ref('9600X | 5070 | 64G');
 const songData = ref();
 const themeColor = ref('rgba(0, 0, 0, 1)');
 const themeColorList = ref([]);
@@ -380,6 +380,7 @@ onBeforeUnmount(() => {
         position: relative;
         height: 20px;
         border-radius: 10px;
+        overflow: hidden;
         background-color: var(--bg-color);
 
         &::before {

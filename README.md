@@ -6,5 +6,5 @@
 
 ## 使用
 
-1. `npm install`
-2. `npm run dev`
+1. `yarn install`
+2. `yarn run dev`

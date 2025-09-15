@@ -13,7 +13,10 @@
     />
     <div class="basic-info">
       <div class="info-box">
-        <div class="game-info">
+        <div
+          v-if="gameName && PC"
+          class="game-info"
+        >
           <span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -99,8 +102,8 @@
 import ColorThief from 'colorthief';
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
-const gameName = ref('都市天际线1');
-const PC = ref('9600X | 5070 | 64G');
+// const gameName = ref('都市天际线1');
+// const PC = ref('9600X | 5070 | 64G');
 const songData = ref();
 const themeColor = ref('rgba(0, 0, 0, 1)');
 const themeColorList = ref([]);
@@ -144,7 +147,6 @@ const getImgColor1 = () => {
     const color = colorThief.getColor(img);
     themeColor.value = `rgba(${color.join(',')}, 1)`;
     themeColorList.value = colorThief.getPalette(img).map((color) => `rgba(${color.join(',')}, 1)`);
-    console.log('themeColorList', themeColorList.value);
   };
 };
 // 提取图片最多颜色
@@ -218,29 +220,29 @@ onBeforeUnmount(() => {
 
 .box() {
   border-radius: @border-radius;
-  box-shadow: 0 5px 10px var(--theme-color);
   transition: box-shadow 2s ease;
+  box-shadow: 0 5px 20px var(--theme-color);
   // filter: drop-shadow(0 5px 10px var(--theme-color));
 }
 
 .song-container {
-  height: 120px;
+  height: 240px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  gap: 10px;
+  gap: 20px;
   // box-shadow: 0 0 0 2px #ffffff;
   color: #fff;
 
-  img {
+  #cover {
     height: 100%;
     aspect-ratio: 1/1;
     .box();
     background-color: var(--theme-color);
   }
 
-  img.changing {
+  #cover.changing {
     animation: fade-scale 1s ease;
     transform-origin: 50% 0%;
   }
@@ -261,16 +263,16 @@ onBeforeUnmount(() => {
     height: 100%;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 20px;
 
     .info-box {
       display: flex;
-      gap: 10px;
+      gap: 20px;
 
       &>div {
         .box();
         box-sizing: border-box;
-        padding: 10px 15px;
+        padding: 20px 30px;
         background-color: var(--theme-color);
         transition: background-color 2s ease;
       }
@@ -288,25 +290,26 @@ onBeforeUnmount(() => {
         }
 
         span:nth-child(1) {
-          font-size: 20px;
+          font-size: 40px;
           font-weight: 600;
-          letter-spacing: 1px;
+          letter-spacing: 2px;
 
           svg {
-            width: 30px;
-            height: 30px;
+            width: 60px;
+            height: 60px;
             vertical-align: middle;
           }
         }
 
         span:nth-child(2) {
-          font-size: 16px;
+          font-size: 32px;
         }
       }
 
       .song-info {
         width: auto;
-        max-width: 300px;
+        min-width: 400px;
+        max-width: 600px;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
@@ -331,19 +334,19 @@ onBeforeUnmount(() => {
           }
 
           span:nth-child(1) {
-            font-size: 20px;
+            font-size: 40px;
             font-weight: 600;
             letter-spacing: 1px;
           }
 
           span:nth-child(2) {
-            font-size: 16px;
+            font-size: 32px;
           }
         }
 
         .rotate-icon {
-          width: 50px;
-          height: 50px;
+          width: 100px;
+          height: 100px;
           animation: rotate 5s linear infinite;
         }
       }
@@ -358,16 +361,16 @@ onBeforeUnmount(() => {
       flex: 1;
       width: 100%;
       box-sizing: border-box;
-      padding: 0 15px;
+      padding: 0 30px;
       background-color: var(--theme-color);
       transition: background-color 2s ease;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 10px;
+      gap: 20px;
 
       span {
-        font-size: 16px;
+        font-size: 32px;
         font-weight: 600;
         mix-blend-mode: difference;
       }
@@ -375,10 +378,9 @@ onBeforeUnmount(() => {
       .process-bar {
         flex: 1;
         position: relative;
-        height: 6px;
-        border-radius: 3px;
+        height: 20px;
+        border-radius: 10px;
         background-color: var(--bg-color);
-        transition: width 1s linear;
 
         &::before {
           content: '';

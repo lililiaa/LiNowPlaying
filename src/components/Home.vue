@@ -386,9 +386,10 @@ onBeforeUnmount(() => {
         &::before {
           content: '';
           position: absolute;
+          top: 0;
+          left: 0;
           height: inherit;
           width: calc(var(--process) * 100%);
-          border-radius: inherit;
           background-color: var(--stress-color);
         }
       }

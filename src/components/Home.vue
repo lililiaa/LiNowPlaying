@@ -486,7 +486,7 @@ onBeforeUnmount(() => {
             position: absolute;
             bottom: 0;
             width: 100%;
-            height: 20px;
+            height: 6px;
             background-color: var(--theme-color);
             transition: background-color 2s ease;
 
@@ -507,7 +507,7 @@ onBeforeUnmount(() => {
             0%,
             10%,
             100% {
-              transform: translateY(10px);
+              transform: translateY(20px);
             }
 
             40%,

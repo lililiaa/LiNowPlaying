@@ -72,11 +72,41 @@
           </div>
         </div>
         <div class="song-info">
-          <div>
-            <span :title="songData?.track.title">{{ songData?.track.title }}</span>
-            <span :title="songData?.track.author">{{ songData?.track.author }}</span>
+          <div class="song">
+            <span
+              v-if="songData?.track.title"
+              :title="songData?.track.title"
+            >{{ songData?.track.title }}</span>
+            <span
+              v-if="songData?.track.author"
+              :title="songData?.track.author"
+            >{{ songData?.track.author }}</span>
+            <span v-if="!songData?.track.title && !songData?.track.author">暂无歌曲信息</span>
           </div>
-          <svg
+          <div class="playing-container">
+            <div
+              class="sun"
+              :style="{ 'animation-play-state': songData?.player.isPaused ? 'paused' : 'running' }"
+            >
+              <div
+                class="sun-body"
+                :style="{ 'animation-play-state': songData?.player.isPaused ? 'paused' : 'running' }"
+              >
+                <div
+                  class="line"
+                  v-for="i in 8"
+                  :key="i"
+                  :style="{ '--i': i }"
+                ></div>
+              </div>
+              <div
+                class="eye"
+                :style="{ 'animation-play-state': songData?.player.isPaused ? 'paused' : 'running' }"
+              ></div>
+            </div>
+            <div class="horizon"></div>
+          </div>
+          <!-- <svg
             xmlns="http://www.w3.org/2000/svg"
             width="128"
             height="128"
@@ -88,7 +118,7 @@
               fill="#ffffff"
               d="M16 9h-3v5.5a2.5 2.5 0 0 1-2.5 2.5A2.5 2.5 0 0 1 8 14.5a2.5 2.5 0 0 1 2.5-2.5c.57 0 1.08.19 1.5.5V7h4zm-4-7a10 10 0 0 1 10 10a10 10 0 0 1-10 10A10 10 0 0 1 2 12A10 10 0 0 1 12 2m0 2a8 8 0 0 0-8 8a8 8 0 0 0 8 8a8 8 0 0 0 8-8a8 8 0 0 0-8-8"
             />
-          </svg>
+          </svg> -->
         </div>
       </div>
       <div class="process-box">
@@ -110,7 +140,7 @@ import { onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 const gameName = ref('都市天际线1');
 const PC = reactive(['9600X', '5070', '64G']);
 const songData = ref();
-const themeColor = ref('rgba(0, 0, 0, 1)');
+const themeColor = ref('rgba(0, 0, 0, 0.8)');
 const themeColorList = ref([]);
 let intervalId = null;
 const isChanging = ref(false);
@@ -211,6 +241,8 @@ onBeforeUnmount(() => {
 <style lang="less" scoped>
 // 边框圆角
 @border-radius: 10px;
+// 播放动画速度
+@loading-time: 4s;
 
 @keyframes rotate {
   from {
@@ -326,7 +358,7 @@ onBeforeUnmount(() => {
 
       .song-info {
         width: auto;
-        min-width: 300px;
+        min-width: 320px;
         max-width: 600px;
         display: flex;
         flex-direction: row;
@@ -334,7 +366,7 @@ onBeforeUnmount(() => {
         align-items: center;
         gap: 10px;
 
-        &>div {
+        .song {
           height: 100%;
           flex: 1;
           min-width: 100px;
@@ -367,6 +399,124 @@ onBeforeUnmount(() => {
           height: 100px;
           animation: rotate 5s linear infinite;
         }
+
+        .playing-container {
+          position: relative;
+          height: 120px;
+          width: 120px;
+          aspect-ratio: 1/1;
+          overflow: hidden;
+
+          .sun {
+            position: absolute;
+            top: 60px;
+            left: calc(50% - 50px);
+            width: 100px;
+            height: 100px;
+            animation: sun @loading-time linear infinite;
+            mix-blend-mode: difference;
+
+            .sun-body {
+              position: absolute;
+              top: 10px;
+              left: 20px;
+              width: 50px;
+              height: 50px;
+              border-radius: 50%;
+              border: 6px solid #fff;
+              animation: sun-body @loading-time linear infinite;
+
+              .line {
+                position: absolute;
+                top: -25px;
+                left: calc(50% - 3px);
+                width: 6px;
+                height: 15px;
+                border-radius: 3px;
+                background-color: #fff;
+                mix-blend-mode: difference;
+                transform: rotate(calc(var(--i) * 45deg));
+                transform-origin: center 50px;
+              }
+
+              @keyframes sun-body {
+                40% {
+                  transform: rotate(0);
+                }
+
+                50%,
+                100% {
+                  transform: rotate(45deg);
+                }
+              }
+            }
+
+            .eye {
+              position: absolute;
+              top: 38px;
+              left: 35px;
+              width: 6px;
+              height: 6px;
+              border-radius: 50%;
+              background-color: #fff;
+              mix-blend-mode: difference;
+              box-shadow: 16px 0 #fff;
+              animation: eye @loading-time linear infinite;
+
+              @keyframes eye {
+
+                50%,
+                60% {
+                  transform: scaleY(1);
+                }
+
+                55% {
+                  transform: scaleY(0.1);
+                }
+
+                70%,
+                100% {
+                  transform: translateX(12px);
+                }
+              }
+            }
+          }
+
+          .horizon {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 20px;
+            background-color: var(--theme-color);
+            transition: background-color 2s ease;
+
+            &::before {
+              content: '';
+              position: absolute;
+              left: 0;
+              height: 6px;
+              width: 100%;
+              border-radius: 3px;
+              background-color: #fff;
+              mix-blend-mode: difference;
+            }
+          }
+
+          @keyframes sun {
+
+            0%,
+            10%,
+            100% {
+              transform: translateY(10px);
+            }
+
+            40%,
+            70% {
+              transform: translateY(-40px);
+            }
+          }
+        }
+
       }
 
       svg {

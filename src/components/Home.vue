@@ -90,7 +90,7 @@
         <span>{{ songData?.player.seekbarCurrentPositionHuman }}</span>
         <div
           class="process-bar"
-          :style="{ '--bg-color': themeColorList[2], '--stress-color': themeColorList[1], '--process': songData?.player.statePercent }"
+          :style="{ '--bg-color': themeColorList[2], '--stress-color': themeColorList[3], '--process': songData?.player.statePercent }"
         ></div>
         <span>{{ songData?.track.durationHuman }}</span>
       </div>

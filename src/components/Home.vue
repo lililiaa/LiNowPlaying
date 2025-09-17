@@ -295,6 +295,11 @@ onBeforeUnmount(() => {
         }
 
         &>span:nth-child(1) {
+          width: 100%;
+          display: flex;
+          justify-content: space-around;
+          align-items: center;
+          gap: 10px;
           font-size: 40px;
           font-weight: 600;
           letter-spacing: 2px;
@@ -311,6 +316,7 @@ onBeforeUnmount(() => {
           display: flex;
           flex-direction: row;
           justify-content: space-between;
+          gap: 10px;
 
           span {
             font-size: 32px;
@@ -320,7 +326,7 @@ onBeforeUnmount(() => {
 
       .song-info {
         width: auto;
-        min-width: 400px;
+        min-width: 300px;
         max-width: 600px;
         display: flex;
         flex-direction: row;

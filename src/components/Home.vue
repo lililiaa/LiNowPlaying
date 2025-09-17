@@ -64,7 +64,12 @@
             </svg>
             {{ gameName }}
           </span>
-          <span>{{ PC }}</span>
+          <div>
+            <span
+              v-for="(item, index) in PC.join(' | ').split(' ')"
+              :key="index"
+            >{{ item }}</span>
+          </div>
         </div>
         <div class="song-info">
           <div>
@@ -100,10 +105,10 @@
 
 <script setup>
 import ColorThief from 'colorthief';
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 
 const gameName = ref('都市天际线1');
-const PC = ref('9600X | 5070 | 64G');
+const PC = reactive(['9600X', '5070', '64G']);
 const songData = ref();
 const themeColor = ref('rgba(0, 0, 0, 1)');
 const themeColorList = ref([]);
@@ -272,7 +277,7 @@ onBeforeUnmount(() => {
       &>div {
         .box();
         box-sizing: border-box;
-        padding: 20px 30px;
+        padding: 15px 25px;
         background-color: var(--theme-color);
         transition: background-color 2s ease;
       }
@@ -289,7 +294,7 @@ onBeforeUnmount(() => {
           mix-blend-mode: difference;
         }
 
-        span:nth-child(1) {
+        &>span:nth-child(1) {
           font-size: 40px;
           font-weight: 600;
           letter-spacing: 2px;
@@ -301,8 +306,15 @@ onBeforeUnmount(() => {
           }
         }
 
-        span:nth-child(2) {
-          font-size: 32px;
+        div {
+          width: 100%;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+
+          span {
+            font-size: 32px;
+          }
         }
       }
 

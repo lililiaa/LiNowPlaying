@@ -285,7 +285,7 @@ const getImgColor = () => {
 
 onMounted(() => {
   fetchSongData();
-  intervalId = setInterval(fetchSongData, 1000);
+  intervalId = setInterval(fetchSongData, 500);
 });
 
 onBeforeUnmount(() => {

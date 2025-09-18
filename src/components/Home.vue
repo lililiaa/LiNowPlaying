@@ -130,31 +130,86 @@
         <span>{{ songData?.track.durationHuman }}</span>
       </div>
     </div>
+    <div class="lyric-info">
+      <div class="lyric-box">
+        <div
+          class="lyric-line"
+          v-for="(item, index) in lyricData.lyric"
+          :class="{ 'active': index === currentLyricIndex }"
+          :key="index"
+        >
+          <span>{{ item[2] }}</span>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import ColorThief from 'colorthief';
-import { onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 
 const gameName = ref('都市天际线1');
 const PC = reactive(['9600X', '5070', '64G']);
 const songData = ref();
+const lyricData = reactive({
+  author: [],
+  lyric: [],
+});
 const themeColor = ref('rgba(0, 0, 0, 0.8)');
 const themeColorList = ref([]);
 let intervalId = null;
 const isChanging = ref(false);
-
+// 获取播放器、歌曲信息
 const fetchSongData = async () => {
   try {
-    const response = await fetch('http://localhost:9863/query');
-    const data = await response.json();
+    const res = await fetch('http://localhost:9863/query');
+    const data = await res.json();
     songData.value = data;
   } catch (error) {
     songData.value = {};
-    console.log(error);
+    console.error(error);
   }
-}
+};
+// 获取歌词信息
+const getLyricInfo = async () => {
+  const authorRegex = /^{.*}$/gm;
+  const lyricRegex = /^\[\d+:\d+\.\d+\].*$/gm;
+  const lyricRegex2 = /^(\[\d+:\d+\.\d+\])(.*)$/;
+  try {
+    const res = await fetch("http://localhost:9863/api/lyric");
+    const data = await res.json();
+    lyricData.author = data.lrc.match(authorRegex)?.map(i => JSON.parse(i)) || [];
+    lyricData.lyric = data.lrc.match(lyricRegex)?.map(i => i.match(lyricRegex2)) || [];
+  } catch (error) {
+    lyricData.value = {};
+    console.error(error);
+  }
+};
+// 计算当前显示歌词
+const currentLyricIndex = computed(() => {
+  const currentTimeStr = songData.value?.player.seekbarCurrentPositionHuman.split(':') || 0;
+  const currentTime = parseInt(currentTimeStr[0]) * 60 + parseInt(currentTimeStr[1]);
+  let index = -1;
+  for (let i = lyricData.lyric.length - 1; i >= 0; i--) {
+    const timeStr = lyricData.lyric[i][1].match(/\[(\d+):(\d+)\.(\d+)\]/);
+    if (timeStr) {
+      const time = parseInt(timeStr[1]) * 60 + parseInt(timeStr[2]);
+      if (currentTime >= time) {
+        index = i;
+        break;
+      }
+    }
+  }
+  // 滚动位置
+  const scrollPosition = -(index - 1) * 50;
+  // 滚动歌词
+  const lyricContainer = document.querySelector('.lyric-box');
+  if (lyricContainer) {
+    lyricContainer.style.transform = `translateY(${scrollPosition}px)`;
+  }
+  return index;
+});
 // 监听封面变化
 watch(
   () => songData.value?.track?.cover,
@@ -164,6 +219,8 @@ watch(
       isChanging.value = true;
       // 获取主题色
       getImgColor1();
+      // 获取歌词信息
+      getLyricInfo();
       // 动画结束重置状态
       setTimeout(() => {
         isChanging.value = false;
@@ -235,14 +292,16 @@ onBeforeUnmount(() => {
   if (intervalId) {
     clearInterval(intervalId);
   }
-})
+});
 </script>
 
 <style lang="less" scoped>
 // 边框圆角
 @border-radius: 10px;
 // 播放动画速度
-@loading-time: 4s;
+@loading-time: 5s;
+// 背景过渡时间
+@bg-transition-time: 2s;
 
 @keyframes rotate {
   from {
@@ -254,23 +313,21 @@ onBeforeUnmount(() => {
   }
 }
 
-
 .box() {
   border-radius: @border-radius;
-  transition: box-shadow 2s ease;
+  transition: box-shadow @bg-transition-time ease;
   box-shadow: 0 5px 20px var(--theme-color);
   // filter: drop-shadow(0 5px 10px var(--theme-color));
 }
 
 .song-container {
-  height: 240px;
+  height: 220px;
+  width: 1700px;
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  gap: 20px;
-  // box-shadow: 0 0 0 2px #ffffff;
-  color: #fff;
+  gap: 15px;
 
   #cover {
     height: 100%;
@@ -300,18 +357,18 @@ onBeforeUnmount(() => {
     height: 100%;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 15px;
 
     .info-box {
       display: flex;
-      gap: 20px;
+      gap: 15px;
 
       &>div {
         .box();
         box-sizing: border-box;
         padding: 15px 25px;
         background-color: var(--theme-color);
-        transition: background-color 2s ease;
+        transition: background-color @bg-transition-time ease;
       }
 
       .game-info {
@@ -332,7 +389,7 @@ onBeforeUnmount(() => {
           justify-content: space-around;
           align-items: center;
           gap: 10px;
-          font-size: 40px;
+          font-size: 35px;
           font-weight: 600;
           letter-spacing: 2px;
 
@@ -351,7 +408,7 @@ onBeforeUnmount(() => {
           gap: 10px;
 
           span {
-            font-size: 32px;
+            font-size: 30px;
           }
         }
       }
@@ -359,12 +416,12 @@ onBeforeUnmount(() => {
       .song-info {
         width: auto;
         min-width: 320px;
-        max-width: 600px;
+        max-width: 500px;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        gap: 10px;
+        gap: 20px;
 
         .song {
           height: 100%;
@@ -384,13 +441,13 @@ onBeforeUnmount(() => {
           }
 
           span:nth-child(1) {
-            font-size: 40px;
+            font-size: 35px;
             font-weight: 600;
             letter-spacing: 1px;
           }
 
           span:nth-child(2) {
-            font-size: 32px;
+            font-size: 30px;
           }
         }
 
@@ -474,7 +531,7 @@ onBeforeUnmount(() => {
                   transform: scaleY(0.1);
                 }
 
-                70%,
+                65%,
                 100% {
                   transform: translateX(12px);
                 }
@@ -488,7 +545,7 @@ onBeforeUnmount(() => {
             width: 100%;
             height: 6px;
             background-color: var(--theme-color);
-            transition: background-color 2s ease;
+            transition: background-color @bg-transition-time ease;
 
             &::before {
               content: '';
@@ -531,14 +588,14 @@ onBeforeUnmount(() => {
       box-sizing: border-box;
       padding: 0 30px;
       background-color: var(--theme-color);
-      transition: background-color 2s ease;
+      transition: background-color @bg-transition-time ease;
       display: flex;
       justify-content: space-between;
       align-items: center;
       gap: 20px;
 
       span {
-        font-size: 32px;
+        font-size: 30px;
         font-weight: 600;
         mix-blend-mode: difference;
       }
@@ -557,8 +614,54 @@ onBeforeUnmount(() => {
           top: 0;
           left: 0;
           height: inherit;
+          transition: width 0.3s linear;
           width: calc(var(--process) * 100%);
           background-color: var(--stress-color);
+        }
+      }
+    }
+  }
+
+  .lyric-info {
+    .box();
+    height: 100%;
+    flex: 1;
+    box-sizing: border-box;
+    padding: 10px 25px;
+    background-color: var(--theme-color);
+    transition: background-color @bg-transition-time ease;
+    overflow: hidden;
+    position: relative;
+
+    .lyric-box {
+      width: 100%;
+      background-color: var(--theme-color);
+      transition: transform 0.5s ease, background-color @bg-transition-time ease;
+
+      .lyric-line {
+        height: 50px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        box-sizing: border-box;
+        padding-left: 5px;
+        color: #fff;
+        mix-blend-mode: difference;
+        font-size: 25px;
+        opacity: 0.8;
+        transition: all 0.5s ease-in-out;
+
+        span {
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
+
+        &.active {
+          opacity: 1;
+          font-size: 30px;
+          font-weight: bold;
         }
       }
     }

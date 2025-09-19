@@ -150,6 +150,14 @@
           <span>{{ item[2] }}</span>
         </div>
       </div>
+      <div class="lyric-bg">
+        <img
+          crossorigin="anonymous"
+          :key="songData?.track.cover"
+          :src="songData?.track.cover ? songData.track.cover.replace('https://y.qq.com', '/image') : ''"
+          alt=""
+        >
+      </div>
     </div>
   </div>
 </template>
@@ -158,13 +166,18 @@
 import ColorThief from 'colorthief';
 import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 
+// 游戏
 const gameName = ref('都市天际线1');
+// 配置
 const PC = reactive(['9600X', '5070', '64G']);
+// 歌曲、播放器数据
 const songData = ref();
+// 歌词数据
 const lyricData = reactive({
   author: [],
   lyric: [],
 });
+// 主体颜色
 const themeColor = ref('rgba(0, 0, 0, 0.8)');
 const themeColorList = ref([]);
 let intervalId = null;
@@ -291,9 +304,40 @@ const getImgColor = () => {
     console.log('themeColor', themeColor.value);
   };
 };
+// 网页标题
+const titleData = reactive({
+  status: "已暂停",
+  name: "",
+});
+const setTitle = () => {
+  if (titleData.status && titleData.name) {
+    document.title = titleData.status + " - " + titleData.name;
+  } else {
+    document.title = "歌曲组件";
+  }
+};
+watch(
+  () => songData.value?.player?.isPaused,
+  (newVal) => {
+    if (newVal) {
+      titleData.status = "已暂停";
+    } else {
+      titleData.status = "播放中";
+    }
+    setTitle();
+  }
+);
+watch(
+  () => songData.value?.track?.title,
+  (newVal) => {
+    titleData.name = newVal;
+    setTitle();
+  }
+);
 
 onMounted(() => {
   fetchSongData();
+  setTitle();
   intervalId = setInterval(fetchSongData, 500);
 });
 
@@ -647,6 +691,7 @@ onBeforeUnmount(() => {
       width: 100%;
       background-color: var(--theme-color);
       transition: transform 0.5s ease, background-color @bg-transition-time ease;
+      z-index: 2;
 
       .lyric-line {
         height: 50px;
@@ -656,7 +701,6 @@ onBeforeUnmount(() => {
         justify-content: flex-start;
         box-sizing: border-box;
         padding-left: 5px;
-        color: #fff;
         mix-blend-mode: difference;
         font-size: 25px;
         opacity: 0.8;
@@ -678,6 +722,35 @@ onBeforeUnmount(() => {
           span {
             filter: blur(1px);
           }
+        }
+      }
+    }
+
+    .lyric-bg {
+      position: absolute;
+      top: -30px;
+      right: 0;
+      height: calc(100% + 60px);
+      aspect-ratio: 1/1;
+      z-index: 1;
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        mask-image: linear-gradient(to left, rgba(0, 0, 0, 1), transparent);
+        filter: blur(3px);
+        opacity: 0;
+        animation: fade @bg-transition-time ease 1s forwards;
+      }
+
+      @keyframes fade {
+        0% {
+          opacity: 0;
+        }
+
+        100% {
+          opacity: 1;
         }
       }
     }

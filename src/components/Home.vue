@@ -1,16 +1,25 @@
 <template>
   <div
     class="song-container"
-    :style="{ '--theme-color': themeColor }"
+    :style="{ '--theme-color': themeColor, '--bg-color': themeColorList[2], '--stress-color': themeColorList[3] }"
   >
     <img
+      v-show="songData?.track.cover"
       id="cover"
+      class="cover"
       crossorigin="anonymous"
       :class="{ 'changing': isChanging }"
       :src="songData?.track.cover ? songData.track.cover.replace('https://y.qq.com', '/image') : ''"
       alt="封面"
-      @click="changeCoverSyle"
     />
+    <img
+      v-show="!songData?.track.cover"
+      class="cover"
+      :class="{ 'changing': isChanging }"
+      style="box-sizing:border-box;padding: 30px;color: #fff;"
+      src="../assets/music.svg"
+      alt=""
+    >
     <div class="basic-info">
       <div class="info-box">
         <div
@@ -125,7 +134,7 @@
         <span>{{ songData?.player.seekbarCurrentPositionHuman }}</span>
         <div
           class="process-bar"
-          :style="{ '--bg-color': themeColorList[2], '--stress-color': themeColorList[3], '--process': songData?.player.statePercent }"
+          :style="{ '--bg-color': themeColorList[2], '--stress-color': themeColorList[3], '--process': songData?.player.statePercent || 0 }"
         ></div>
         <span>{{ songData?.track.durationHuman }}</span>
       </div>
@@ -179,8 +188,8 @@ const getLyricInfo = async () => {
   try {
     const res = await fetch("http://localhost:9863/api/lyric");
     const data = await res.json();
-    lyricData.author = data.lrc.match(authorRegex)?.map(i => JSON.parse(i)) || [];
-    lyricData.lyric = data.lrc.match(lyricRegex)?.map(i => i.match(lyricRegex2)) || [];
+    lyricData.author = data.lrc?.match(authorRegex)?.map(i => JSON.parse(i)) || [];
+    lyricData.lyric = data.lrc?.match(lyricRegex)?.map(i => i.match(lyricRegex2)) || [];
   } catch (error) {
     lyricData.value = {};
     console.error(error);
@@ -234,7 +243,7 @@ watch(
 // 提取图片主题色
 const getImgColor1 = () => {
   const colorThief = new ColorThief();
-  const img = document.getElementById('cover');
+  const img = document.getElementsByClassName('cover')[0];
   img.onload = function () {
     const color = colorThief.getColor(img);
     themeColor.value = `rgba(${color.join(',')}, 1)`;
@@ -316,8 +325,8 @@ onBeforeUnmount(() => {
 .box() {
   border-radius: @border-radius;
   transition: box-shadow @bg-transition-time ease;
-  box-shadow: 0 5px 20px var(--theme-color);
-  // filter: drop-shadow(0 5px 10px var(--theme-color));
+  box-shadow: 0 4px 10px 1px var(--bg-color);
+  // filter: drop-shadow(0 5px 10px var(--bg-color));
 }
 
 .song-container {
@@ -329,14 +338,14 @@ onBeforeUnmount(() => {
   justify-content: flex-start;
   gap: 15px;
 
-  #cover {
+  .cover {
     height: 100%;
     aspect-ratio: 1/1;
     .box();
     background-color: var(--theme-color);
   }
 
-  #cover.changing {
+  .cover.changing {
     animation: fade-scale 1s ease;
     transform-origin: 50% 0%;
   }
@@ -390,7 +399,7 @@ onBeforeUnmount(() => {
           align-items: center;
           gap: 10px;
           font-size: 35px;
-          font-weight: 600;
+          font-weight: bold;
           letter-spacing: 2px;
 
           svg {
@@ -442,7 +451,7 @@ onBeforeUnmount(() => {
 
           span:nth-child(1) {
             font-size: 35px;
-            font-weight: 600;
+            font-weight: bold;
             letter-spacing: 1px;
           }
 
@@ -470,7 +479,7 @@ onBeforeUnmount(() => {
             left: calc(50% - 50px);
             width: 100px;
             height: 100px;
-            animation: sun @loading-time linear infinite;
+            animation: sun @loading-time ease-in-out infinite;
             mix-blend-mode: difference;
 
             .sun-body {
@@ -586,13 +595,13 @@ onBeforeUnmount(() => {
       flex: 1;
       width: 100%;
       box-sizing: border-box;
-      padding: 0 30px;
+      padding: 0 25px;
       background-color: var(--theme-color);
       transition: background-color @bg-transition-time ease;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 20px;
+      gap: 25px;
 
       span {
         font-size: 30px;
@@ -607,6 +616,7 @@ onBeforeUnmount(() => {
         border-radius: 10px;
         overflow: hidden;
         background-color: var(--bg-color);
+        outline: 4px solid var(--bg-color);
 
         &::before {
           content: '';
@@ -614,7 +624,7 @@ onBeforeUnmount(() => {
           top: 0;
           left: 0;
           height: inherit;
-          transition: width 0.3s linear;
+          transition: width 0.5s ease;
           width: calc(var(--process) * 100%);
           background-color: var(--stress-color);
         }
@@ -662,6 +672,12 @@ onBeforeUnmount(() => {
           opacity: 1;
           font-size: 30px;
           font-weight: bold;
+        }
+
+        &:not(.active) {
+          span {
+            filter: blur(1px);
+          }
         }
       }
     }

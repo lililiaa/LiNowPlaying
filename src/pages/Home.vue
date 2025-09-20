@@ -83,10 +83,12 @@
         <div class="song-info">
           <div class="song">
             <overflow-text
+              v-if="songData?.track.title"
               :color="textColor"
               is-bold="bold"
             >{{ songData?.track.title }}</overflow-text>
             <overflow-text
+              v-if="songData?.track.author"
               :color="textColor"
               font-size="28px"
             >{{ songData?.track.author }}</overflow-text>
@@ -310,7 +312,7 @@ const getImgColor = () => {
 // 网页标题
 const titleData = reactive({
   status: "已暂停",
-  name: "",
+  name: "暂无歌曲",
 });
 const setTitle = () => {
   if (titleData.status && titleData.name) {
@@ -480,7 +482,7 @@ onBeforeUnmount(() => {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        gap: 10px;
+        gap: 20px;
 
         .song {
           height: 100%;
@@ -490,6 +492,11 @@ onBeforeUnmount(() => {
           flex-direction: column;
           justify-content: space-around;
           overflow: hidden;
+
+          span {
+            font-size: 30px;
+            font-weight: bold;
+          }
         }
 
         .rotate-icon {
@@ -521,6 +528,7 @@ onBeforeUnmount(() => {
               height: 50px;
               border-radius: 50%;
               border: 6px solid var(--text-color);
+              transition: border-color @bg-transition-time ease;
               animation: sun-body @loading-time linear infinite;
 
               .line {
@@ -531,6 +539,7 @@ onBeforeUnmount(() => {
                 height: 15px;
                 border-radius: 3px;
                 background-color: var(--text-color);
+                transition: background-color @bg-transition-time ease;
                 transform: rotate(calc(var(--i) * 45deg));
                 transform-origin: center 50px;
               }
@@ -556,6 +565,7 @@ onBeforeUnmount(() => {
               border-radius: 50%;
               background-color: var(--text-color);
               box-shadow: 16px 0 var(--text-color);
+              transition: background-color @bg-transition-time ease, box-shadow @bg-transition-time ease;
               animation: eye @loading-time linear infinite;
 
               @keyframes eye {
@@ -593,6 +603,7 @@ onBeforeUnmount(() => {
               width: 100%;
               border-radius: 3px;
               background-color: var(--text-color);
+              transition: background-color @bg-transition-time ease;
             }
           }
 
@@ -635,16 +646,18 @@ onBeforeUnmount(() => {
         font-size: 30px;
         font-weight: 600;
         color: var(--text-color);
+        transition: color @bg-transition-time ease;
       }
 
       .process-bar {
         flex: 1;
         position: relative;
         height: 20px;
-        border-radius: 10px;
+        border-radius: 14px;
         overflow: hidden;
         background-color: var(--bg-color);
-        outline: 4px solid var(--bg-color);
+        border: 4px solid var(--bg-color);
+        transition: background-color @bg-transition-time ease, border-color @bg-transition-time ease;
 
         &::before {
           content: '';
@@ -652,9 +665,9 @@ onBeforeUnmount(() => {
           top: 0;
           left: 0;
           height: inherit;
-          transition: width 0.5s ease;
           width: calc(var(--process) * 100%);
           background-color: var(--stress-color);
+          transition: width 0.5s ease, background-color @bg-transition-time ease;
         }
       }
     }
@@ -673,9 +686,7 @@ onBeforeUnmount(() => {
 
     .lyric-box {
       width: 100%;
-      background-color: var(--theme-color);
-      transition: transform 0.5s ease, background-color @bg-transition-time ease;
-      z-index: 2;
+      transition: transform 0.5s ease;
 
       .lyric-line {
         height: 50px;
@@ -689,8 +700,10 @@ onBeforeUnmount(() => {
         font-size: 25px;
         opacity: 0.8;
         transition: all 0.5s ease-in-out;
+        z-index: 2;
 
         span {
+          width: 100%;
           white-space: nowrap;
           text-overflow: ellipsis;
           overflow: hidden;
@@ -703,9 +716,7 @@ onBeforeUnmount(() => {
         }
 
         &:not(.active) {
-          span {
-            filter: blur(1px);
-          }
+          filter: blur(1px);
         }
       }
     }
@@ -716,7 +727,6 @@ onBeforeUnmount(() => {
       right: 0;
       height: calc(100% + 60px);
       aspect-ratio: 1/1;
-      z-index: 1;
 
       img {
         width: 100%;
@@ -726,6 +736,7 @@ onBeforeUnmount(() => {
         filter: blur(3px);
         opacity: 0;
         animation: fade @bg-transition-time ease @bg-transition-time forwards;
+        z-index: 1;
       }
 
       @keyframes fade {

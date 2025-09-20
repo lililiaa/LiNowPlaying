@@ -1,7 +1,7 @@
 <template>
   <div
     class="song-container"
-    :style="{ '--theme-color': themeColor, '--bg-color': themeColorList[2], '--stress-color': themeColorList[3] }"
+    :style="{ '--theme-color': themeColor, '--text-color': textColor, '--bg-color': themeColorList[2], '--stress-color': themeColorList[3] }"
   >
     <img
       v-show="songData?.track.cover"
@@ -82,14 +82,14 @@
         </div>
         <div class="song-info">
           <div class="song">
-            <span
-              v-if="songData?.track.title"
-              :title="songData?.track.title"
-            >{{ songData?.track.title }}</span>
-            <span
-              v-if="songData?.track.author"
-              :title="songData?.track.author"
-            >{{ songData?.track.author }}</span>
+            <overflow-text
+              :color="textColor"
+              is-bold="bold"
+            >{{ songData?.track.title }}</overflow-text>
+            <overflow-text
+              :color="textColor"
+              font-size="28px"
+            >{{ songData?.track.author }}</overflow-text>
             <span v-if="!songData?.track.title && !songData?.track.author">暂无歌曲信息</span>
           </div>
           <div class="playing-container">
@@ -165,6 +165,7 @@
 <script setup>
 import ColorThief from 'colorthief';
 import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
+import overflowText from '../components/overflowText.vue';
 
 // 游戏
 const gameName = ref('都市天际线1');
@@ -179,6 +180,7 @@ const lyricData = reactive({
 });
 // 主体颜色
 const themeColor = ref('rgba(0, 0, 0, 0.8)');
+const textColor = ref('rgba(255, 255, 255, 1)');
 const themeColorList = ref([]);
 let intervalId = null;
 const isChanging = ref(false);
@@ -260,6 +262,7 @@ const getImgColor1 = () => {
   img.onload = function () {
     const color = colorThief.getColor(img);
     themeColor.value = `rgba(${color.join(',')}, 1)`;
+    textColor.value = `rgba(${color.map(i => 255 - i).join(',')}, 1)`;
     themeColorList.value = colorThief.getPalette(img).map((color) => `rgba(${color.join(',')}, 1)`);
   };
 };
@@ -381,6 +384,7 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: flex-start;
   gap: 15px;
+  transition: background-color @bg-transition-time ease, color @bg-transition-time ease;
 
   .cover {
     height: 100%;
@@ -433,7 +437,8 @@ onBeforeUnmount(() => {
 
         span {
           white-space: nowrap;
-          mix-blend-mode: difference;
+          color: var(--text-color);
+          transition: color @bg-transition-time ease;
         }
 
         &>span:nth-child(1) {
@@ -447,9 +452,10 @@ onBeforeUnmount(() => {
           letter-spacing: 2px;
 
           svg {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             vertical-align: middle;
+            mix-blend-mode: difference;
           }
         }
 
@@ -461,7 +467,7 @@ onBeforeUnmount(() => {
           gap: 10px;
 
           span {
-            font-size: 30px;
+            font-size: 28px;
           }
         }
       }
@@ -474,7 +480,7 @@ onBeforeUnmount(() => {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        gap: 20px;
+        gap: 10px;
 
         .song {
           height: 100%;
@@ -484,24 +490,6 @@ onBeforeUnmount(() => {
           flex-direction: column;
           justify-content: space-around;
           overflow: hidden;
-
-          span {
-            width: 100%;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            mix-blend-mode: difference;
-          }
-
-          span:nth-child(1) {
-            font-size: 35px;
-            font-weight: bold;
-            letter-spacing: 1px;
-          }
-
-          span:nth-child(2) {
-            font-size: 30px;
-          }
         }
 
         .rotate-icon {
@@ -524,7 +512,6 @@ onBeforeUnmount(() => {
             width: 100px;
             height: 100px;
             animation: sun @loading-time ease-in-out infinite;
-            mix-blend-mode: difference;
 
             .sun-body {
               position: absolute;
@@ -533,7 +520,7 @@ onBeforeUnmount(() => {
               width: 50px;
               height: 50px;
               border-radius: 50%;
-              border: 6px solid #fff;
+              border: 6px solid var(--text-color);
               animation: sun-body @loading-time linear infinite;
 
               .line {
@@ -543,8 +530,7 @@ onBeforeUnmount(() => {
                 width: 6px;
                 height: 15px;
                 border-radius: 3px;
-                background-color: #fff;
-                mix-blend-mode: difference;
+                background-color: var(--text-color);
                 transform: rotate(calc(var(--i) * 45deg));
                 transform-origin: center 50px;
               }
@@ -568,9 +554,8 @@ onBeforeUnmount(() => {
               width: 6px;
               height: 6px;
               border-radius: 50%;
-              background-color: #fff;
-              mix-blend-mode: difference;
-              box-shadow: 16px 0 #fff;
+              background-color: var(--text-color);
+              box-shadow: 16px 0 var(--text-color);
               animation: eye @loading-time linear infinite;
 
               @keyframes eye {
@@ -607,8 +592,7 @@ onBeforeUnmount(() => {
               height: 6px;
               width: 100%;
               border-radius: 3px;
-              background-color: #fff;
-              mix-blend-mode: difference;
+              background-color: var(--text-color);
             }
           }
 
@@ -630,7 +614,7 @@ onBeforeUnmount(() => {
       }
 
       svg {
-        mix-blend-mode: difference;
+        color: var(--text-color);
       }
     }
 
@@ -650,7 +634,7 @@ onBeforeUnmount(() => {
       span {
         font-size: 30px;
         font-weight: 600;
-        mix-blend-mode: difference;
+        color: var(--text-color);
       }
 
       .process-bar {
@@ -701,7 +685,7 @@ onBeforeUnmount(() => {
         justify-content: flex-start;
         box-sizing: border-box;
         padding-left: 5px;
-        mix-blend-mode: difference;
+        color: var(--text-color);
         font-size: 25px;
         opacity: 0.8;
         transition: all 0.5s ease-in-out;
@@ -738,10 +722,10 @@ onBeforeUnmount(() => {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        mask-image: linear-gradient(to left, rgba(0, 0, 0, 1), transparent);
+        mask-image: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.8));
         filter: blur(3px);
         opacity: 0;
-        animation: fade @bg-transition-time ease 1s forwards;
+        animation: fade @bg-transition-time ease @bg-transition-time forwards;
       }
 
       @keyframes fade {

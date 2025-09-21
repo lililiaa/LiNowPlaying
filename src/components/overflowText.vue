@@ -26,7 +26,7 @@ export default defineComponent({
     // 文字大小
     fontSize: {
       type: String,
-      default: '35px'
+      default: '40px'
     },
     // 是否加粗
     isBold: {

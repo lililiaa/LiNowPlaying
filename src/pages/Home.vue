@@ -90,10 +90,12 @@
             <overflow-text
               v-if="songData?.track.author"
               :color="textColor"
-              font-size="28px"
+              font-size="30px"
             >{{ songData?.track.author }}</overflow-text>
             <span v-if="!songData?.track.title && !songData?.track.author">暂无歌曲信息</span>
           </div>
+          <!-- 柱条动画 -->
+          <!-- 太阳动画 -->
           <div class="playing-container">
             <div
               class="sun"
@@ -117,6 +119,7 @@
             </div>
             <div class="horizon"></div>
           </div>
+          <!-- 旋转动画 -->
           <!-- <svg
             xmlns="http://www.w3.org/2000/svg"
             width="128"
@@ -126,7 +129,7 @@
             :style="{ 'animation-play-state': songData?.player.isPaused ? 'paused' : 'running' }"
           >
             <path
-              fill="#ffffff"
+              :fill="textColor"
               d="M16 9h-3v5.5a2.5 2.5 0 0 1-2.5 2.5A2.5 2.5 0 0 1 8 14.5a2.5 2.5 0 0 1 2.5-2.5c.57 0 1.08.19 1.5.5V7h4zm-4-7a10 10 0 0 1 10 10a10 10 0 0 1-10 10A10 10 0 0 1 2 12A10 10 0 0 1 12 2m0 2a8 8 0 0 0-8 8a8 8 0 0 0 8 8a8 8 0 0 0 8-8a8 8 0 0 0-8-8"
             />
           </svg> -->
@@ -142,7 +145,10 @@
       </div>
     </div>
     <div class="lyric-info">
-      <div class="lyric-box">
+      <div
+        v-if="lyricData.lyric.length > 0"
+        class="lyric-box"
+      >
         <div
           class="lyric-line"
           v-for="(item, index) in lyricData.lyric"
@@ -152,6 +158,10 @@
           <span>{{ item[2] }}</span>
         </div>
       </div>
+      <div
+        v-else
+        class="lyric-empty"
+      >暂无歌词</div>
       <div class="lyric-bg">
         <img
           crossorigin="anonymous"
@@ -343,7 +353,7 @@ watch(
 onMounted(() => {
   fetchSongData();
   setTitle();
-  intervalId = setInterval(fetchSongData, 500);
+  intervalId = setInterval(fetchSongData, 300);
 });
 
 onBeforeUnmount(() => {
@@ -360,6 +370,11 @@ onBeforeUnmount(() => {
 @loading-time: 5s;
 // 背景过渡时间
 @bg-transition-time: 2s;
+// 文字大小1
+@font-size-big: 40px;
+// 文字大小2
+@font-size-small: 30px;
+
 
 @keyframes rotate {
   from {
@@ -380,7 +395,7 @@ onBeforeUnmount(() => {
 
 .song-container {
   height: 220px;
-  width: 1700px;
+  width: 1800px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -449,7 +464,7 @@ onBeforeUnmount(() => {
           justify-content: space-around;
           align-items: center;
           gap: 10px;
-          font-size: 35px;
+          font-size: @font-size-big;
           font-weight: bold;
           letter-spacing: 2px;
 
@@ -469,7 +484,7 @@ onBeforeUnmount(() => {
           gap: 10px;
 
           span {
-            font-size: 28px;
+            font-size: @font-size-small;
           }
         }
       }
@@ -494,15 +509,17 @@ onBeforeUnmount(() => {
           overflow: hidden;
 
           span {
-            font-size: 30px;
+            font-size: @font-size-big;
             font-weight: bold;
             color: var(--text-color);
           }
         }
 
         .rotate-icon {
-          width: 100px;
-          height: 100px;
+          width: 120px;
+          height: 120px;
+          box-sizing: border-box;
+          padding: 10px;
           animation: rotate 5s linear infinite;
         }
 
@@ -618,7 +635,7 @@ onBeforeUnmount(() => {
 
             40%,
             70% {
-              transform: translateY(-40px);
+              transform: translateY(-45px);
             }
           }
         }
@@ -644,7 +661,7 @@ onBeforeUnmount(() => {
       gap: 25px;
 
       span {
-        font-size: 30px;
+        font-size: @font-size-small;
         font-weight: 600;
         color: var(--text-color);
         transition: color @bg-transition-time ease;
@@ -696,9 +713,8 @@ onBeforeUnmount(() => {
         align-items: center;
         justify-content: flex-start;
         box-sizing: border-box;
-        padding-left: 5px;
         color: var(--text-color);
-        font-size: 25px;
+        font-size: 28px;
         opacity: 0.8;
         transition: all 0.5s ease-in-out;
         z-index: 2;
@@ -712,7 +728,7 @@ onBeforeUnmount(() => {
 
         &.active {
           opacity: 1;
-          font-size: 30px;
+          font-size: 35px;
           font-weight: bold;
         }
 
@@ -720,6 +736,18 @@ onBeforeUnmount(() => {
           filter: blur(1px);
         }
       }
+    }
+
+    .lyric-empty {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      font-size: 35px;
+      font-weight: bold;
+      color: var(--text-color);
+      transition: all 0.5s ease-in-out;
     }
 
     .lyric-bg {

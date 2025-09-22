@@ -1,126 +1,134 @@
 <template>
-  <div
-    class="song-container"
-    :style="{ '--theme-color': themeColor, '--text-color': textColor, '--bg-color': themeColorList[2], '--stress-color': themeColorList[3] }"
+  <v-scale-screen
+    width="1840"
+    height="260"
+    :box-style="{ backgroundColor: none }"
   >
-    <img
-      v-show="songData?.track.cover"
-      id="cover"
-      class="cover"
-      crossorigin="anonymous"
-      :class="{ 'changing': isChanging }"
-      :src="songData?.track.cover ? songData.track.cover.replace('https://y.qq.com', '/image') : ''"
-      alt="封面"
-    />
-    <img
-      v-show="!songData?.track.cover"
-      class="cover"
-      :class="{ 'changing': isChanging }"
-      style="box-sizing:border-box;padding: 30px;color: #fff;"
-      src="../assets/music.svg"
-      alt=""
+    <div
+      class="song-container"
+      :style="{ '--theme-color': themeColor, '--text-color': textColor, '--bg-color': themeColorList[2], '--stress-color': themeColorList[3] }"
     >
-    <div class="basic-info">
-      <div class="info-box">
-        <div
-          v-if="gameName && PC"
-          class="game-info"
-        >
-          <span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="128"
-              height="128"
-              viewBox="0 0 512 512"
-            >
-              <path
-                fill="none"
-                stroke="#ffffff"
-                stroke-miterlimit="10"
-                stroke-width="32"
-                d="M467.51 248.83c-18.4-83.18-45.69-136.24-89.43-149.17A91.5 91.5 0 0 0 352 96c-26.89 0-48.11 16-96 16s-69.15-16-96-16a99 99 0 0 0-27.2 3.66C89 112.59 61.94 165.7 43.33 248.83c-19 84.91-15.56 152 21.58 164.88c26 9 49.25-9.61 71.27-37c25-31.2 55.79-40.8 119.82-40.8s93.62 9.6 118.66 40.8c22 27.41 46.11 45.79 71.42 37.16c41.02-14.01 40.44-79.13 21.43-165.04Z"
-              />
-              <circle
-                cx="292"
-                cy="224"
-                r="20"
-                fill="#ffffff"
-              />
-              <path
-                fill="#ffffff"
-                d="M336 288a20 20 0 1 1 20-19.95A20 20 0 0 1 336 288"
-              />
-              <circle
-                cx="336"
-                cy="180"
-                r="20"
-                fill="#ffffff"
-              />
-              <circle
-                cx="380"
-                cy="224"
-                r="20"
-                fill="#ffffff"
-              />
-              <path
-                fill="none"
-                stroke="#ffffff"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="32"
-                d="M160 176v96m48-48h-96"
-              />
-            </svg>
-            {{ gameName }}
-          </span>
-          <div>
-            <span
-              v-for="(item, index) in PC.join(' | ').split(' ')"
-              :key="index"
-            >{{ item }}</span>
+      <img
+        v-show="songData?.track.cover"
+        id="cover"
+        class="cover"
+        crossorigin="anonymous"
+        :class="{ 'changing': isChanging }"
+        :src="songData?.track.cover ? songData.track.cover.replace('https://y.qq.com', '/image') : ''"
+        alt="封面"
+      />
+      <img
+        v-show="!songData?.track.cover"
+        class="cover"
+        :class="{ 'changing': isChanging }"
+        style="box-sizing:border-box;padding: 30px;color: #fff;"
+        src="../assets/music.svg"
+        alt=""
+      >
+      <div class="basic-info">
+        <div class="info-box">
+          <div
+            v-if="gameName && PC"
+            class="game-info"
+          >
+            <span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="128"
+                height="128"
+                viewBox="0 0 512 512"
+              >
+                <path
+                  fill="none"
+                  stroke="#ffffff"
+                  stroke-miterlimit="10"
+                  stroke-width="32"
+                  d="M467.51 248.83c-18.4-83.18-45.69-136.24-89.43-149.17A91.5 91.5 0 0 0 352 96c-26.89 0-48.11 16-96 16s-69.15-16-96-16a99 99 0 0 0-27.2 3.66C89 112.59 61.94 165.7 43.33 248.83c-19 84.91-15.56 152 21.58 164.88c26 9 49.25-9.61 71.27-37c25-31.2 55.79-40.8 119.82-40.8s93.62 9.6 118.66 40.8c22 27.41 46.11 45.79 71.42 37.16c41.02-14.01 40.44-79.13 21.43-165.04Z"
+                />
+                <circle
+                  cx="292"
+                  cy="224"
+                  r="20"
+                  fill="#ffffff"
+                />
+                <path
+                  fill="#ffffff"
+                  d="M336 288a20 20 0 1 1 20-19.95A20 20 0 0 1 336 288"
+                />
+                <circle
+                  cx="336"
+                  cy="180"
+                  r="20"
+                  fill="#ffffff"
+                />
+                <circle
+                  cx="380"
+                  cy="224"
+                  r="20"
+                  fill="#ffffff"
+                />
+                <path
+                  fill="none"
+                  stroke="#ffffff"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="32"
+                  d="M160 176v96m48-48h-96"
+                />
+              </svg>
+              {{ gameName }}
+            </span>
+            <div>
+              <span
+                v-for="(item, index) in PC.join(' | ').split(' ')"
+                :key="index"
+              >{{ item }}</span>
+            </div>
           </div>
-        </div>
-        <div class="song-info">
-          <div class="song">
-            <overflow-text
-              v-if="songData?.track.title"
-              :color="textColor"
-              is-bold="bold"
-            >{{ songData?.track.title }}</overflow-text>
-            <overflow-text
-              v-if="songData?.track.author"
-              :color="textColor"
-              font-size="30px"
-            >{{ songData?.track.author }}</overflow-text>
-            <span v-if="!songData?.track.title && !songData?.track.author">暂无歌曲信息</span>
-          </div>
-          <!-- 柱条动画 -->
-          <!-- 太阳动画 -->
-          <div class="playing-container">
-            <div
-              class="sun"
-              :style="{ 'animation-play-state': songData?.player.isPaused ? 'paused' : 'running' }"
-            >
+          <div
+            class="song-info"
+            :class="{ 'song-info2': !gameName && !PC }"
+          >
+            <div class="song">
+              <overflow-text
+                v-if="songData?.track.title"
+                :color="textColor"
+                is-bold="bold"
+              >{{ songData?.track.title }}</overflow-text>
+              <overflow-text
+                v-if="songData?.track.author"
+                :color="textColor"
+                font-size="30px"
+              >{{ songData?.track.author }}</overflow-text>
+              <span v-if="!songData?.track.title && !songData?.track.author">暂无歌曲信息</span>
+            </div>
+            <!-- 柱条动画 -->
+            <!-- 太阳动画 -->
+            <div class="playing-container">
               <div
-                class="sun-body"
+                class="sun"
                 :style="{ 'animation-play-state': songData?.player.isPaused ? 'paused' : 'running' }"
               >
                 <div
-                  class="line"
-                  v-for="i in 8"
-                  :key="i"
-                  :style="{ '--i': i }"
+                  class="sun-body"
+                  :style="{ 'animation-play-state': songData?.player.isPaused ? 'paused' : 'running' }"
+                >
+                  <div
+                    class="line"
+                    v-for="i in 8"
+                    :key="i"
+                    :style="{ '--i': i }"
+                  ></div>
+                </div>
+                <div
+                  class="eye"
+                  :style="{ 'animation-play-state': songData?.player.isPaused ? 'paused' : 'running' }"
                 ></div>
               </div>
-              <div
-                class="eye"
-                :style="{ 'animation-play-state': songData?.player.isPaused ? 'paused' : 'running' }"
-              ></div>
+              <div class="horizon"></div>
             </div>
-            <div class="horizon"></div>
-          </div>
-          <!-- 旋转动画 -->
-          <!-- <svg
+            <!-- 旋转动画 -->
+            <!-- <svg
             xmlns="http://www.w3.org/2000/svg"
             width="128"
             height="128"
@@ -133,56 +141,58 @@
               d="M16 9h-3v5.5a2.5 2.5 0 0 1-2.5 2.5A2.5 2.5 0 0 1 8 14.5a2.5 2.5 0 0 1 2.5-2.5c.57 0 1.08.19 1.5.5V7h4zm-4-7a10 10 0 0 1 10 10a10 10 0 0 1-10 10A10 10 0 0 1 2 12A10 10 0 0 1 12 2m0 2a8 8 0 0 0-8 8a8 8 0 0 0 8 8a8 8 0 0 0 8-8a8 8 0 0 0-8-8"
             />
           </svg> -->
+          </div>
+        </div>
+        <div class="process-box">
+          <span>{{ songData?.player.seekbarCurrentPositionHuman }}</span>
+          <div
+            class="process-bar"
+            :style="{ '--bg-color': themeColorList[2], '--stress-color': themeColorList[3], '--process': songData?.player.statePercent || 0 }"
+          ></div>
+          <span>{{ songData?.track.durationHuman }}</span>
         </div>
       </div>
-      <div class="process-box">
-        <span>{{ songData?.player.seekbarCurrentPositionHuman }}</span>
+      <div class="lyric-info">
         <div
-          class="process-bar"
-          :style="{ '--bg-color': themeColorList[2], '--stress-color': themeColorList[3], '--process': songData?.player.statePercent || 0 }"
-        ></div>
-        <span>{{ songData?.track.durationHuman }}</span>
-      </div>
-    </div>
-    <div class="lyric-info">
-      <div
-        v-if="lyricData.lyric.length > 0"
-        class="lyric-box"
-      >
-        <div
-          class="lyric-line"
-          v-for="(item, index) in lyricData.lyric"
-          :class="{ 'active': index === currentLyricIndex }"
-          :key="index"
+          v-if="lyricData.lyric.length > 0"
+          class="lyric-box"
         >
-          <span>{{ item[2] }}</span>
+          <div
+            class="lyric-line"
+            v-for="(item, index) in lyricData.lyric"
+            :class="{ 'active': index === currentLyricIndex }"
+            :key="index"
+          >
+            <span>{{ item[2] }}</span>
+          </div>
+        </div>
+        <div
+          v-else
+          class="lyric-empty"
+        >暂无歌词</div>
+        <div class="lyric-bg">
+          <img
+            crossorigin="anonymous"
+            :key="songData?.track.cover"
+            :src="songData?.track.cover ? songData.track.cover.replace('https://y.qq.com', '/image') : ''"
+            alt=""
+          >
         </div>
       </div>
-      <div
-        v-else
-        class="lyric-empty"
-      >暂无歌词</div>
-      <div class="lyric-bg">
-        <img
-          crossorigin="anonymous"
-          :key="songData?.track.cover"
-          :src="songData?.track.cover ? songData.track.cover.replace('https://y.qq.com', '/image') : ''"
-          alt=""
-        >
-      </div>
     </div>
-  </div>
+  </v-scale-screen>
 </template>
 
 <script setup>
 import ColorThief from 'colorthief';
 import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 import overflowText from '../components/overflowText.vue';
+import VScaleScreen from 'v-scale-screen';
 
 // 游戏
-const gameName = ref('都市天际线1');
+// const gameName = ref('都市天际线1');
 // 配置
-const PC = reactive(['9600X', '5070', '64G']);
+// const PC = reactive(['9600X', '5070', '64G']);
 // 歌曲、播放器数据
 const songData = ref();
 // 歌词数据
@@ -353,7 +363,7 @@ watch(
 onMounted(() => {
   fetchSongData();
   setTitle();
-  intervalId = setInterval(fetchSongData, 300);
+  intervalId = setInterval(fetchSongData, 200);
 });
 
 onBeforeUnmount(() => {
@@ -396,6 +406,7 @@ onBeforeUnmount(() => {
 .song-container {
   height: 220px;
   width: 1800px;
+  margin: 20px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -487,6 +498,11 @@ onBeforeUnmount(() => {
             font-size: @font-size-small;
           }
         }
+      }
+
+      .song-info2 {
+        min-width: 450px !important;
+        max-width: 600px !important;
       }
 
       .song-info {

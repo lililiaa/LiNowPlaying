@@ -32,50 +32,6 @@
             class="game-info"
           >
             <span>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="128"
-                height="128"
-                viewBox="0 0 512 512"
-              >
-                <path
-                  fill="none"
-                  stroke="#ffffff"
-                  stroke-miterlimit="10"
-                  stroke-width="32"
-                  d="M467.51 248.83c-18.4-83.18-45.69-136.24-89.43-149.17A91.5 91.5 0 0 0 352 96c-26.89 0-48.11 16-96 16s-69.15-16-96-16a99 99 0 0 0-27.2 3.66C89 112.59 61.94 165.7 43.33 248.83c-19 84.91-15.56 152 21.58 164.88c26 9 49.25-9.61 71.27-37c25-31.2 55.79-40.8 119.82-40.8s93.62 9.6 118.66 40.8c22 27.41 46.11 45.79 71.42 37.16c41.02-14.01 40.44-79.13 21.43-165.04Z"
-                />
-                <circle
-                  cx="292"
-                  cy="224"
-                  r="20"
-                  fill="#ffffff"
-                />
-                <path
-                  fill="#ffffff"
-                  d="M336 288a20 20 0 1 1 20-19.95A20 20 0 0 1 336 288"
-                />
-                <circle
-                  cx="336"
-                  cy="180"
-                  r="20"
-                  fill="#ffffff"
-                />
-                <circle
-                  cx="380"
-                  cy="224"
-                  r="20"
-                  fill="#ffffff"
-                />
-                <path
-                  fill="none"
-                  stroke="#ffffff"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="32"
-                  d="M160 176v96m48-48h-96"
-                />
-              </svg>
               {{ gameName }}
             </span>
             <div>
@@ -98,7 +54,7 @@
               <overflow-text
                 v-if="songData?.track.author"
                 :color="textColor"
-                font-size="30px"
+                font-size="35px"
               >{{ songData?.track.author }}</overflow-text>
               <span v-if="!songData?.track.title && !songData?.track.author">暂无歌曲信息</span>
             </div>
@@ -190,9 +146,9 @@ import overflowText from '../components/overflowText.vue';
 import VScaleScreen from 'v-scale-screen';
 
 // 游戏
-// const gameName = ref('都市天际线1');
+const gameName = ref('都市天际线1');
 // 配置
-// const PC = reactive(['9600X', '5070', '64G']);
+const PC = reactive(['9600X', '5070', '64G']);
 // 歌曲、播放器数据
 const songData = ref();
 // 歌词数据
@@ -248,7 +204,7 @@ const currentLyricIndex = computed(() => {
     }
   }
   // 滚动位置
-  const scrollPosition = -(index - 1) * 50;
+  const scrollPosition = -(index - 1) * 70;
   // 滚动歌词
   const lyricContainer = document.querySelector('.lyric-box');
   if (lyricContainer) {
@@ -381,9 +337,9 @@ onBeforeUnmount(() => {
 // 背景过渡时间
 @bg-transition-time: 2s;
 // 文字大小1
-@font-size-big: 40px;
+@font-size-big: 45px;
 // 文字大小2
-@font-size-small: 30px;
+@font-size-small: 35px;
 
 
 @keyframes rotate {
@@ -451,7 +407,7 @@ onBeforeUnmount(() => {
       &>div {
         .box();
         box-sizing: border-box;
-        padding: 15px 25px;
+        padding: 15px 20px;
         background-color: var(--theme-color);
         transition: background-color @bg-transition-time ease;
       }
@@ -508,12 +464,12 @@ onBeforeUnmount(() => {
       .song-info {
         width: auto;
         min-width: 320px;
-        max-width: 500px;
+        max-width: 400px;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        gap: 20px;
+        gap: 10px;
 
         .song {
           height: 100%;
@@ -545,6 +501,9 @@ onBeforeUnmount(() => {
           width: 120px;
           aspect-ratio: 1/1;
           overflow: hidden;
+          box-sizing: border-box;
+          border-bottom: 6px solid var(--text-color);
+          transition: border-color @bg-transition-time ease;
 
           .sun {
             position: absolute;
@@ -621,26 +580,6 @@ onBeforeUnmount(() => {
             }
           }
 
-          .horizon {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 6px;
-            background-color: var(--theme-color);
-            transition: background-color @bg-transition-time ease;
-
-            &::before {
-              content: '';
-              position: absolute;
-              left: 0;
-              height: 6px;
-              width: 100%;
-              border-radius: 3px;
-              background-color: var(--text-color);
-              transition: background-color @bg-transition-time ease;
-            }
-          }
-
           @keyframes sun {
 
             0%,
@@ -668,13 +607,13 @@ onBeforeUnmount(() => {
       flex: 1;
       width: 100%;
       box-sizing: border-box;
-      padding: 0 25px;
+      padding: 0 20px;
       background-color: var(--theme-color);
       transition: background-color @bg-transition-time ease;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      gap: 25px;
+      gap: 20px;
 
       span {
         font-size: @font-size-small;
@@ -723,14 +662,14 @@ onBeforeUnmount(() => {
       transition: transform 0.5s ease;
 
       .lyric-line {
-        height: 50px;
+        height: 70px;
         width: 100%;
         display: flex;
         align-items: center;
         justify-content: flex-start;
         box-sizing: border-box;
         color: var(--text-color);
-        font-size: 28px;
+        font-size: 45px;
         opacity: 0.8;
         transition: all 0.5s ease-in-out;
         z-index: 2;
@@ -740,11 +679,12 @@ onBeforeUnmount(() => {
           white-space: nowrap;
           text-overflow: ellipsis;
           overflow: hidden;
+          letter-spacing: -1px;
         }
 
         &.active {
           opacity: 1;
-          font-size: 35px;
+          font-size: 55px;
           font-weight: bold;
         }
 
@@ -760,7 +700,7 @@ onBeforeUnmount(() => {
       display: flex;
       justify-content: flex-start;
       align-items: center;
-      font-size: 35px;
+      font-size: 55px;
       font-weight: bold;
       color: var(--text-color);
       transition: all 0.5s ease-in-out;

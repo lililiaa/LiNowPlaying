@@ -1,30 +1,55 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
-// 导入页面组件
-import Home from '../pages/Home.vue'
-
 // 定义路由
 const routes = [
   {
     path: '/',
-    redirect: '/home'
+    redirect: '/home',
+    meta: {
+      isPage: false,
+    },
   },
   {
     path: '/home',
     name: 'Home',
-    component: Home
+    component: () => import('../pages/Home.vue'),
+    meta: {
+      isPage: false,
+      title: '组件预览',
+    },
+  },
+  {
+    path: '/home1',
+    name: 'Home1',
+    component: () => import('../pages/Home1.vue'),
+    meta: {
+      isPage: true,
+      title: '歌曲组件1',
+    },
+  },
+  {
+    path: '/home2',
+    name: 'Home2',
+    component: () => import('../pages/Home2.vue'),
+    meta: {
+      isPage: true,
+      title: '歌曲组件2',
+    },
   },
 ];
 
 // 创建路由实例
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
 });
 
 // 全局前置守卫
 router.beforeEach((to, from, next) => {
   // 可以在这里添加登录验证等逻辑
+  if (to.meta.title) {
+    document.title = "歌曲组件 - " + to.meta.title;
+  }
   next();
 });
 

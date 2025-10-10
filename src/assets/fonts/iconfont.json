@@ -1,0 +1,16 @@
+{
+  "id": "5037707",
+  "name": "myNowPlaying",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "1735567",
+      "name": "新窗口",
+      "font_class": "open-blank",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    }
+  ]
+}

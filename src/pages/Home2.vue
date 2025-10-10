@@ -299,7 +299,7 @@ onBeforeUnmount(() => {
 // 背景过渡时间
 @bg-transition-time: 2s;
 // 文字大小1
-@font-size-big: 45px;
+@font-size-big: 42px;
 // 文字大小2
 @font-size-small: 35px;
 
@@ -479,7 +479,7 @@ onBeforeUnmount(() => {
         justify-content: flex-start;
         box-sizing: border-box;
         color: var(--text-color);
-        font-size: 45px;
+        font-size: 42px;
         opacity: 0.8;
         transition: all 0.5s ease-in-out;
         z-index: 2;
@@ -494,7 +494,7 @@ onBeforeUnmount(() => {
 
         &.active {
           opacity: 1;
-          font-size: 55px;
+          font-size: 52px;
           font-weight: bold;
         }
 

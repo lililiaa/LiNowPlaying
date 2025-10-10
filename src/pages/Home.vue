@@ -6,7 +6,15 @@
         alt="music"
       >
       <span>组件预览</span>
-      <span class="time">{{ timeNow }}</span>
+      <div class="header-right">
+        <span>{{ timeNow }}</span>
+        <img
+          src="../assets/github.svg"
+          alt="github"
+          title="github"
+          @click="openGithub"
+        >
+      </div>
     </div>
     <div class="content">
       <div
@@ -48,6 +56,21 @@
             </div>
             <div
               class="page-header-url-btn"
+              @click="openNow(item.url)"
+            >
+              <el-tooltip
+                content="点击在当前窗口打开"
+                placement="top"
+                effect="dark"
+              >
+                <img
+                  src="../assets/open-in-window.svg"
+                  alt="open-in-window"
+                >
+              </el-tooltip>
+            </div>
+            <div
+              class="page-header-url-btn"
               @click="openNew(item.url)"
             >
               <el-tooltip
@@ -56,14 +79,8 @@
                 effect="dark"
               >
                 <img
-                  v-if="!copied"
                   src="../assets/open-in-new.svg"
-                  alt="copy"
-                >
-                <img
-                  v-else
-                  src="../assets/open-in-new.svg"
-                  alt="success"
+                  alt="open-in-new"
                 >
               </el-tooltip>
             </div>
@@ -117,9 +134,17 @@ const copyUrl = async (url) => {
   // document.body.removeChild(input);
   // alert('复制成功');
 };
+// 当前窗口打开
+const openNow = (url) => {
+  window.open(url, '_self');
+};
 // 新窗口打开
 const openNew = (url) => {
   window.open(url, '_blank');
+};
+// 打开github
+const openGithub = () => {
+  window.open('https://github.com/lililiaa/myNowPlaying', '_blank');
 };
 
 onMounted(() => {
@@ -142,7 +167,7 @@ onBeforeUnmount(() => {
 
   .header {
     width: 100%;
-    height: 80px;
+    height: 70px;
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -155,13 +180,23 @@ onBeforeUnmount(() => {
     font-size: 40px;
 
     img {
-      width: 60px;
-      height: 60px;
+      width: 55px;
+      height: 55px;
     }
 
-    .time {
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
       margin-left: auto;
-      font-size: 30px;
+      font-size: 25px;
+      user-select: none;
+
+      img {
+        width: 35px;
+        height: 35px;
+        cursor: pointer;
+      }
     }
   }
 

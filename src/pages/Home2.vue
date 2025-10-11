@@ -45,7 +45,7 @@
             :color="textColor"
             is-bold="bold"
           >{{ songData?.track.title }}</overflow-text>
-          <span> - </span>
+          <span>-</span>
           <overflow-text
             v-if="songData?.track.author"
             :color="textColor"
@@ -420,7 +420,7 @@ onBeforeUnmount(() => {
       flex-direction: row;
       justify-content: space-around;
       align-items: center;
-      gap: 10px;
+      gap: 20px;
 
       span {
         font-size: @font-size-big;

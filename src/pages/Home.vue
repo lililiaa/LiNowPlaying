@@ -23,17 +23,13 @@
         :key="index"
       >
         <div class="page-header">
-          <i class="iconfont icon-yemian"></i>
-          <span>{{ item.meta.title }}</span>
-          <div class="page-header-url">
-            <div>
-              <span>页面地址</span>
-            </div>
-            <span>{{ item.url }}</span>
-            <div
-              class="page-header-url-btn"
-              @click="copyUrl(item.url, index)"
-            >
+          <div>
+            <i class="iconfont icon-yemian"></i>
+            <span>{{ item.meta.title }}</span>
+          </div>
+          <span class="page-header-url">{{ item.url }}</span>
+          <div class="page-header-btn">
+            <div @click="copyUrl(item.url, index)">
               <el-tooltip
                 content="点击复制URL"
                 placement="top"
@@ -233,7 +229,7 @@ onBeforeUnmount(() => {
         padding: 0 10px;
         display: flex;
         flex-direction: row;
-        justify-content: flex-start;
+        justify-content: space-between;
         align-items: center;
         gap: 10px;
         align-items: center;
@@ -244,6 +240,7 @@ onBeforeUnmount(() => {
 
         i {
           font-size: 30px;
+          margin-right: 10px;
         }
 
         img {
@@ -255,41 +252,38 @@ onBeforeUnmount(() => {
           font-size: 30px;
         }
 
+        &:hover {
+          .page-header-url {
+            opacity: 1;
+          }
+        }
+
         .page-header-url {
+          margin-left: auto;
+          font-size: 20px;
+          opacity: 0;
+          transition: all 0.3s ease;
+        }
+
+        .page-header-btn {
           height: 35px;
           display: flex;
-          margin-left: auto;
-          min-width: 200px;
-          background-color: #999999aa;
+          align-items: center;
           box-sizing: border-box;
-          border: 3px solid #555;
           border-radius: 5px;
           overflow: hidden;
           color: #eee;
+          gap: 8px;
 
           &>div {
-            height: 100%;
-            background-color: #555;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 20px;
-          }
-
-          span {
-            font-size: 20px;
-            margin: 0 10px;
-          }
-
-          .page-header-url-btn {
-            height: 100%;
+            height: 28px;
             aspect-ratio: 1/1;
             cursor: pointer;
             user-select: none;
 
             img {
-              width: 20px;
-              height: 20px;
+              width: 100%;
+              height: 100%;
               animation: fade 1s ease;
             }
 

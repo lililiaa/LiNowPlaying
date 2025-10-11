@@ -1,3 +1,4 @@
+import { ElMessage } from 'element-plus';
 import { createRouter, createWebHistory } from 'vue-router'
 
 // 定义路由
@@ -49,6 +50,9 @@ router.beforeEach((to, from, next) => {
   // 可以在这里添加登录验证等逻辑
   if (to.meta.title) {
     document.title = "歌曲组件 - " + to.meta.title;
+  }
+  if (from.path === '/home' && to.path !== '/home') {
+    ElMessage.info('单击鼠标右键可以跳转到其他页面');
   }
   next();
 });

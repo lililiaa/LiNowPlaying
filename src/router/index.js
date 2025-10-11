@@ -37,6 +37,15 @@ const routes = [
       title: '歌曲组件2',
     },
   },
+  {
+    path: '/home3',
+    name: 'Home3',
+    component: () => import('../pages/Home3.vue'),
+    meta: {
+      isPage: true,
+      title: '歌曲组件3',
+    },
+  },
 ];
 
 // 创建路由实例

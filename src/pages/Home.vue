@@ -29,6 +29,19 @@
           </div>
           <span class="page-header-url">{{ item.url }}</span>
           <div class="page-header-btn">
+            <div @click="refresh(item.url, index)">
+              <el-tooltip
+                content="刷新组件"
+                placement="top"
+                effect="dark"
+              >
+                <img
+                  :class="{ 'refresh-rotate': isRotating[index] }"
+                  src="../assets/refresh.svg"
+                  alt="refresh"
+                >
+              </el-tooltip>
+            </div>
             <div @click="copyUrl(item.url, index)">
               <el-tooltip
                 content="点击复制URL"
@@ -37,20 +50,19 @@
               >
                 <img
                   v-if="!copied[index]"
+                  class="fade"
                   src="../assets/copy.svg"
                   alt="copy"
                 >
                 <img
                   v-else
+                  class="fade"
                   src="../assets/success.svg"
                   alt="success"
                 >
               </el-tooltip>
             </div>
-            <div
-              class="page-header-url-btn"
-              @click="openNow(item.url)"
-            >
+            <div @click="openNow(item.url)">
               <el-tooltip
                 content="点击在当前窗口打开"
                 placement="top"
@@ -62,10 +74,7 @@
                 >
               </el-tooltip>
             </div>
-            <div
-              class="page-header-url-btn"
-              @click="openNew(item.url)"
-            >
+            <div @click="openNew(item.url)">
               <el-tooltip
                 content="点击在新窗口打开"
                 placement="top"
@@ -108,6 +117,18 @@ const pageList = routeList.filter(item => item.meta.isPage).map(item => {
 });
 
 const timeNow = ref(new Date().toLocaleString());
+// 刷新组件
+const isRotating = ref([]);
+const refresh = (url, index) => {
+  isRotating.value[index] = true;
+
+  const iframes = document.querySelectorAll('iframe');
+  if (iframes[index]) {
+    iframes[index].contentWindow.location.reload();
+  }
+
+  setTimeout(() => (isRotating.value[index] = false), 1000);
+};
 // 复制url
 const copied = ref([]);
 const copyUrl = async (url, index) => {
@@ -146,6 +167,7 @@ onMounted(() => {
   }, 1000);
   pageList.forEach(item => {
     copied.value.push(false);
+    isRotating.value.push(false);
   });
 });
 
@@ -159,7 +181,7 @@ onBeforeUnmount(() => {
   width: 100vw;
   display: flex;
   flex-direction: column;
-  background-color: #fff;
+  background-color: #e9e9e9;
 
   .header {
     width: 100%;
@@ -174,6 +196,7 @@ onBeforeUnmount(() => {
     background: -webkit-linear-gradient(to right, #2ebf91, #8360c3);
     background: linear-gradient(to right, #2ebf91, #8360c3);
     font-size: 40px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
 
     img {
       width: 55px;
@@ -259,7 +282,8 @@ onBeforeUnmount(() => {
         }
 
         .page-header-url {
-          margin-left: auto;
+          margin-right: auto;
+          margin-left: 10px;
           font-size: 20px;
           opacity: 0;
           transition: all 0.3s ease;
@@ -273,7 +297,7 @@ onBeforeUnmount(() => {
           border-radius: 5px;
           overflow: hidden;
           color: #eee;
-          gap: 8px;
+          gap: 10px;
 
           &>div {
             height: 28px;
@@ -284,6 +308,9 @@ onBeforeUnmount(() => {
             img {
               width: 100%;
               height: 100%;
+            }
+
+            .fade {
               animation: fade 1s ease;
             }
 
@@ -294,6 +321,20 @@ onBeforeUnmount(() => {
 
               100% {
                 opacity: 1;
+              }
+            }
+
+            .refresh-rotate {
+              animation: refresh-rotate 1s ease-out;
+            }
+
+            @keyframes refresh-rotate {
+              from {
+                transform: rotate(0deg);
+              }
+
+              to {
+                transform: rotate(360deg);
               }
             }
           }

@@ -83,14 +83,27 @@
           v-if="lyricData.lyric.length > 0"
           class="lyric-box"
         >
-          <div
-            class="lyric-line"
-            v-for="(item, index) in lyricData.lyric"
-            :class="{ 'active': index === currentLyricIndex }"
-            :key="index"
-          >
-            <span>{{ item[2] }}</span>
-          </div>
+          <template v-if="lyricData.translatedLyric.length === 0">
+            <div
+              v-for="(item, index) in lyricData.lyric"
+              class="lyric-line"
+              :class="{ 'active': index === currentLyricIndex }"
+              :key="index"
+            >
+              <span>{{ item[2] }}</span>
+            </div>
+          </template>
+          <template v-else>
+            <div
+              v-for="(item, index) in lyricData.lyric"
+              class="lyric-line-translated"
+              :class="{ 'active': index === currentLyricIndex }"
+              :key="index"
+            >
+              <span class="original">{{ item[2] }}</span>
+              <span class="translated">{{ lyricData.translatedLyric.find(i => i[1] === lyricData.lyric[index][1])?.[2] || '' }}</span>
+            </div>
+          </template>
         </div>
         <div
           v-else
@@ -116,9 +129,8 @@ import overflowText from '../components/overflowText.vue';
 import VScaleScreen from 'v-scale-screen';
 
 // 游戏&配置
-// const extraTextList = reactive([['都市天际线1'], ['9600X', '5070', '64G']]);
-const extraTextList = reactive([]);
-const extraText = ref('');
+const extraTextList = reactive([['都市天际线1'], ['9600X', '5070', '64G']]);
+// const extraTextList = reactive([]);
 let currentTextIndex = 0;
 const changExtraText = () => {
   if (currentTextIndex < extraTextList.length) {
@@ -136,6 +148,7 @@ const songData = ref();
 const lyricData = reactive({
   author: [],
   lyric: [],
+  translatedLyric: [],
 });
 // 主体颜色
 const themeColor = ref('rgba(0, 0, 0, 0.8)');
@@ -164,6 +177,11 @@ const getLyricInfo = async () => {
     const data = await res.json();
     lyricData.author = data.lrc?.match(authorRegex)?.map(i => JSON.parse(i)) || [];
     lyricData.lyric = data.lrc?.match(lyricRegex)?.map(i => i.match(lyricRegex2)) || [];
+    if (data.hasTranslatedLyric) {
+      lyricData.translatedLyric = data.translatedLyric?.match(lyricRegex)?.map(i => i.match(lyricRegex2)) || [];
+    } else {
+      lyricData.translatedLyric = [];
+    }
   } catch (error) {
     lyricData.value = {};
     console.error(error);
@@ -185,7 +203,12 @@ const currentLyricIndex = computed(() => {
     }
   }
   // 滚动位置
-  const scrollPosition = -(index - 1) * 67;
+  let scrollPosition = 0;
+  if (lyricData.translatedLyric.length === 0) {
+    scrollPosition = -(index - 1) * 67;
+  } else {
+    scrollPosition = -(index) * 100;
+  }
   // 滚动歌词
   const lyricContainer = document.querySelector('.lyric-box');
   if (lyricContainer) {
@@ -193,6 +216,7 @@ const currentLyricIndex = computed(() => {
   }
   return index;
 });
+
 // 监听封面变化
 watch(
   () => songData.value?.track?.cover,
@@ -384,7 +408,7 @@ onBeforeUnmount(() => {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    // gap: 10px;
+    gap: 15px;
 
     &>div {
       .box();
@@ -392,12 +416,18 @@ onBeforeUnmount(() => {
       padding: 0 20px;
       background-color: var(--theme-color);
       transition: background-color @bg-transition-time ease;
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: center;
     }
 
     .game-info {
+      flex: 1;
       width: 100%;
 
       &>div {
+        width: 100%;
         display: flex;
         flex-direction: row;
         justify-content: space-around;
@@ -414,7 +444,7 @@ onBeforeUnmount(() => {
     }
 
     .song-info {
-      // flex: 1;
+      flex: 1;
       width: 100%;
       display: flex;
       flex-direction: row;
@@ -454,7 +484,7 @@ onBeforeUnmount(() => {
     .process-box {
       width: 100%;
       box-sizing: border-box;
-      padding: 0 20px;
+      padding: 5px 20px;
       background-color: var(--theme-color);
       transition: background-color @bg-transition-time ease;
       display: flex;
@@ -517,7 +547,7 @@ onBeforeUnmount(() => {
         box-sizing: border-box;
         color: var(--text-color);
         font-size: 42px;
-        opacity: 0.8;
+        opacity: 0.7;
         transition: all 0.5s ease-in-out;
         z-index: 2;
 
@@ -526,13 +556,58 @@ onBeforeUnmount(() => {
           white-space: nowrap;
           text-overflow: ellipsis;
           overflow: hidden;
-          letter-spacing: -1px;
         }
 
         &.active {
           opacity: 1;
           font-size: 52px;
           font-weight: bold;
+        }
+
+        &:not(.active) {
+          filter: blur(1px);
+        }
+      }
+
+      .lyric-line-translated {
+        height: 100px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-around;
+        box-sizing: border-box;
+        color: var(--text-color);
+        font-size: 38px;
+        opacity: 0.7;
+        transition: all 0.5s ease-in-out;
+        z-index: 2;
+
+        span {
+          width: 100%;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: pre-wrap;
+          transition: all 0.5s ease-in-out;
+          height: 50px;
+        }
+
+        &.active {
+          opacity: 1;
+          font-weight: bold;
+
+          .original {
+            font-size: 45px;
+            transform: translateY(10px);
+            opacity: 0.7;
+            filter: blur(2px);
+          }
+
+          .translated {
+            font-size: 55px;
+            transform: translateY(-10px);
+          }
         }
 
         &:not(.active) {

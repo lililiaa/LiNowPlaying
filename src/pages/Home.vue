@@ -23,10 +23,7 @@
         :key="index"
       >
         <div class="page-header">
-          <img
-            src="../assets/html.svg"
-            alt="html"
-          >
+          <i class="iconfont icon-yemian"></i>
           <span>{{ item.meta.title }}</span>
           <div class="page-header-url">
             <div>
@@ -35,7 +32,7 @@
             <span>{{ item.url }}</span>
             <div
               class="page-header-url-btn"
-              @click="copyUrl(item.url)"
+              @click="copyUrl(item.url, index)"
             >
               <el-tooltip
                 content="点击复制URL"
@@ -43,7 +40,7 @@
                 effect="dark"
               >
                 <img
-                  v-if="!copied"
+                  v-if="!copied[index]"
                   src="../assets/copy.svg"
                   alt="copy"
                 >
@@ -116,13 +113,13 @@ const pageList = routeList.filter(item => item.meta.isPage).map(item => {
 
 const timeNow = ref(new Date().toLocaleString());
 // 复制url
-const copied = ref(false);
-const copyUrl = async (url) => {
+const copied = ref([]);
+const copyUrl = async (url, index) => {
   try {
     await navigator.clipboard.writeText(url);
-    copied.value = true;
+    copied.value[index] = true;
     ElMessage.success('复制成功');
-    setTimeout(() => (copied.value = false), 2000);
+    setTimeout(() => (copied.value[index] = false), 2000);
   } catch (error) {
     ElMessage.error('复制失败');
   }
@@ -151,6 +148,9 @@ onMounted(() => {
   dateInterval = setInterval(() => {
     timeNow.value = new Date().toLocaleString();
   }, 1000);
+  pageList.forEach(item => {
+    copied.value.push(false);
+  });
 });
 
 onBeforeUnmount(() => {
@@ -241,6 +241,10 @@ onBeforeUnmount(() => {
         background: #BE5869;
         background: -webkit-linear-gradient(to right, #BE5869, #c48791);
         background: linear-gradient(to right, #BE5869, #c48791);
+
+        i {
+          font-size: 30px;
+        }
 
         img {
           width: 35px;

@@ -1,7 +1,7 @@
 <template>
   <v-scale-screen
     width="1840"
-    height="260"
+    height="240"
     :box-style="{ backgroundColor: none }"
   >
     <div
@@ -379,7 +379,7 @@ onBeforeUnmount(() => {
   .basic-info {
     height: 100%;
     width: auto;
-    min-width: 450px;
+    min-width: 400px;
     max-width: 600px;
     display: flex;
     flex-direction: column;

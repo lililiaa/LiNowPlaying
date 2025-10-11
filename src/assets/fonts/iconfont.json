@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "12550606",
+      "name": "页面",
+      "font_class": "yemian",
+      "unicode": "e634",
+      "unicode_decimal": 58932
+    },
+    {
+      "icon_id": "579551",
+      "name": "刷新",
+      "font_class": "shuaxin",
+      "unicode": "e782",
+      "unicode_decimal": 59266
+    },
+    {
       "icon_id": "1735567",
       "name": "新窗口",
       "font_class": "open-blank",

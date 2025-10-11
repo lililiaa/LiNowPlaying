@@ -10,7 +10,7 @@ import router from './router';
 const menuData = reactive({
   items: router.getRoutes().filter(route => route.meta.title).map((route) => ({
     label: route.meta.title,
-    icon: "icon-open-blank",
+    icon: "icon-yemian",
     onClick: () => {
       router.push(route.path);
     },
@@ -22,7 +22,20 @@ document.addEventListener('contextmenu', (e) => {
     theme: 'default dark',
     x: e.clientX,
     y: e.clientY,
-    items: menuData.items,
+    items: [
+      {
+        label: '刷新页面',
+        icon: 'icon-shuaxin',
+        onClick: () => {
+          location.reload();
+        }
+      },
+      {
+        label: '页面跳转',
+        icon: 'icon-open-blank',
+        children: menuData.items,
+      }
+    ],
   });
 });
 </script>

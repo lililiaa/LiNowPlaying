@@ -27,7 +27,7 @@
       >
       <div class="basic-info">
         <div
-          v-if="extraTextList.length > 0"
+          v-if="extraTextList && extraTextList.length > 0"
           class="game-info"
         >
           <div :key="currentTextIndex">
@@ -36,13 +36,32 @@
             </span>
           </div>
         </div>
-        <div class="song-info">
+        <div
+          v-if="extraTextList.length > 0"
+          class="song-info"
+        >
           <overflow-text
             v-if="songData?.track.title"
             :color="textColor"
             is-bold="bold"
           >{{ songData?.track.title }}</overflow-text>
           <span> - </span>
+          <overflow-text
+            v-if="songData?.track.author"
+            :color="textColor"
+            font-size="35px"
+          >{{ songData?.track.author }}</overflow-text>
+          <span v-if="!songData?.track.title && !songData?.track.author">暂无歌曲信息</span>
+        </div>
+        <div
+          v-else
+          class="song-info2"
+        >
+          <overflow-text
+            v-if="songData?.track.title"
+            :color="textColor"
+            is-bold="bold"
+          >{{ songData?.track.title }}</overflow-text>
           <overflow-text
             v-if="songData?.track.author"
             :color="textColor"
@@ -97,7 +116,8 @@ import overflowText from '../components/overflowText.vue';
 import VScaleScreen from 'v-scale-screen';
 
 // 游戏&配置
-const extraTextList = reactive([['都市天际线1'], ['9600X', '5070', '64G']]);
+// const extraTextList = reactive([['都市天际线1'], ['9600X', '5070', '64G']]);
+const extraTextList = reactive([]);
 const extraText = ref('');
 let currentTextIndex = 0;
 const changExtraText = () => {
@@ -359,7 +379,7 @@ onBeforeUnmount(() => {
   .basic-info {
     height: 100%;
     width: auto;
-    min-width: 500px;
+    min-width: 450px;
     max-width: 600px;
     display: flex;
     flex-direction: column;
@@ -401,6 +421,23 @@ onBeforeUnmount(() => {
       justify-content: space-around;
       align-items: center;
       gap: 10px;
+
+      span {
+        font-size: @font-size-big;
+        font-weight: bold;
+        color: var(--text-color);
+        transition: color @bg-transition-time ease;
+      }
+    }
+
+    .song-info2 {
+      flex: 1;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      margin-bottom: 15px;
 
       span {
         font-size: @font-size-big;

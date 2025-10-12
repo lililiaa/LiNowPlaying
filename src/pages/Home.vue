@@ -70,7 +70,7 @@
                   >
                 </el-tooltip>
               </div>
-              <div @click="openNow(item.url)">
+              <div @click="openNow(item)">
                 <el-tooltip
                   content="在当前窗口打开"
                   placement="top"
@@ -187,8 +187,9 @@ const copyUrl = async (url, index) => {
   // alert('复制成功');
 };
 // 当前窗口打开
-const openNow = (url) => {
-  window.open(url, '_self');
+const openNow = (route) => {
+  console.log(route);
+  router.push(route.path);
 };
 // 新窗口打开
 const openNew = (url) => {
@@ -363,6 +364,12 @@ onBeforeUnmount(() => {
           background: -webkit-linear-gradient(to right, #BE5869, #c48791);
           background: linear-gradient(to right, #BE5869, #c48791);
 
+          &>div:nth-child(1) {
+            transition: all 0.3s ease;
+            user-select: none;
+            transform-origin: 0% 50%;
+          }
+
           i {
             font-size: 30px;
             margin-right: 10px;
@@ -375,19 +382,30 @@ onBeforeUnmount(() => {
 
           span {
             font-size: 30px;
+            white-space: nowrap;
           }
 
           &:hover {
+            &>div:nth-child(1) {
+              opacity: 0.4;
+              filter: blur(2px);
+              transform: scale(0.9);
+            }
+
             .page-header-url {
               opacity: 1;
+              transform: scale(1);
             }
           }
 
           .page-header-url {
+            position: absolute;
             margin-right: auto;
             margin-left: 10px;
             font-size: 20px;
             opacity: 0;
+            transform: scale(0.9);
+            transform-origin: 0% 50%;
             transition: all 0.3s ease;
           }
 

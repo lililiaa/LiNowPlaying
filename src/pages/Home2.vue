@@ -1,7 +1,7 @@
 <template>
   <v-scale-screen
-    width="1840"
-    height="240"
+    width="1880"
+    height="280"
     :box-style="{ backgroundColor: none }"
   >
     <div
@@ -368,7 +368,7 @@ onBeforeUnmount(() => {
 .song-container {
   height: 200px;
   width: 1800px;
-  margin: 20px;
+  margin: 40px;
   display: flex;
   flex-direction: row;
   align-items: center;

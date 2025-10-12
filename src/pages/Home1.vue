@@ -1,7 +1,7 @@
 <template>
   <v-scale-screen
-    width="1840"
-    height="260"
+    width="1880"
+    height="300"
     :box-style="{ backgroundColor: none }"
   >
     <div
@@ -380,14 +380,14 @@ onBeforeUnmount(() => {
 .box() {
   border-radius: @border-radius;
   transition: box-shadow @bg-transition-time ease;
-  box-shadow: 0 4px 10px 1px var(--bg-color);
-  // filter: drop-shadow(0 5px 10px var(--bg-color));
+  // box-shadow: 0 4px 10px 1px var(--bg-color);
+  filter: drop-shadow(0 5px 10px var(--bg-color));
 }
 
 .song-container {
   height: 220px;
   width: 1800px;
-  margin: 20px;
+  margin: 40px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -442,7 +442,7 @@ onBeforeUnmount(() => {
         display: flex;
         flex-direction: column;
         justify-content: space-around;
-        align-items: flex-start;
+        align-items: center;
 
         span {
           white-space: nowrap;
@@ -459,13 +459,6 @@ onBeforeUnmount(() => {
           font-size: @font-size-big;
           font-weight: bold;
           letter-spacing: 2px;
-
-          svg {
-            width: 50px;
-            height: 50px;
-            vertical-align: middle;
-            mix-blend-mode: difference;
-          }
         }
 
         div {

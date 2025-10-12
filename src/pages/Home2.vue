@@ -322,7 +322,7 @@ watch(
 );
 
 onMounted(() => {
-  fetchSongData();
+  // fetchSongData();
   setTitle();
   intervalId = setInterval(fetchSongData, localStorage.getItem("queryTime") || 1000);
   changExtraText();

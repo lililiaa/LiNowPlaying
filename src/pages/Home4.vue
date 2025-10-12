@@ -258,7 +258,7 @@ watch(
 
 onMounted(() => {
   fetchSongData();
-  getLyricInfo();
+  // getLyricInfo();
   // getImgColor();
   intervalId = setInterval(fetchSongData, localStorage.getItem("queryTime") || 1000);
 });

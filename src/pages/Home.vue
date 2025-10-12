@@ -9,105 +9,143 @@
       <div class="header-right">
         <span>{{ timeNow }}</span>
         <img
+          src="../assets/theme.svg"
+          alt="github"
+          title="切换主题"
+          @click="changTheme"
+        >
+        <img
           src="../assets/github.svg"
           alt="github"
-          title="github"
+          title="在github查看"
           @click="openGithub"
         >
       </div>
     </div>
     <div class="content">
-      <div
-        class="page-container"
-        v-for="(item, index) in pageList"
-        :key="index"
-      >
-        <div class="page-header">
-          <div>
-            <i class="iconfont icon-yemian"></i>
-            <span>{{ item.meta.title }}</span>
+      <!-- 左侧内容 -->
+      <div class="content-left">
+        <div
+          class="page-container"
+          v-for="(item, index) in pageList"
+          :key="index"
+        >
+          <div class="page-header">
+            <div>
+              <i class="iconfont icon-yemian"></i>
+              <span>{{ item.meta.title }}</span>
+            </div>
+            <span class="page-header-url">{{ item.url }}</span>
+            <div class="page-header-btn">
+              <div @click="refresh(item.url, index)">
+                <el-tooltip
+                  content="刷新组件"
+                  placement="top"
+                  effect="dark"
+                >
+                  <img
+                    :class="{ 'refresh-rotate': isRotating[index] }"
+                    src="../assets/refresh.svg"
+                    alt="refresh"
+                  >
+                </el-tooltip>
+              </div>
+              <div @click="copyUrl(item.url, index)">
+                <el-tooltip
+                  content="复制URL"
+                  placement="top"
+                  effect="dark"
+                >
+                  <img
+                    v-if="!copied[index]"
+                    class="fade"
+                    src="../assets/copy.svg"
+                    alt="copy"
+                  >
+                  <img
+                    v-else
+                    class="fade"
+                    src="../assets/success.svg"
+                    alt="success"
+                  >
+                </el-tooltip>
+              </div>
+              <div @click="openNow(item.url)">
+                <el-tooltip
+                  content="在当前窗口打开"
+                  placement="top"
+                  effect="dark"
+                >
+                  <img
+                    src="../assets/open-in-window.svg"
+                    alt="open-in-window"
+                  >
+                </el-tooltip>
+              </div>
+              <div @click="openNew(item.url)">
+                <el-tooltip
+                  content="在新窗口打开"
+                  placement="top"
+                  effect="dark"
+                >
+                  <img
+                    src="../assets/open-in-new.svg"
+                    alt="open-in-new"
+                  >
+                </el-tooltip>
+              </div>
+            </div>
           </div>
-          <span class="page-header-url">{{ item.url }}</span>
-          <div class="page-header-btn">
-            <div @click="refresh(item.url, index)">
-              <el-tooltip
-                content="刷新组件"
-                placement="top"
-                effect="dark"
-              >
-                <img
-                  :class="{ 'refresh-rotate': isRotating[index] }"
-                  src="../assets/refresh.svg"
-                  alt="refresh"
-                >
-              </el-tooltip>
-            </div>
-            <div @click="copyUrl(item.url, index)">
-              <el-tooltip
-                content="点击复制URL"
-                placement="top"
-                effect="dark"
-              >
-                <img
-                  v-if="!copied[index]"
-                  class="fade"
-                  src="../assets/copy.svg"
-                  alt="copy"
-                >
-                <img
-                  v-else
-                  class="fade"
-                  src="../assets/success.svg"
-                  alt="success"
-                >
-              </el-tooltip>
-            </div>
-            <div @click="openNow(item.url)">
-              <el-tooltip
-                content="点击在当前窗口打开"
-                placement="top"
-                effect="dark"
-              >
-                <img
-                  src="../assets/open-in-window.svg"
-                  alt="open-in-window"
-                >
-              </el-tooltip>
-            </div>
-            <div @click="openNew(item.url)">
-              <el-tooltip
-                content="点击在新窗口打开"
-                placement="top"
-                effect="dark"
-              >
-                <img
-                  src="../assets/open-in-new.svg"
-                  alt="open-in-new"
-                >
-              </el-tooltip>
-            </div>
+          <div class="page-content">
+            <iframe
+              :src="item.url"
+              frameborder="0"
+              loading="lazy"
+            ></iframe>
           </div>
         </div>
-        <div class="page-content">
-          <iframe
-            :src="item.url"
-            frameborder="0"
-          ></iframe>
+        <!-- 回到顶部 -->
+        <el-backtop
+          :target="'.content-left'"
+          :visibility-height="100"
+          :right="350"
+          :bottom="40"
+          class="back-top"
+        />
+      </div>
+      <!-- 右侧内容 -->
+      <div class="content-right">
+        <div>
+          <span class="title">统计信息</span>
+          <div>
+            <span>组件数量：</span>
+            <span>{{ pageList.length }} 个</span>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div>
+          <span class="title">系统信息</span>
+          <div>
+            <span>请求间隔：</span>
+            <span class="query-time">{{ queryTime }} ms</span>
+            <el-icon
+              class="edit-btn"
+              title="点击修改请求间隔"
+              @click="editQueryTime"
+            >
+              <Edit />
+            </el-icon>
+          </div>
         </div>
       </div>
-      <!-- 回到顶部 -->
-      <el-backtop
-        :target="'.content'"
-        :right="40"
-        :bottom="40"
-      ></el-backtop>
     </div>
   </div>
 </template>
 <script setup>
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 import router from '../router';
-import { ElMessage, ElTooltip, ElBacktop } from 'element-plus';
+import { ElMessage, ElTooltip, ElBacktop, ElMessageBox } from 'element-plus';
+import { Edit } from '@element-plus/icons-vue';
 
 let dateInterval = null;
 let routeList = router.getRoutes();
@@ -156,9 +194,50 @@ const openNow = (url) => {
 const openNew = (url) => {
   window.open(url, '_blank');
 };
+
+// 切换主题
+const changTheme = () => {
+  let theme = localStorage.getItem('theme');
+  if (theme === 'dark') {
+    localStorage.setItem('theme', 'light');
+    document.documentElement.setAttribute('data-theme', 'light');
+  } else {
+    localStorage.setItem('theme', 'dark');
+    document.documentElement.setAttribute('data-theme', 'dark');
+  }
+};
 // 打开github
 const openGithub = () => {
   window.open('https://github.com/lililiaa/myNowPlaying', '_blank');
+};
+
+const queryTime = ref(localStorage.getItem('queryTime') || '-');
+const editQueryTime = () => {
+  ElMessageBox.prompt('请输入请求间隔（单位：ms）', '修改请求间隔', {
+    type: 'info',
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    inputPattern: /^[0-9]+$/,
+    inputErrorMessage: '请输入数字',
+    draggable: true,
+  })
+    .then(({ value }) => {
+      localStorage.setItem('queryTime', value);
+      queryTime.value = value;
+      ElMessage({
+        type: 'success',
+        message: `修改成功，当前请求间隔为${value}ms`,
+      });
+    })
+    .catch(() => {
+      ElMessage({
+        type: 'info',
+        message: '取消修改',
+      })
+    })
+    .finally(() => {
+      queryTime.value = localStorage.getItem('queryTime') || '-';
+    });
 };
 
 onMounted(() => {
@@ -181,7 +260,9 @@ onBeforeUnmount(() => {
   width: 100vw;
   display: flex;
   flex-direction: column;
-  background-color: #e9e9e9;
+  overflow: hidden;
+  transition: background-color 0.3s ease;
+  background-color: var(--background-color);
 
   .header {
     width: 100%;
@@ -196,7 +277,8 @@ onBeforeUnmount(() => {
     background: -webkit-linear-gradient(to right, #2ebf91, #8360c3);
     background: linear-gradient(to right, #2ebf91, #8360c3);
     font-size: 40px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 4px 10px var(--shadow-color-hover);
+    z-index: 2;
 
     img {
       width: 55px;
@@ -206,150 +288,255 @@ onBeforeUnmount(() => {
     .header-right {
       display: flex;
       align-items: center;
-      gap: 20px;
+      gap: 15px;
       margin-left: auto;
       font-size: 25px;
       user-select: none;
 
+      span {
+        margin-right: 10px;
+      }
+
       img {
-        width: 35px;
-        height: 35px;
+        width: 30px;
+        height: 30px;
         cursor: pointer;
+        transition: all 0.3s ease;
+
+        &:active {
+          opacity: 0.9;
+        }
       }
     }
   }
 
   .content {
-    width: 100%;
-    flex: 1;
-    box-sizing: border-box;
-    padding: 20px;
-    display: grid;
-    gap: 20px;
-    grid-template-columns: 1fr 1fr;
-    overflow: auto;
-    position: relative;
+    height: calc(100% - 70px);
+    display: flex;
+    flex-direction: row;
 
-    .page-container {
-      width: 100%;
-      height: min-content;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-      transition: all 0.3s ease;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
+    .content-left {
+      height: 100%;
+      flex: 1;
+      box-sizing: border-box;
+      padding: 20px;
+      display: grid;
+      gap: 20px;
+      grid-template-columns: 1fr 1fr;
+      overflow: auto;
 
-      &:hover {
-        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.5);
-        transform: translateY(-5px);
+      /* 滚动条轨道 */
+      ::-webkit-scrollbar-track {
+        background-color: transparent;
       }
 
-      .page-header {
+      scrollbar-color: #888 transparent;
+
+      .page-container {
         width: 100%;
-        height: 50px;
-        box-sizing: border-box;
-        padding: 0 10px;
+        height: min-content;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px var(--shadow-color);
+        transition: all 0.3s ease;
         display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: center;
-        gap: 10px;
-        align-items: center;
-        color: #fff;
-        background: #BE5869;
-        background: -webkit-linear-gradient(to right, #BE5869, #c48791);
-        background: linear-gradient(to right, #BE5869, #c48791);
-
-        i {
-          font-size: 30px;
-          margin-right: 10px;
-        }
-
-        img {
-          width: 35px;
-          height: 35px;
-        }
-
-        span {
-          font-size: 30px;
-        }
+        flex-direction: column;
+        overflow: hidden;
 
         &:hover {
+          box-shadow: 0 6px 10px var(--shadow-color-hover);
+          transform: translateY(-5px);
+        }
+
+        .page-header {
+          width: 100%;
+          height: 50px;
+          box-sizing: border-box;
+          padding: 0 10px;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          gap: 10px;
+          align-items: center;
+          color: #fff;
+          background: #BE5869;
+          background: -webkit-linear-gradient(to right, #BE5869, #c48791);
+          background: linear-gradient(to right, #BE5869, #c48791);
+
+          i {
+            font-size: 30px;
+            margin-right: 10px;
+          }
+
+          img {
+            width: 35px;
+            height: 35px;
+          }
+
+          span {
+            font-size: 30px;
+          }
+
+          &:hover {
+            .page-header-url {
+              opacity: 1;
+            }
+          }
+
           .page-header-url {
-            opacity: 1;
+            margin-right: auto;
+            margin-left: 10px;
+            font-size: 20px;
+            opacity: 0;
+            transition: all 0.3s ease;
+          }
+
+          .page-header-btn {
+            height: 35px;
+            display: flex;
+            align-items: center;
+            box-sizing: border-box;
+            border-radius: 5px;
+            overflow: hidden;
+            color: #eee;
+            gap: 10px;
+
+            &>div {
+              height: 28px;
+              aspect-ratio: 1/1;
+              cursor: pointer;
+              user-select: none;
+
+              img {
+                width: 100%;
+                height: 100%;
+              }
+
+              .fade {
+                animation: fade 1s ease;
+              }
+
+              @keyframes fade {
+                0% {
+                  opacity: 0;
+                }
+
+                100% {
+                  opacity: 1;
+                }
+              }
+
+              .refresh-rotate {
+                animation: refresh-rotate 1s ease-out;
+              }
+
+              @keyframes refresh-rotate {
+                from {
+                  transform: rotate(0deg);
+                }
+
+                to {
+                  transform: rotate(360deg);
+                }
+              }
+            }
           }
         }
 
-        .page-header-url {
-          margin-right: auto;
-          margin-left: 10px;
-          font-size: 20px;
-          opacity: 0;
-          transition: all 0.3s ease;
+        .page-content {
+          width: 100%;
+          aspect-ratio: 16/9;
+
+          iframe {
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+          }
+        }
+      }
+
+      .back-top {
+        background-color: var(--background-color);
+        box-shadow: 0 0 6px var(--shadow-color-hover);
+      }
+    }
+
+    .content-right {
+      width: 300px;
+      height: calc(100% - 20px);
+      margin: 10px;
+      overflow: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      box-sizing: border-box;
+      border-radius: 10px;
+      box-shadow: 0 0 10px var(--shadow-color-hover);
+      color: var(--text-color);
+      font-size: 18px;
+      transition: all 0.3s ease;
+
+      /* 滚动条轨道 */
+      ::-webkit-scrollbar-track {
+        background-color: transparent;
+      }
+
+      scrollbar-color: #888 transparent;
+
+      // 模块
+      &>div:not(.divider) {
+        width: 100%;
+        box-sizing: border-box;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+
+        .title {
+          font-size: 22px;
+          font-weight: bold;
+          margin-bottom: 10px;
+          border-left: 6px solid #4286f4;
+          padding-left: 5px;
         }
 
-        .page-header-btn {
-          height: 35px;
+        // 单行内容
+        &>div {
           display: flex;
-          align-items: center;
-          box-sizing: border-box;
-          border-radius: 5px;
-          overflow: hidden;
-          color: #eee;
-          gap: 10px;
+          justify-content: space-between;
+          margin: 5px 10px;
+          position: relative;
 
-          &>div {
-            height: 28px;
-            aspect-ratio: 1/1;
-            cursor: pointer;
+          .query-time {
+            transition: transform 0.3s ease;
+          }
+
+          .edit-btn {
+            position: absolute;
+            opacity: 0;
+            right: 0;
+            top: 0;
+            transition: all 0.3s ease 0s;
             user-select: none;
+            cursor: pointer;
+          }
 
-            img {
-              width: 100%;
-              height: 100%;
+          &:hover {
+            .query-time {
+              transform: translateX(-30px);
             }
 
-            .fade {
-              animation: fade 1s ease;
-            }
-
-            @keyframes fade {
-              0% {
-                opacity: 0;
-              }
-
-              100% {
-                opacity: 1;
-              }
-            }
-
-            .refresh-rotate {
-              animation: refresh-rotate 1s ease-out;
-            }
-
-            @keyframes refresh-rotate {
-              from {
-                transform: rotate(0deg);
-              }
-
-              to {
-                transform: rotate(360deg);
-              }
+            .edit-btn {
+              opacity: 1;
+              transition: all 0.3s ease 0.1s;
             }
           }
         }
       }
 
-      .page-content {
+      .divider {
         width: 100%;
-        aspect-ratio: 16/9;
-
-        iframe {
-          width: 100%;
-          height: 100%;
-          pointer-events: none;
-        }
+        height: 1px;
+        background-color: var(--shadow-color);
       }
     }
   }

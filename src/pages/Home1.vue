@@ -132,7 +132,7 @@
             >
               <span class="original">{{ item[2] }}</span>
               <span class="translated">{{lyricData.translatedLyric.find(i => i[1] === lyricData.lyric[index][1])?.[2]
-                || '' }}</span>
+                || ''}}</span>
             </div>
           </template>
         </div>
@@ -344,7 +344,7 @@ watch(
 onMounted(() => {
   fetchSongData();
   setTitle();
-  intervalId = setInterval(fetchSongData, 200);
+  intervalId = setInterval(fetchSongData, localStorage.getItem("queryTime") || 1000);
 });
 
 onBeforeUnmount(() => {
@@ -695,7 +695,7 @@ onBeforeUnmount(() => {
         box-sizing: border-box;
         color: var(--text-color);
         font-size: 45px;
-        opacity: 0.7;
+        opacity: 0.8;
         transition: all 0.5s ease-in-out;
         z-index: 2;
 
@@ -726,9 +726,10 @@ onBeforeUnmount(() => {
         align-items: center;
         justify-content: space-around;
         box-sizing: border-box;
+        padding: 10px 0;
         color: var(--text-color);
         font-size: 38px;
-        opacity: 0.7;
+        opacity: 0.8;
         transition: all 0.5s ease-in-out;
         z-index: 2;
 
@@ -736,10 +737,9 @@ onBeforeUnmount(() => {
           width: 100%;
           white-space: nowrap;
           text-overflow: ellipsis;
-          overflow: hidden;
-          white-space: pre-wrap;
+          overflow: visible;
           transition: all 0.5s ease-in-out;
-          height: 55px;
+          flex: 1;
         }
 
         &.active {
@@ -749,7 +749,7 @@ onBeforeUnmount(() => {
           .original {
             font-size: 45px;
             transform: translateY(10px);
-            opacity: 0.7;
+            opacity: 0.8;
             filter: blur(2px);
           }
 

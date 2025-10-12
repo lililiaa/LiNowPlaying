@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-import { reactive } from 'vue';
+import { onBeforeMount, reactive } from 'vue';
 import ContextMenu from '@imengyu/vue3-context-menu';
 import router from './router';
 
@@ -16,6 +16,7 @@ const menuData = reactive({
     },
   })),
 });
+// 右键菜单
 document.addEventListener('contextmenu', (e) => {
   e.preventDefault();
   ContextMenu.showContextMenu({
@@ -37,6 +38,29 @@ document.addEventListener('contextmenu', (e) => {
       }
     ],
   });
+});
+// 设置颜色主题
+if (!localStorage.getItem('theme')) {
+  localStorage.setItem('theme', 'light');
+}
+// 切换主题
+const changTheme = () => {
+  let theme = localStorage.getItem('theme');
+  if (theme === 'dark') {
+    document.documentElement.setAttribute('data-theme', 'dark');
+  } else {
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
+};
+// 设置请求间隔
+const setQueryTime = () => {
+  let queryTime = localStorage.getItem('queryTime');
+  if (!queryTime) localStorage.setItem('queryTime', 1000);
+}
+
+onBeforeMount(() => {
+  changTheme();
+  setQueryTime();
 });
 </script>
 

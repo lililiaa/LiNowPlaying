@@ -253,7 +253,7 @@ onMounted(() => {
   fetchSongData();
   getLyricInfo();
   // getImgColor();
-  intervalId = setInterval(fetchSongData, 200);
+  intervalId = setInterval(fetchSongData, localStorage.getItem("queryTime") || 1000);
 });
 
 onBeforeUnmount(() => {
@@ -315,7 +315,7 @@ onBeforeUnmount(() => {
         box-sizing: border-box;
         color: var(--text-color);
         font-size: @lyric-font-size-small;
-        opacity: 0.7;
+        opacity: 0.8;
         transition: all 0.5s ease-in-out;
         z-index: 2;
         text-align: right;
@@ -344,11 +344,12 @@ onBeforeUnmount(() => {
         display: flex;
         flex-direction: column;
         align-items: center;
-        justify-content: space-around;
+        justify-content: center;
         box-sizing: border-box;
+        padding: 10px 0;
         color: var(--text-color);
         font-size: @lyric-font-size-small;
-        opacity: 0.7;
+        opacity: 0.8;
         transition: all 0.5s ease-in-out;
         z-index: 2;
         text-align: right;
@@ -357,10 +358,9 @@ onBeforeUnmount(() => {
           width: 100%;
           white-space: nowrap;
           text-overflow: ellipsis;
-          overflow: hidden;
-          white-space: pre-wrap;
+          overflow: visible;
           transition: all 0.5s ease-in-out;
-          height: 80px;
+          flex: 1;
         }
 
         &.active {
@@ -369,14 +369,14 @@ onBeforeUnmount(() => {
 
           .original {
             font-size: @lyric-font-size-medium;
-            transform: translateY(25px);
-            opacity: 0.7;
+            transform: translateY(20px);
+            opacity: 0.8;
             filter: blur(2px);
           }
 
           .translated {
             font-size: @lyric-font-size-big;
-            transform: translateY(-25px);
+            transform: translateY(-20px);
           }
         }
 

@@ -31,9 +31,14 @@
           class="game-info"
         >
           <div :key="currentTextIndex">
-            <span v-for="item in extraTextList[currentTextIndex].join(' | ').split(' ')">
-              {{ item }}
-            </span>
+            <overflow-text
+              :color="textColor"
+              content-align="space-evenly"
+            >
+              <span v-for="item in extraTextList[currentTextIndex].join(' | ').split(' ')">
+                {{ item }}
+              </span>
+            </overflow-text>
           </div>
         </div>
         <div
@@ -101,7 +106,8 @@
               :key="index"
             >
               <span class="original">{{ item[2] }}</span>
-              <span class="translated">{{ lyricData.translatedLyric.find(i => i[1] === lyricData.lyric[index][1])?.[2] || '' }}</span>
+              <span class="translated">{{lyricData.translatedLyric.find(i => i[1] === lyricData.lyric[index][1])?.[2]
+                || ''}}</span>
             </div>
           </template>
         </div>
@@ -129,8 +135,7 @@ import overflowText from '../components/overflowText.vue';
 import VScaleScreen from 'v-scale-screen';
 
 // 游戏&配置
-const extraTextList = reactive([['都市天际线1'], ['9600X', '5070', '64G']]);
-// const extraTextList = reactive([]);
+const extraTextList = reactive(JSON.parse(localStorage.getItem('extraInfo')));
 let currentTextIndex = 0;
 const changExtraText = () => {
   if (currentTextIndex < extraTextList.length) {
@@ -139,7 +144,7 @@ const changExtraText = () => {
     if (currentTextIndex === extraTextList.length) {
       currentTextIndex = 0;
     }
-    setTimeout(changExtraText, 6000);
+    setTimeout(changExtraText, 8000);
   }
 };
 // 歌曲、播放器数据
@@ -402,9 +407,7 @@ onBeforeUnmount(() => {
 
   .basic-info {
     height: 100%;
-    width: auto;
-    min-width: 400px;
-    max-width: 600px;
+    width: 500px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -428,10 +431,6 @@ onBeforeUnmount(() => {
 
       &>div {
         width: 100%;
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-        align-items: center;
         animation: fade-scale 1s ease;
       }
 

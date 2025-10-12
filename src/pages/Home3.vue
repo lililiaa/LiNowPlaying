@@ -65,10 +65,15 @@
             :key="index"
             class="extra-container"
           >
-            <span
-              v-for="item2 in item.join(' | ').split(' ')"
-              :key="currentTextIndex"
-            >{{ item2 }}</span>
+            <overflow-text
+              :color="textColor"
+              content-align="space-evenly"
+            >
+              <span
+                v-for="item2 in item.join(' | ').split(' ')"
+                :key="currentTextIndex"
+              >{{ item2 }}</span>
+            </overflow-text>
           </div>
         </template>
         <div class="song-container">
@@ -105,8 +110,7 @@ import VScaleScreen from 'v-scale-screen';
 import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 
 // 游戏&配置
-const extraTextList = reactive([['都市天际线1'], ['9600X', '5070', '64G']]);
-// const extraTextList = reactive([]);
+const extraTextList = reactive(JSON.parse(localStorage.getItem('extraInfo')));
 
 // 歌曲、播放器数据
 const songData = ref();

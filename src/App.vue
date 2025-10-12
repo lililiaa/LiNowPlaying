@@ -56,11 +56,17 @@ const changTheme = () => {
 const setQueryTime = () => {
   let queryTime = localStorage.getItem('queryTime');
   if (!queryTime) localStorage.setItem('queryTime', 1000);
-}
+};
+// 设置额外信息
+const setExtraInfo = () => {
+  let extraInfo = localStorage.getItem('extraInfo');
+  if (!extraInfo) localStorage.setItem('extraInfo', '[["游戏名称"], ["配置信息"]]');
+};
 
 onBeforeMount(() => {
   changTheme();
   setQueryTime();
+  setExtraInfo();
 });
 </script>
 

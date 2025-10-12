@@ -33,6 +33,11 @@ export default defineComponent({
       type: String,
       default: 'normal'
     },
+    // 内容对齐方式
+    contentAlign: {
+      type: String,
+      default: 'flex-start'
+    }
   }
 });
 </script>
@@ -40,7 +45,7 @@ export default defineComponent({
 // 背景过渡时间
 @bg-transition-time: 2s;
 // 文字滚动时间
-@text-transition-time: 10s;
+@text-transition-time: 8s;
 
 @keyframes marquee-wrap {
 
@@ -76,6 +81,9 @@ export default defineComponent({
     animation: marquee-wrap @text-transition-time linear infinite;
 
     .marquee-content {
+      display: flex;
+      justify-content: v-bind(contentAlign);
+      gap: 10px;
       float: left;
       white-space: nowrap;
       min-width: 100%;

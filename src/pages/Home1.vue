@@ -28,22 +28,31 @@
       <div class="basic-info">
         <div class="info-box">
           <div
-            v-if="gameName && PC"
+            v-if="extraTextList.length > 0"
             class="game-info"
           >
-            <span>
-              {{ gameName }}
-            </span>
+            <overflow-text
+              is-bold
+              :color="textColor"
+              content-align="center"
+            >
+              {{ extraTextList[0][0] }}
+            </overflow-text>
             <div>
-              <span
-                v-for="(item, index) in PC.join(' | ').split(' ')"
-                :key="index"
-              >{{ item }}</span>
+              <overflow-text
+                :color="textColor"
+                content-align="space-around"
+              >
+                <span
+                  v-for="(item, index) in extraTextList[1].join(' | ').split(' ')"
+                  :key="index"
+                >{{ item }}</span>
+              </overflow-text>
             </div>
           </div>
           <div
             class="song-info"
-            :class="{ 'song-info2': !gameName && !PC }"
+            :class="{ 'song-info2': extraTextList.length === 0 }"
           >
             <div class="song">
               <overflow-text
@@ -159,10 +168,7 @@ import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import overflowText from '../components/overflowText.vue';
 import VScaleScreen from 'v-scale-screen';
 
-// 游戏
-const gameName = ref('都市天际线1');
-// 配置
-const PC = reactive(['9600X', '5070', '64G']);
+const extraTextList = reactive(JSON.parse(localStorage.getItem('extraInfo')));
 // 歌曲、播放器数据
 const songData = ref();
 // 歌词数据
@@ -439,6 +445,7 @@ onBeforeUnmount(() => {
 
       .game-info {
         width: fit-content;
+        max-width: 400px;
         display: flex;
         flex-direction: column;
         justify-content: space-around;

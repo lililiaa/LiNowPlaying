@@ -29,17 +29,25 @@
         <div class="info-container">
           <div class="top-info">
             <div
-              v-if="gameName && PC"
+              v-if="extraTextList.length > 0"
               class="game-info bg-box"
             >
-              <span>
-                {{ gameName }}
-              </span>
+              <overflow-text
+                :color="textColor"
+                content-align="center"
+              >
+                {{ extraTextList[0][0] }}
+              </overflow-text>
               <div>
-                <span
-                  v-for="(item, index) in PC.join(' | ').split(' ')"
-                  :key="index"
-                >{{ item }}</span>
+                <overflow-text
+                  :color="textColor"
+                  content-align="space-evenly"
+                >
+                  <span
+                    v-for="(item, index) in extraTextList[1].join(' | ').split(' ')"
+                    :key="index"
+                  >{{ item }}</span>
+                </overflow-text>
               </div>
             </div>
             <div class="song-info bg-box">
@@ -108,13 +116,8 @@ import overflowText from '../components/overflowText.vue';
 import VScaleScreen from 'v-scale-screen';
 import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
 
-// 游戏
-const gameName = ref('都市天际线1');
-// 配置
-const PC = reactive(['9600X', '5070', '64G']);
 // 游戏&配置
-const extraTextList = reactive([['都市天际线1'], ['9600X', '5070', '64G']]);
-// const extraTextList = reactive([]);
+const extraTextList = reactive(JSON.parse(localStorage.getItem('extraInfo')));
 
 // 歌曲、播放器数据
 const songData = ref();
@@ -325,7 +328,7 @@ onBeforeUnmount(() => {
     }
 
     .info-container {
-      flex: 1;
+      width: 1025px;
       height: 100%;
       display: flex;
       flex-direction: column;
@@ -333,12 +336,14 @@ onBeforeUnmount(() => {
 
       .top-info {
         flex: 1;
+        width: 100%;
         display: flex;
         gap: 15px;
 
         .game-info {
           height: 100%;
           width: fit-content;
+          max-width: 500px;
           display: flex;
           flex-direction: column;
           justify-content: space-around;
@@ -531,7 +536,7 @@ onBeforeUnmount(() => {
       width: 100%;
       height: 100%;
       display: flex;
-      justify-content: flex-end;
+      justify-content: center;
       align-items: center;
       font-size: @lyric-font-size-big;
       font-weight: bold;

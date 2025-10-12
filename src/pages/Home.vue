@@ -17,7 +17,7 @@
         <img
           src="../assets/github.svg"
           alt="github"
-          title="在github查看"
+          title="在github上查看"
           @click="openGithub"
         >
       </div>
@@ -127,11 +127,42 @@
           <span class="title">系统信息</span>
           <div>
             <span>请求间隔：</span>
-            <span class="query-time">{{ queryTime }} ms</span>
+            <span
+              class="query-time"
+              :title="queryTime"
+            >{{ queryTime }} ms</span>
             <el-icon
               class="edit-btn"
               title="点击修改请求间隔"
               @click="editQueryTime"
+            >
+              <Edit />
+            </el-icon>
+          </div>
+          <div>
+            <span>游戏名称：</span>
+            <span
+              class="query-time"
+              :title="gameName"
+            >{{ gameName }}</span>
+            <el-icon
+              class="edit-btn"
+              title="点击修改游戏名称"
+              @click="editGameName"
+            >
+              <Edit />
+            </el-icon>
+          </div>
+          <div>
+            <span>电脑配置：</span>
+            <span
+              class="query-time"
+              :title="PCConfig"
+            >{{ PCConfig }}</span>
+            <el-icon
+              class="edit-btn"
+              title="点击修改电脑配置"
+              @click="editPCConfig"
             >
               <Edit />
             </el-icon>
@@ -188,7 +219,6 @@ const copyUrl = async (url, index) => {
 };
 // 当前窗口打开
 const openNow = (route) => {
-  console.log(route);
   router.push(route.path);
 };
 // 新窗口打开
@@ -211,13 +241,14 @@ const changTheme = () => {
 const openGithub = () => {
   window.open('https://github.com/lililiaa/myNowPlaying', '_blank');
 };
-
+// 请求间隔
 const queryTime = ref(localStorage.getItem('queryTime') || '-');
 const editQueryTime = () => {
   ElMessageBox.prompt('请输入请求间隔（单位：ms）', '修改请求间隔', {
     type: 'info',
     confirmButtonText: '确定',
     cancelButtonText: '取消',
+    inputValue: localStorage.getItem('queryTime') || '-',
     inputPattern: /^[0-9]+$/,
     inputErrorMessage: '请输入数字',
     draggable: true,
@@ -227,7 +258,7 @@ const editQueryTime = () => {
       queryTime.value = value;
       ElMessage({
         type: 'success',
-        message: `修改成功，当前请求间隔为${value}ms`,
+        message: `修改成功，当前请求间隔为 ${value}ms`,
       });
     })
     .catch(() => {
@@ -239,6 +270,81 @@ const editQueryTime = () => {
     .finally(() => {
       queryTime.value = localStorage.getItem('queryTime') || '-';
     });
+};
+// 游戏名称
+const gameName = ref(JSON.parse(localStorage.getItem('extraInfo'))[0][0]);
+const editGameName = () => {
+  let extraInfo = JSON.parse(localStorage.getItem('extraInfo'));
+  ElMessageBox.prompt('请输入游戏名称', '修改游戏名称', {
+    type: 'info',
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    inputValue: extraInfo[0][0],
+    inputValidator: (value) => {
+      if (value === "") return '请输入游戏名称';
+      return true;
+    },
+    draggable: true,
+  })
+    .then(({ value }) => {
+      extraInfo[0][0] = value;
+      localStorage.setItem('extraInfo', JSON.stringify(extraInfo));
+      ElMessage({
+        type: 'success',
+        message: `修改成功，当前游戏名称为 ${value}`,
+      });
+      reloadAll();
+    })
+    .catch(() => {
+      ElMessage({
+        type: 'info',
+        message: '取消修改',
+      })
+    })
+    .finally(() => {
+      gameName.value = JSON.parse(localStorage.getItem('extraInfo'))[0][0];
+    });
+};
+// 配置信息
+const PCConfig = ref(JSON.parse(localStorage.getItem('extraInfo'))[1].join(' '));
+const editPCConfig = () => {
+  let extraInfo = JSON.parse(localStorage.getItem('extraInfo'));
+  ElMessageBox.prompt('请输入配置信息(以空格分隔)', '修改配置信息', {
+    type: 'info',
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
+    inputValue: JSON.parse(localStorage.getItem('extraInfo'))[1].join(' '),
+    inputValidator: (value) => {
+      if (value === "") return '请输入配置信息';
+      return true;
+    },
+    draggable: true,
+  })
+    .then(({ value }) => {
+      extraInfo[1] = value.split(' ');
+      localStorage.setItem('extraInfo', JSON.stringify(extraInfo));
+      ElMessage({
+        type: 'success',
+        message: `修改成功，当前配置为 ${value}`,
+      });
+      reloadAll();
+    })
+    .catch(() => {
+      ElMessage({
+        type: 'info',
+        message: '取消修改',
+      })
+    })
+    .finally(() => {
+      PCConfig.value = JSON.parse(localStorage.getItem('extraInfo'))[1].join(' ');
+    });
+};
+// 重新加载所有iframe
+const reloadAll = () => {
+  const iframes = document.querySelectorAll('iframe');
+  iframes.forEach((item) => {
+    item.contentWindow.location.reload();
+  });
 };
 
 onMounted(() => {
@@ -521,17 +627,24 @@ onBeforeUnmount(() => {
         &>div {
           display: flex;
           justify-content: space-between;
-          margin: 5px 10px;
+          margin: 5px 15px;
           position: relative;
 
+          span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+
           .query-time {
-            transition: transform 0.3s ease;
+            flex: 1;
+            text-align: right;
           }
 
           .edit-btn {
             position: absolute;
             opacity: 0;
-            right: 0;
+            right: -20px;
             top: 0;
             transition: all 0.3s ease 0s;
             user-select: none;
@@ -539,10 +652,6 @@ onBeforeUnmount(() => {
           }
 
           &:hover {
-            .query-time {
-              transform: translateX(-30px);
-            }
-
             .edit-btn {
               opacity: 1;
               transition: all 0.3s ease 0.1s;

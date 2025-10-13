@@ -32,13 +32,13 @@
         >
           <div :key="currentTextIndex">
             <overflow-text
-              v-if="extraTextList[currentTextIndex].length > 0"
               :color="textColor"
               content-align="space-evenly"
             >
-              <span v-for="item in extraTextList[currentTextIndex].join(' | ').split(' ')">
-                {{ item }}
-              </span>
+              <template v-for="(item, index) in extraTextList[currentTextIndex]">
+                <span>{{ item }}</span>
+                <span v-if="index < extraTextList[currentTextIndex].length - 1">|</span>
+              </template>
             </overflow-text>
           </div>
         </div>
@@ -50,13 +50,15 @@
             v-if="songData?.track.title"
             :color="textColor"
             is-bold="bold"
-          >{{ songData?.track.title }}</overflow-text>
+          >{{ songData?.track.title
+          }}</overflow-text>
           <span>-</span>
           <overflow-text
             v-if="songData?.track.author"
             :color="textColor"
             font-size="35px"
-          >{{ songData?.track.author }}</overflow-text>
+          >{{ songData?.track.author
+          }}</overflow-text>
           <span v-if="!songData?.track.title && !songData?.track.author">暂无歌曲信息</span>
         </div>
         <div
@@ -67,12 +69,14 @@
             v-if="songData?.track.title"
             :color="textColor"
             is-bold="bold"
-          >{{ songData?.track.title }}</overflow-text>
+          >{{ songData?.track.title
+          }}</overflow-text>
           <overflow-text
             v-if="songData?.track.author"
             :color="textColor"
             font-size="35px"
-          >{{ songData?.track.author }}</overflow-text>
+          >{{ songData?.track.author
+          }}</overflow-text>
           <span v-if="!songData?.track.title && !songData?.track.author">暂无歌曲信息</span>
         </div>
         <div class="process-box">
@@ -80,7 +84,8 @@
           <div
             class="process-bar"
             :style="{ '--bg-color': themeColorList[2], '--stress-color': themeColorList[3], '--process': songData?.player.statePercent || 0 }"
-          ></div>
+          >
+          </div>
           <span>{{ songData?.track.durationHuman }}</span>
         </div>
       </div>
@@ -140,7 +145,7 @@ const extraTextList = reactive(JSON.parse(localStorage.getItem('extraInfo')));
 let currentTextIndex = 0;
 const changExtraText = () => {
   if (currentTextIndex < extraTextList.length) {
-    currentTextIndex++;
+    if (extraTextList[currentTextIndex + 1].length > 0) currentTextIndex++;
     // 到达数组末尾时重置索引到开头
     if (currentTextIndex === extraTextList.length) {
       currentTextIndex = 0;

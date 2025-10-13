@@ -71,10 +71,14 @@
               :color="textColor"
               content-align="space-evenly"
             >
-              <span
+              <!-- <span
                 v-for="item2 in item.join(' | ').split(' ')"
                 :key="currentTextIndex"
-              >{{ item2 }}</span>
+              >{{ item2 }}</span> -->
+              <template v-for="(item2, index2) in item">
+                <span>{{ item2 }}</span>
+                <span v-if="index2 < item.length - 1">|</span>
+              </template>
             </overflow-text>
           </div>
         </template>

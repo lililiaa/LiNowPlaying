@@ -1,27 +1,6 @@
 <template>
   <div class="main">
-    <div class="header">
-      <img
-        src="../assets/music.svg"
-        alt="music"
-      >
-      <span>组件预览</span>
-      <div class="header-right">
-        <span>{{ timeNow }}</span>
-        <img
-          src="../assets/theme.svg"
-          alt="github"
-          title="切换主题"
-          @click="changTheme"
-        >
-        <img
-          src="../assets/github.svg"
-          alt="github"
-          title="在github上查看"
-          @click="openGithub"
-        >
-      </div>
-    </div>
+    <MyHeader />
     <div class="content">
       <!-- 左侧内容 -->
       <div class="content-left">
@@ -173,19 +152,18 @@
   </div>
 </template>
 <script setup>
-import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import router from '../router';
 import { ElMessage, ElTooltip, ElBacktop, ElMessageBox } from 'element-plus';
 import { Edit } from '@element-plus/icons-vue';
+import MyHeader from '../components/myHeader.vue';
 
-let dateInterval = null;
 let routeList = router.getRoutes();
 const pageList = routeList.filter(item => item.meta.isPage).map(item => {
   item.url = window.location.origin + item.path;
   return item;
 });
 
-const timeNow = ref(new Date().toLocaleString());
 // 刷新组件
 const isRotating = ref([]);
 const refresh = (url, index) => {
@@ -226,21 +204,6 @@ const openNew = (url) => {
   window.open(url, '_blank');
 };
 
-// 切换主题
-const changTheme = () => {
-  let theme = localStorage.getItem('theme');
-  if (theme === 'dark') {
-    localStorage.setItem('theme', 'light');
-    document.documentElement.setAttribute('data-theme', 'light');
-  } else {
-    localStorage.setItem('theme', 'dark');
-    document.documentElement.setAttribute('data-theme', 'dark');
-  }
-};
-// 打开github
-const openGithub = () => {
-  window.open('https://github.com/lililiaa/myNowPlaying', '_blank');
-};
 // 请求间隔
 const queryTime = ref(localStorage.getItem('queryTime') || '-');
 const editQueryTime = () => {
@@ -295,7 +258,7 @@ const editGameName = () => {
       localStorage.setItem('extraInfo', JSON.stringify(extraInfo));
       ElMessage({
         type: 'success',
-        message: `修改成功，当前游戏名称为 ${value}`,
+        message: '修改成功',
       });
       reloadAll();
     })
@@ -333,7 +296,7 @@ const editPCConfig = () => {
       localStorage.setItem('extraInfo', JSON.stringify(extraInfo));
       ElMessage({
         type: 'success',
-        message: `修改成功，当前配置为 ${value}`,
+        message: '修改成功',
       });
       reloadAll();
     })
@@ -349,24 +312,17 @@ const editPCConfig = () => {
 };
 // 重新加载所有iframe
 const reloadAll = () => {
-  const iframes = document.querySelectorAll('iframe');
+  let iframes = document.querySelectorAll('iframe');
   iframes.forEach((item) => {
     item.contentWindow.location.reload();
   });
 };
 
 onMounted(() => {
-  dateInterval = setInterval(() => {
-    timeNow.value = new Date().toLocaleString();
-  }, 1000);
   pageList.forEach(item => {
     copied.value.push(false);
     isRotating.value.push(false);
   });
-});
-
-onBeforeUnmount(() => {
-  if (dateInterval) clearInterval(dateInterval);
 });
 </script>
 <style lang="less" scoped>
@@ -378,52 +334,6 @@ onBeforeUnmount(() => {
   overflow: hidden;
   transition: background-color 0.3s ease;
   background-color: var(--background-color);
-
-  .header {
-    width: 100%;
-    height: 70px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 20px;
-    box-sizing: border-box;
-    padding: 0 30px;
-    background: #8360c3;
-    background: -webkit-linear-gradient(to right, #2ebf91, #8360c3);
-    background: linear-gradient(to right, #2ebf91, #8360c3);
-    font-size: 40px;
-    box-shadow: 0 4px 10px var(--shadow-color-hover);
-    z-index: 2;
-
-    img {
-      width: 55px;
-      height: 55px;
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      margin-left: auto;
-      font-size: 25px;
-      user-select: none;
-
-      span {
-        margin-right: 10px;
-      }
-
-      img {
-        width: 30px;
-        height: 30px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-
-        &:active {
-          opacity: 0.9;
-        }
-      }
-    }
-  }
 
   .content {
     height: calc(100% - 70px);
@@ -459,7 +369,7 @@ onBeforeUnmount(() => {
 
         &:hover {
           box-shadow: 0 6px 10px var(--shadow-color-hover);
-          transform: translateY(-5px);
+          // transform: translateY(-5px);
         }
 
         .page-header {
@@ -582,7 +492,19 @@ onBeforeUnmount(() => {
           iframe {
             width: 100%;
             height: 100%;
+            position: relative;
             pointer-events: none;
+
+            &::before {
+              content: "";
+              position: absolute;
+              top: 0;
+              left: 0;
+              height: inherit;
+              width: inherit;
+              z-index: 2;
+              pointer-events: auto;
+            }
           }
         }
       }
@@ -654,7 +576,7 @@ onBeforeUnmount(() => {
             opacity: 0;
             right: -20px;
             top: 0;
-            transition: all 0.3s ease 0s;
+            transition: all 0.3s ease;
             user-select: none;
             cursor: pointer;
           }
@@ -662,7 +584,7 @@ onBeforeUnmount(() => {
           &:hover {
             .edit-btn {
               opacity: 1;
-              transition: all 0.3s ease 0.1s;
+              // transition: all 0.3s ease;
             }
           }
         }

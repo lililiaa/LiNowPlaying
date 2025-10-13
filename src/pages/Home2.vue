@@ -43,7 +43,7 @@
           </div>
         </div>
         <div
-          v-if="extraTextList.length > 0"
+          v-if="extraTextList.every(i => i.length !== 0)"
           class="song-info"
         >
           <overflow-text
@@ -470,9 +470,8 @@ onBeforeUnmount(() => {
       width: 100%;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: space-evenly;
       align-items: flex-start;
-      margin-bottom: 15px;
 
       span {
         font-size: @font-size-big;

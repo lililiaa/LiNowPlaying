@@ -1,7 +1,7 @@
 <template>
   <v-scale-screen
     width="1280"
-    height="580"
+    height="480"
     :box-style="{ backgroundColor: none }"
   >
     <div
@@ -185,9 +185,9 @@ const currentLyricIndex = computed(() => {
   // 滚动位置
   let scrollPosition = 0;
   if (lyricData.translatedLyric.length === 0) {
-    scrollPosition = -(index - 1) * 75;
+    scrollPosition = -(index - 1) * 67;
   } else {
-    scrollPosition = -(index) * 150;
+    scrollPosition = -(index) * 100;
   }
   // 滚动歌词
   const lyricContainer = document.querySelector('.lyric-box');
@@ -300,7 +300,7 @@ onBeforeUnmount(() => {
 
 .main {
   width: 1200px;
-  height: 500px;
+  height: 400px;
   margin: 40px;
   display: flex;
   flex-direction: column;
@@ -308,7 +308,7 @@ onBeforeUnmount(() => {
 
   .top-container {
     width: 100%;
-    height: 35%;
+    height: 190px;
     display: flex;
     justify-content: space-between;
     gap: 15px;
@@ -443,18 +443,18 @@ onBeforeUnmount(() => {
 
   .lyric-container {
     width: 100%;
-    height: 300px;
+    height: 200px;
     box-sizing: border-box;
     padding: 0 10px;
     overflow: hidden;
-    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 1) 70%, rgba(0, 0, 0, 0.1));
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 1) 80%, rgba(0, 0, 0, 0.1));
 
     .lyric-box {
       width: 100%;
       transition: transform 0.5s ease;
 
       .lyric-line {
-        height: 75px;
+        height: 67px;
         width: 100%;
         display: flex;
         align-items: center;
@@ -486,7 +486,7 @@ onBeforeUnmount(() => {
       }
 
       .lyric-line-translated {
-        height: 150px;
+        height: 100px;
         width: 100%;
         display: flex;
         flex-direction: column;

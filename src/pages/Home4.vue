@@ -29,16 +29,17 @@
         <div class="info-container">
           <div class="top-info">
             <div
-              v-if="extraTextList.length > 0"
+              v-if="extraTextList.some(i => i.length > 0)"
               class="game-info bg-box"
             >
               <overflow-text
+                v-if="extraTextList[0].length > 0"
                 :color="textColor"
                 content-align="center"
               >
                 {{ extraTextList[0][0] }}
               </overflow-text>
-              <div>
+              <div v-if="extraTextList[1].length > 0">
                 <overflow-text
                   :color="textColor"
                   content-align="space-evenly"

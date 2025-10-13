@@ -27,11 +27,12 @@
       >
       <div class="basic-info">
         <div
-          v-if="extraTextList && extraTextList.length > 0"
+          v-if="extraTextList.some(i => i.length > 0)"
           class="game-info"
         >
           <div :key="currentTextIndex">
             <overflow-text
+              v-if="extraTextList[currentTextIndex].length > 0"
               :color="textColor"
               content-align="space-evenly"
             >

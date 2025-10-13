@@ -280,14 +280,18 @@ const editGameName = () => {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     inputValue: extraInfo[0][0],
-    inputValidator: (value) => {
-      if (value === "") return '请输入游戏名称';
-      return true;
-    },
+    // inputValidator: (value) => {
+    //   if (value === "") return '请输入游戏名称';
+    //   return true;
+    // },
     draggable: true,
   })
     .then(({ value }) => {
-      extraInfo[0][0] = value;
+      if (value !== '') {
+        extraInfo[0][0] = value;
+      } else {
+        extraInfo[0].length = 0;
+      }
       localStorage.setItem('extraInfo', JSON.stringify(extraInfo));
       ElMessage({
         type: 'success',
@@ -314,14 +318,18 @@ const editPCConfig = () => {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     inputValue: JSON.parse(localStorage.getItem('extraInfo'))[1].join(' '),
-    inputValidator: (value) => {
-      if (value === "") return '请输入配置信息';
-      return true;
-    },
+    // inputValidator: (value) => {
+    //   if (value === "") return '请输入配置信息';
+    //   return true;
+    // },
     draggable: true,
   })
     .then(({ value }) => {
-      extraInfo[1] = value.split(' ');
+      if (value !== '') {
+        extraInfo[1] = value.split(' ');
+      } else {
+        extraInfo[1].length = 0;
+      }
       localStorage.setItem('extraInfo', JSON.stringify(extraInfo));
       ElMessage({
         type: 'success',

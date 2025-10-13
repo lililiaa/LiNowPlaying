@@ -59,10 +59,12 @@
           src="../assets/music.svg"
           alt=""
         >
-        <template v-if="extraTextList && extraTextList.length > 0">
+        <template
+          v-for="(item, index) in extraTextList"
+          :key="index"
+        >
           <div
-            v-for="(item, index) in extraTextList"
-            :key="index"
+            v-if="item.length > 0"
             class="extra-container"
           >
             <overflow-text
@@ -445,10 +447,6 @@ onBeforeUnmount(() => {
 
     .extra-container {
       width: 100%;
-      display: flex;
-      flex-direction: row;
-      justify-content: space-around;
-      align-items: center;
       animation: fade-scale 1s ease;
 
       span {

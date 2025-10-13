@@ -387,6 +387,7 @@ onMounted(() => {
           background: #BE5869;
           background: -webkit-linear-gradient(to right, #BE5869, #c48791);
           background: linear-gradient(to right, #BE5869, #c48791);
+          position: relative;
 
           &>div:nth-child(1) {
             transition: all 0.3s ease;
@@ -584,7 +585,6 @@ onMounted(() => {
           &:hover {
             .edit-btn {
               opacity: 1;
-              // transition: all 0.3s ease;
             }
           }
         }

@@ -1,20 +1,20 @@
 <template>
   <div class="header">
     <img
-      src="../assets/music.svg"
+      src="../assets/icons/music.svg"
       alt="music"
     >
     <span>自定义歌曲播放器</span>
     <div class="header-right">
       <span>{{ timeNow }}</span>
       <img
-        src="../assets/theme.svg"
+        src="../assets/icons/theme.svg"
         alt="github"
         title="切换主题"
         @click="changTheme"
       >
       <img
-        src="../assets/github.svg"
+        src="../assets/icons/github.svg"
         alt="github"
         title="在github上查看"
         @click="openGithub"

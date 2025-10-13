@@ -24,7 +24,7 @@
                 >
                   <img
                     :class="{ 'refresh-rotate': isRotating[index] }"
-                    src="../assets/refresh.svg"
+                    src="../assets/icons/refresh.svg"
                     alt="refresh"
                   >
                 </el-tooltip>
@@ -38,13 +38,13 @@
                   <img
                     v-if="!copied[index]"
                     class="fade"
-                    src="../assets/copy.svg"
+                    src="../assets/icons/copy.svg"
                     alt="copy"
                   >
                   <img
                     v-else
                     class="fade"
-                    src="../assets/success.svg"
+                    src="../assets/icons/success.svg"
                     alt="success"
                   >
                 </el-tooltip>
@@ -56,7 +56,7 @@
                   effect="dark"
                 >
                   <img
-                    src="../assets/open-in-window.svg"
+                    src="../assets/icons/open-in-window.svg"
                     alt="open-in-window"
                   >
                 </el-tooltip>
@@ -68,7 +68,7 @@
                   effect="dark"
                 >
                   <img
-                    src="../assets/open-in-new.svg"
+                    src="../assets/icons/open-in-new.svg"
                     alt="open-in-new"
                   >
                 </el-tooltip>

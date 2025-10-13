@@ -55,6 +55,15 @@ const routes = [
       title: '歌曲组件4',
     },
   },
+  {
+    path: '/page1',
+    name: 'Page1',
+    component: () => import('../pages/Page1.vue'),
+    meta: {
+      isPage: true,
+      title: '全屏组件1',
+    },
+  },
 ];
 
 // 创建路由实例

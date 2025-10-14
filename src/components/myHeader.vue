@@ -4,7 +4,7 @@
       src="../assets/icons/music.svg"
       alt="music"
     >
-    <span>自定义歌曲播放器</span>
+    <span>自定义歌曲播放器&ensp;-&ensp;{{ router.currentRoute.value.meta.title }}</span>
     <div class="header-right">
       <span>{{ timeNow }}</span>
       <img
@@ -25,6 +25,7 @@
 
 <script setup>
 import { onBeforeUnmount, onMounted, ref } from 'vue';
+import router from '../router';
 
 const timeNow = ref(new Date().toLocaleString());
 let dateInterval = null;

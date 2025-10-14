@@ -22,7 +22,7 @@
         class="cover"
         :class="{ 'changing': isChanging }"
         style="box-sizing:border-box;padding: 30px;color: #fff;"
-        src="../assets/music.svg"
+        src="../assets/icons/music.svg"
         alt=""
       >
       <div class="basic-info">

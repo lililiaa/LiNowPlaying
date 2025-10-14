@@ -74,6 +74,7 @@ export default defineComponent({
 }
 
 .marquee {
+  min-width: 80px;
   overflow: hidden;
 
   .marquee-warp {

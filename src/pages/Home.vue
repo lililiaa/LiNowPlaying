@@ -6,13 +6,14 @@
       <div class="content-left">
         <div
           class="page-container"
-          v-for="(item, index) in pageList"
+          v-for="(item, index) in filterdPageList"
           :key="index"
         >
           <div class="page-header">
             <div>
               <i class="iconfont icon-yemian"></i>
               <span>{{ item.meta.title }}</span>
+              <span>{{ item.meta.description }}</span>
             </div>
             <span class="page-header-url">{{ item.url }}</span>
             <div class="page-header-btn">
@@ -49,7 +50,7 @@
                   >
                 </el-tooltip>
               </div>
-              <div @click="openNow(item)">
+              <div @click.stop="openNow(item)">
                 <el-tooltip
                   content="在当前窗口打开"
                   placement="top"
@@ -95,10 +96,21 @@
       <!-- 右侧内容 -->
       <div class="content-right">
         <div>
+          <span class="title">筛选</span>
+          <div>
+            <el-input
+              v-model="params.name"
+              placeholder="请输入组件名称或描述"
+              clearable
+            />
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div>
           <span class="title">统计信息</span>
           <div>
             <span>组件数量：</span>
-            <span>{{ pageList.length }} 个</span>
+            <span>{{ filterdPageList.length }} / {{ pageList.length }}&ensp;个</span>
           </div>
         </div>
         <div class="divider"></div>
@@ -109,7 +121,7 @@
             <span
               class="query-time"
               :title="queryTime"
-            >{{ queryTime }} ms</span>
+            >{{ queryTime }}&ensp;ms</span>
             <el-icon
               class="edit-btn"
               title="点击修改请求间隔"
@@ -152,16 +164,23 @@
   </div>
 </template>
 <script setup>
-import { onMounted, ref } from 'vue';
+import { computed, onMounted, reactive, ref } from 'vue';
 import router from '../router';
-import { ElMessage, ElTooltip, ElBacktop, ElMessageBox } from 'element-plus';
+import { ElMessage, ElTooltip, ElBacktop, ElMessageBox, ElInput } from 'element-plus';
 import { Edit } from '@element-plus/icons-vue';
 import MyHeader from '../components/myHeader.vue';
 
+// 组件列表
 let routeList = router.getRoutes();
 const pageList = routeList.filter(item => item.meta.isPage).map(item => {
   item.url = window.location.origin + item.path;
   return item;
+});
+const params = reactive({
+  name: '',
+});
+const filterdPageList = computed(() => {
+  return pageList.filter(item => item.meta.title.includes(params.name) || item.meta.description?.includes(params.name));
 });
 
 // 刷新组件
@@ -196,8 +215,9 @@ const copyUrl = async (url, index) => {
   // alert('复制成功');
 };
 // 当前窗口打开
-const openNow = (route) => {
-  router.push(route.path);
+const openNow = async (route) => {
+  await router.push(route.path);
+  await new Promise(resolve => setTimeout(resolve, 100));
 };
 // 新窗口打开
 const openNew = (url) => {
@@ -393,6 +413,12 @@ onMounted(() => {
             transition: all 0.3s ease;
             user-select: none;
             transform-origin: 0% 50%;
+
+            &>span:nth-child(3) {
+              font-size: 20px;
+              opacity: 0.8;
+              margin-left: 15px;
+            }
           }
 
           i {
@@ -426,8 +452,7 @@ onMounted(() => {
           .page-header-url {
             position: absolute;
             margin-right: auto;
-            margin-left: 10px;
-            font-size: 20px;
+            font-size: 25px;
             opacity: 0;
             transform: scale(0.9);
             transform-origin: 0% 50%;

@@ -23,7 +23,7 @@
           class="cover"
           :class="{ 'changing': isChanging }"
           style="box-sizing:border-box;padding: 30px;color: #fff;"
-          src="../assets/music.svg"
+          src="../assets/icons/music.svg"
           alt=""
         >
         <div class="info-container">
@@ -318,6 +318,23 @@ onBeforeUnmount(() => {
       height: 100%;
       aspect-ratio: 1/1;
       background-color: var(--theme-color);
+    }
+
+    .cover.changing {
+      animation: fade-scale 1s ease;
+      transform-origin: 50% 0%;
+    }
+
+    @keyframes fade-scale {
+      0% {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
     }
 
     .bg-box {

@@ -56,14 +56,24 @@ const routes = [
     },
   },
   {
-    path: '/page1',
-    name: 'Page1',
-    component: () => import('../pages/Page1.vue'),
+    path: '/home5',
+    name: 'Home5',
+    component: () => import('../pages/Home5.vue'),
     meta: {
       isPage: true,
-      title: '全屏组件1',
+      title: '歌曲组件5',
+      description: '都市天际线风格',
     },
   },
+  // {
+  //   path: '/page1',
+  //   name: 'Page1',
+  //   component: () => import('../pages/Page1.vue'),
+  //   meta: {
+  //     isPage: true,
+  //     title: '全屏组件1',
+  //   },
+  // },
 ];
 
 // 创建路由实例

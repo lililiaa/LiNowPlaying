@@ -9,6 +9,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     ElIcon: typeof import('element-plus/es')['ElIcon']
+    ElInput: typeof import('element-plus/es')['ElInput']
     MyHeader: typeof import('./src/components/myHeader.vue')['default']
     OverflowText: typeof import('./src/components/overflowText.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

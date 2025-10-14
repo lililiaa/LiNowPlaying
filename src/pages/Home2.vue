@@ -22,7 +22,7 @@
         class="cover"
         :class="{ 'changing': isChanging }"
         style="box-sizing:border-box;padding: 30px;color: #fff;"
-        src="../assets/music.svg"
+        src="../assets/icons/music.svg"
         alt=""
       >
       <div class="basic-info">
@@ -33,6 +33,7 @@
           <div :key="currentTextIndex">
             <overflow-text
               :color="textColor"
+              is-bold="bold"
               content-align="space-evenly"
             >
               <template v-for="(item, index) in extraTextList[currentTextIndex]">
@@ -43,7 +44,7 @@
           </div>
         </div>
         <div
-          v-if="extraTextList.every(i => i.length !== 0)"
+          v-if="extraTextList.some(i => i.length !== 0)"
           class="song-info"
         >
           <overflow-text
@@ -144,14 +145,14 @@ import VScaleScreen from 'v-scale-screen';
 const extraTextList = reactive(JSON.parse(localStorage.getItem('extraInfo')));
 let currentTextIndex = 0;
 const changExtraText = () => {
-  if (currentTextIndex < extraTextList.length) {
-    if (extraTextList[currentTextIndex + 1].length > 0) currentTextIndex++;
-    // 到达数组末尾时重置索引到开头
-    if (currentTextIndex === extraTextList.length) {
-      currentTextIndex = 0;
-    }
-    setTimeout(changExtraText, 8000);
+  let nextIndex = currentTextIndex;
+  do {
+    nextIndex = (nextIndex + 1) % extraTextList.length;
+  } while (extraTextList[nextIndex].length === 0 && nextIndex !== currentTextIndex);
+  if (extraTextList[nextIndex].length > 0) {
+    currentTextIndex = nextIndex;
   }
+  setTimeout(changExtraText, 8000);
 };
 // 歌曲、播放器数据
 const songData = ref();
@@ -335,7 +336,7 @@ watch(
 onMounted(() => {
   // fetchSongData();
   setTitle();
-  intervalId = setInterval(fetchSongData, localStorage.getItem("queryTime") || 1000);
+  intervalId = setInterval(fetchSongData, localStorage.getItem("queryTime") || 8000);
   changExtraText();
 });
 
@@ -417,7 +418,7 @@ onBeforeUnmount(() => {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 15px;
+    gap: 10px;
 
     &>div {
       .box();
@@ -473,11 +474,8 @@ onBeforeUnmount(() => {
       justify-content: space-evenly;
       align-items: flex-start;
 
-      span {
-        font-size: @font-size-big;
-        font-weight: bold;
-        color: var(--text-color);
-        transition: color @bg-transition-time ease;
+      &>div {
+        width: 100%;
       }
     }
 

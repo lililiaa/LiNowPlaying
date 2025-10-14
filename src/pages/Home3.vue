@@ -56,7 +56,7 @@
           class="cover"
           :class="{ 'changing': isChanging }"
           style="box-sizing:border-box;padding: 30px;color: #fff;"
-          src="../assets/music.svg"
+          src="../assets/icons/music.svg"
           alt=""
         >
         <template
@@ -469,6 +469,7 @@ onBeforeUnmount(() => {
       justify-content: space-evenly;
       align-items: flex-start;
       gap: 10px;
+      font-size: @lyric-font-size-small;
 
       &>div {
         width: 100%;

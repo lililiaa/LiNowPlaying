@@ -116,7 +116,6 @@
   </v-scale-screen>
 </template>
 <script setup>
-import ColorThief from 'colorthief';
 import overflowText from '../components/overflowText.vue';
 import VScaleScreen from 'v-scale-screen';
 import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
@@ -158,7 +157,7 @@ const fetchSongData = async () => {
 // 进度
 const progress = computed(() => {
   if (songData.value?.player.statePercent) {
-    return Math.round(songData.value.player.statePercent * 100);
+    return (songData.value.player.statePercent * 100).toFixed(2);
   }
   return 0;
 });

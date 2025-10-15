@@ -323,13 +323,13 @@ onBeforeUnmount(() => {
     gap: 20px;
 
     .title {
-      font-size: 45px;
+      font-size: 55px;
     }
 
     .extra {
       display: flex;
       gap: 15px;
-      font-size: 45px;
+      font-size: 55px;
     }
   }
 

@@ -174,10 +174,10 @@ import MyHeader from '../components/myHeader.vue';
 let routeList = router.getRoutes();
 const pageList = routeList.filter(item => item.meta.isPage).map(item => {
   item.url = window.location.origin + window.location.pathname + '#' + item.path;
-  console.log('location', window.location);
-  console.log('url', item.url);
   return item;
 });
+console.log('location', window.location);
+console.log('pageList', pageList);
 const params = reactive({
   name: '',
 });

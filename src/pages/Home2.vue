@@ -14,7 +14,7 @@
         class="cover"
         crossorigin="anonymous"
         :class="{ 'changing': songStore.isChanging }"
-        :src="songStore.songData?.track?.cover ? songStore.songData?.track?.cover.replace('https://y.qq.com', '/image') : ''"
+        :src="getCoverUrl(songStore.songData?.track?.cover)"
         alt="封面"
       />
       <img
@@ -131,7 +131,7 @@
           <img
             crossorigin="anonymous"
             :key="songStore.songData?.track?.cover"
-            :src="songStore.songData?.track?.cover ? songStore.songData?.track?.cover.replace('https://y.qq.com', '/image') : ''"
+            :src="getCoverUrl(songStore.songData?.track?.cover)"
             alt=""
           >
         </div>
@@ -146,6 +146,7 @@ import { computed, onMounted, reactive, ref, watch } from 'vue';
 import overflowText from '../components/overflowText.vue';
 import VScaleScreen from 'v-scale-screen';
 import { useSongStore } from '../stores/song';
+import { getCoverUrl } from '../utils/cover';
 
 const songStore = useSongStore();
 

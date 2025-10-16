@@ -172,7 +172,6 @@ import VScaleScreen from 'v-scale-screen';
 import { useSongStore } from '../stores/song';
 
 const songStore = useSongStore();
-
 const extraTextList = reactive(JSON.parse(localStorage.getItem('extraInfo')));
 // 主体颜色
 const themeColor = ref('rgba(0, 0, 0, 0.8)');
@@ -211,7 +210,6 @@ const currentLyricIndex = computed(() => {
 const getImgColor1 = () => {
   const colorThief = new ColorThief();
   const img = document.getElementsByClassName('cover')[0];
-  console.log(img);
   if (!img) return;
   img.onload = function () {
     const color = colorThief.getColor(img);

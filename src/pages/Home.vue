@@ -173,7 +173,7 @@ import MyHeader from '../components/myHeader.vue';
 // 组件列表
 let routeList = router.getRoutes();
 const pageList = routeList.filter(item => item.meta.isPage).map(item => {
-  item.url = window.location.origin + item.path;
+  item.url = window.location.origin + '/#' + item.path;
   return item;
 });
 const params = reactive({

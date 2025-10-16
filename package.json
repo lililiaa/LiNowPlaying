@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "deploy": "gh-pages -d dist -b gh-pages -r https://github.com/lililiaa/myNowPlaying.git"
+    "deploy": "gh-pages -d docs -f -r https://github.com/lililiaa/myNowPlaying.git"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.3.2",

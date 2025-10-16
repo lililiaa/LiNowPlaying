@@ -6,6 +6,8 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import path from 'path'
 
 const repo = "myNowPlaying";
+const INVALID_CHAR_REGEX = /[\x00-\x1F\x7F<>*#"{}|^[\]`;?:&=+$,]/g;
+const DRIVE_LETTER_REGEX = /^[a-z]:/i;
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -26,7 +28,19 @@ export default defineConfig({
     }),
   ],
   build: {
-    outDir: 'docs'
+    outDir: 'docs',
+    rollupOptions: {
+      output: {
+        sanitizeFileName: (fileName) => {
+          const match = DRIVE_LETTER_REGEX.exec(fileName);
+          const driveLetter = match ? match[0] : "";
+          return (
+            driveLetter +
+            fileName.slice(driveLetter.length).replace(INVALID_CHAR_REGEX, "")
+          );
+        }
+      }
+    }
   },
   css: {
     preprocessorOptions: {

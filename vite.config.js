@@ -9,11 +9,11 @@ const repo = "myNowPlaying";
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: process.env.NODE_ENV === 'production' ? `/${repo}/` : '/',
+  base: '/',
   // base: './',
   resolve: {
     alias: {
-      '@/': `${path.resolve(__dirname, 'src')}`
+      '@': path.resolve(__dirname, 'src')
     }
   },
   plugins: [

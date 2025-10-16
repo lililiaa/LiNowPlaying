@@ -33,20 +33,20 @@
         <!-- 封面 -->
         <div
           class="cover"
-          :key="songData?.track.cover"
+          :key="songStore.songData?.track?.cover"
         >
           <img
-            v-show="songData?.track.cover"
+            v-show="songStore.songData?.track?.cover"
             id="cover"
             crossorigin="anonymous"
-            :class="{ 'changing': isChanging }"
-            :style="{ 'animation-play-state': songData?.player.isPaused ? 'paused' : 'running' }"
-            :src="songData?.track.cover ? songData.track.cover.replace('https://y.qq.com', '/image') : ''"
+            :class="{ 'changing': songStore.isChanging }"
+            :style="{ 'animation-play-state': songStore.songData?.player?.isPaused ? 'paused' : 'running' }"
+            :src="songStore.songData?.track?.cover ? songStore.songData?.track?.cover.replace('https://y.qq.com', '/image') : ''"
             alt="封面"
           />
           <img
-            v-show="!songData?.track.cover"
-            :class="{ 'changing': isChanging }"
+            v-show="!songStore.songData?.track?.cover"
+            :class="{ 'changing': songStore.isChanging }"
             style="box-sizing:border-box;padding: 30px;color: #fff;"
             src="../assets/icons/music.svg"
             alt=""
@@ -63,29 +63,29 @@
         <!-- 歌名&歌手 -->
         <div class="song-info">
           <overflow-text
-            v-if="songData?.track.title"
-            :color="textColor"
+            v-if="songStore.songData?.track?.title"
+            color="#fff"
             :font-size="fontSizeBig"
             is-bold="bold"
-          >{{ songData?.track.title }}</overflow-text>
+          >{{ songStore.songData?.track?.title }}</overflow-text>
           <overflow-text
-            v-if="songData?.track.author"
-            :color="textColor"
+            v-if="songStore.songData?.track?.author"
+            color="#fff"
             :font-size="fontSizeSmall"
-          >{{ songData?.track.author }}</overflow-text>
-          <span v-if="!songData?.track.title && !songData?.track.author">暂无歌曲信息</span>
+          >{{ songStore.songData?.track?.author }}</overflow-text>
+          <span v-if="!songStore.songData?.track?.title && !songStore.songData?.track?.author">暂无歌曲信息</span>
         </div>
         <!-- 分隔 -->
         <div class="split"></div>
         <!-- 歌词 -->
         <div class="lyric-info">
           <div
-            v-if="lyricData.lyric.length > 0"
+            v-if="songStore.lyricData.lyric.length > 0"
             class="lyric-box"
           >
-            <template v-if="lyricData.translatedLyric.length === 0">
+            <template v-if="songStore.lyricData.translatedLyric.length === 0">
               <div
-                v-for="(item, index) in lyricData.lyric"
+                v-for="(item, index) in songStore.lyricData.lyric"
                 class="lyric-line"
                 :class="{ 'active': index === currentLyricIndex }"
                 :key="index"
@@ -95,13 +95,14 @@
             </template>
             <template v-else>
               <div
-                v-for="(item, index) in lyricData.lyric"
+                v-for="(item, index) in songStore.lyricData.lyric"
                 class="lyric-line-translated"
                 :class="{ 'active': index === currentLyricIndex }"
                 :key="index"
               >
                 <span class="original">{{ item[2] }}</span>
-                <span class="translated">{{lyricData.translatedLyric.find(i => i[1] === lyricData.lyric[index][1])?.[2]
+                <span class="translated">{{songStore.lyricData.translatedLyric.find(i => i[1] ===
+                  songStore.lyricData.lyric[index][1])?.[2]
                   || ''}}</span>
               </div>
             </template>
@@ -118,77 +119,34 @@
 <script setup>
 import overflowText from '../components/overflowText.vue';
 import VScaleScreen from 'v-scale-screen';
-import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue';
+import { computed, onMounted, reactive, watch } from 'vue';
 import { ElProgress } from 'element-plus';
+import { useSongStore } from '../stores/song';
+
+const songStore = useSongStore();
 
 // 字体大小
 const fontSizeBig = "70px";
 const fontSizeMedium = "60px";
-const fontSizeSmall = "45px";
+const fontSizeSmall = "50px";
 // 游戏&配置
 const extraTextList = reactive(JSON.parse(localStorage.getItem('extraInfo')));
 
-// 歌曲、播放器数据
-const songData = ref();
-// 歌词数据
-const lyricData = reactive({
-  author: [],
-  lyric: [],
-  translatedLyric: [],
-});
-
-// 主体颜色
-const themeColor = ref('rgba(0, 0, 0, 0.8)');
-const textColor = ref('rgba(255, 255, 255, 1)');
-const themeColorList = ref([]);
-let intervalId = null;
-const isChanging = ref(false);
-// 获取播放器、歌曲信息
-const fetchSongData = async () => {
-  try {
-    const res = await fetch('http://localhost:9863/query');
-    const data = await res.json();
-    songData.value = data;
-  } catch (error) {
-    songData.value = {};
-    console.error(error);
-  }
-};
 // 进度
 const progress = computed(() => {
-  if (songData.value?.player.statePercent) {
-    return (songData.value.player.statePercent * 100).toFixed(2);
+  if (songStore.songData?.player?.statePercent) {
+    return (songStore.songData?.player?.statePercent * 100).toFixed(2);
   }
   return 0;
 });
 
-// 获取歌词信息
-const getLyricInfo = async () => {
-  const authorRegex = /^{.*}$/gm;
-  const lyricRegex = /^\[\d+:\d+\.\d+\].*$/gm;
-  const lyricRegex2 = /^(\[\d+:\d+\.\d+\])(.*)$/;
-  try {
-    const res = await fetch("http://localhost:9863/api/lyric");
-    const data = await res.json();
-    lyricData.author = data.lrc?.match(authorRegex)?.map(i => JSON.parse(i)) || [];
-    lyricData.lyric = data.lrc?.match(lyricRegex)?.map(i => i.match(lyricRegex2)) || [];
-    if (data.hasTranslatedLyric) {
-      lyricData.translatedLyric = data.translatedLyric?.match(lyricRegex)?.map(i => i.match(lyricRegex2)) || [];
-    } else {
-      lyricData.translatedLyric = [];
-    }
-  } catch (error) {
-    lyricData.value = {};
-    console.error(error);
-  }
-};
 // 计算当前显示歌词
 const currentLyricIndex = computed(() => {
-  const currentTimeStr = songData.value?.player.seekbarCurrentPositionHuman.split(':') || 0;
+  const currentTimeStr = songStore.songData?.player?.seekbarCurrentPositionHuman.split(':') || 0;
   const currentTime = parseInt(currentTimeStr[0]) * 60 + parseInt(currentTimeStr[1]);
   let index = -1;
-  for (let i = lyricData.lyric.length - 1; i >= 0; i--) {
-    const timeStr = lyricData.lyric[i][1].match(/\[(\d+):(\d+)\.(\d+)\]/);
+  for (let i = songStore.lyricData.lyric.length - 1; i >= 0; i--) {
+    const timeStr = songStore.lyricData.lyric[i][1].match(/\[(\d+):(\d+)\.(\d+)\]/);
     if (timeStr) {
       const time = parseInt(timeStr[1]) * 60 + parseInt(timeStr[2]);
       if (currentTime >= time) {
@@ -199,7 +157,7 @@ const currentLyricIndex = computed(() => {
   }
   // 滚动位置
   let scrollPosition = 0;
-  if (lyricData.translatedLyric.length === 0) {
+  if (songStore.lyricData.translatedLyric.length === 0) {
     scrollPosition = -(index - 1) * 80;
   } else {
     scrollPosition = -(index) * 120;
@@ -212,25 +170,6 @@ const currentLyricIndex = computed(() => {
   return index;
 });
 
-// 监听封面变化
-watch(
-  () => songData.value?.track?.cover,
-  (newVal, oldVal) => {
-    if (newVal && (newVal !== oldVal)) {
-      // 开始变化
-      isChanging.value = true;
-      // 获取歌词信息
-      getLyricInfo();
-      // 动画结束重置状态
-      setTimeout(() => {
-        isChanging.value = false;
-      }, 2000);
-    }
-  },
-  {
-    deep: true,
-  }
-);
 // 网页标题
 const titleData = reactive({
   status: "已暂停",
@@ -244,7 +183,7 @@ const setTitle = () => {
   }
 };
 watch(
-  () => songData.value?.player?.isPaused,
+  () => songStore.songData?.player?.isPaused,
   (newVal) => {
     if (newVal) {
       titleData.status = "已暂停";
@@ -255,7 +194,7 @@ watch(
   }
 );
 watch(
-  () => songData.value?.track?.title,
+  () => songStore.songData?.track?.title,
   (newVal) => {
     titleData.name = newVal;
     setTitle();
@@ -263,14 +202,8 @@ watch(
 );
 
 onMounted(() => {
-  fetchSongData();
-  intervalId = setInterval(fetchSongData, localStorage.getItem("queryTime") || 1000);
-});
-
-onBeforeUnmount(() => {
-  if (intervalId) {
-    clearInterval(intervalId);
-  }
+  setTitle();
+  songStore.resetSongData();
 });
 </script>
 <style lang="less" scoped>

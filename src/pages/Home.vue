@@ -241,8 +241,9 @@ const editQueryTime = () => {
       queryTime.value = value;
       ElMessage({
         type: 'success',
-        message: `修改成功，当前请求间隔为 ${value}ms`,
+        message: '修改成功',
       });
+      window.location.reload();
     })
     .catch(() => {
       ElMessage({

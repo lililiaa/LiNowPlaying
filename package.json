@@ -15,6 +15,7 @@
     "element-plus": "^2.11.4",
     "less": "^4.4.1",
     "less-loader": "^12.3.0",
+    "pinia": "^3.0.3",
     "v-scale-screen": "^2.3.0",
     "vue": "^3.5.18",
     "vue-router": "4"

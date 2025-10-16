@@ -176,9 +176,6 @@ const pageList = routeList.filter(item => item.meta.isPage).map(item => {
   item.url = window.location.origin + window.location.pathname + '#' + item.path;
   return item;
 });
-localStorage.setItem('pageList', JSON.stringify(pageList));
-console.log('location', window.location);
-console.log('pageList', pageList);
 const params = reactive({
   name: '',
 });

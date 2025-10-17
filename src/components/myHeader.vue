@@ -5,8 +5,14 @@
       alt="music"
     >
     <span>自定义歌曲播放器&ensp;-&ensp;{{ router.currentRoute.value.meta.title }}</span>
+    <span class="time">{{ timeNow }}</span>
     <div class="header-right">
-      <span>{{ timeNow }}</span>
+      <img
+        src="../assets/icons/email.svg"
+        alt="email"
+        title="联系作者"
+        @click="openEmail"
+      >
       <img
         src="../assets/icons/theme.svg"
         alt="github"
@@ -19,17 +25,35 @@
         title="在github上查看"
         @click="openGithub"
       >
+      <img
+        src="../assets/icons/question.svg"
+        alt="question"
+        title="如何使用"
+        @click="openTour"
+      >
     </div>
   </div>
 </template>
 
 <script setup>
-import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { markRaw, onBeforeUnmount, onMounted, ref } from 'vue';
 import router from '../router';
+import { ElMessageBox } from 'element-plus';
+import { Message } from '@element-plus/icons-vue';
 
 const timeNow = ref(new Date().toLocaleString());
 let dateInterval = null;
 
+const emit = defineEmits(['openTour']);
+// 联系作者
+const openEmail = () => {
+  ElMessageBox.alert('邮箱：3460391727@qq.com', '联系作者', {
+    confirmButtonText: '关闭',
+    icon: markRaw(Message),
+    closeOnClickModal: true,
+    closeOnPressEscape: true,
+  });
+};
 // 切换主题
 const changTheme = () => {
   let theme = localStorage.getItem('theme');
@@ -44,6 +68,10 @@ const changTheme = () => {
 // 打开github
 const openGithub = () => {
   window.open('https://github.com/lililiaa/myNowPlaying', '_blank');
+};
+// 如何使用
+const openTour = () => {
+  emit('openTour');
 };
 
 onMounted(() => {
@@ -79,26 +107,26 @@ onBeforeUnmount(() => {
     height: 55px;
   }
 
+  .time {
+    font-size: 25px;
+    margin-left: auto;
+  }
+
   .header-right {
     display: flex;
     align-items: center;
-    gap: 15px;
-    margin-left: auto;
+    gap: 10px;
     font-size: 25px;
     user-select: none;
-
-    span {
-      margin-right: 10px;
-    }
 
     img {
       width: 30px;
       height: 30px;
       cursor: pointer;
-      transition: all 0.3s ease;
+      transition: filter 0.3s ease;
 
       &:active {
-        opacity: 0.9;
+        filter: brightness(0.8);
       }
     }
   }

@@ -17,11 +17,15 @@ const menuData = reactive({
     },
   })),
 });
+// 初始化漫游式引导
+if (localStorage.getItem('tour') === null) {
+  localStorage.setItem('tour', 'false');
+}
 // 右键菜单
 document.addEventListener('contextmenu', (e) => {
   e.preventDefault();
   ContextMenu.showContextMenu({
-    theme: 'default dark',
+    theme: localStorage.getItem('theme') === 'light' ? 'default' : 'default dark',
     x: e.clientX,
     y: e.clientY,
     items: [
@@ -44,6 +48,12 @@ document.addEventListener('contextmenu', (e) => {
 if (!localStorage.getItem('theme')) {
   localStorage.setItem('theme', 'light');
 }
+if (!localStorage.getItem('backgroundColor')) {
+  localStorage.setItem('backgroundColor', 'rgba(0, 0, 0, 1)');
+}
+if (!localStorage.getItem('textColor')) {
+  localStorage.setItem('textColor', 'rgba(255, 255, 255, 1)');
+}
 // 切换主题
 const changTheme = () => {
   let theme = localStorage.getItem('theme');
@@ -63,7 +73,7 @@ const setExtraInfo = () => {
   let extraInfo = localStorage.getItem('extraInfo');
   if (!extraInfo) localStorage.setItem('extraInfo', '[["游戏名称"], ["配置信息"]]');
 };
-
+// 获取歌曲信息
 const songStore = useSongStore();
 if (window === window.parent) {
   window.songStore = songStore;
@@ -94,7 +104,7 @@ if (window === window.parent) {
     setQueryTime();
     setExtraInfo();
   });
-  
+
   onBeforeUnmount(() => {
     if (intervalId) {
       clearInterval(intervalId);

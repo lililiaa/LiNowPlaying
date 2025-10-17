@@ -49,4 +49,13 @@ export default defineConfig({
       }
     }
   },
+  server: {
+    proxy: {
+      '/image-proxy': {
+        target: 'https://y.qq.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/image-proxy/, '')
+      }
+    }
+  }
 })

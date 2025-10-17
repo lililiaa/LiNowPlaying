@@ -12,7 +12,7 @@
     "@element-plus/icons-vue": "^2.3.2",
     "@imengyu/vue3-context-menu": "^1.5.2",
     "colorthief": "^2.6.0",
-    "element-plus": "^2.11.4",
+    "element-plus": "^2.11.5",
     "less": "^4.4.1",
     "less-loader": "^12.3.0",
     "pinia": "^3.0.3",

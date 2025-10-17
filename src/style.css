@@ -28,6 +28,8 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --el-tour-text-color: rgb(48, 49, 51);
 }
 
 :root[data-theme='light'] {

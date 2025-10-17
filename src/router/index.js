@@ -26,6 +26,9 @@ const routes = [
     meta: {
       isPage: true,
       title: '歌曲组件1',
+      tags: [
+        { label: '通用组件', type: 'success' }
+      ],
     },
   },
   {
@@ -35,6 +38,9 @@ const routes = [
     meta: {
       isPage: true,
       title: '歌曲组件2',
+      tags: [
+        { label: '通用组件', type: 'success' }
+      ],
     },
   },
   {
@@ -44,6 +50,9 @@ const routes = [
     meta: {
       isPage: true,
       title: '歌曲组件3',
+      tags: [
+        { label: '通用组件', type: 'success' }
+      ],
     },
   },
   {
@@ -53,6 +62,9 @@ const routes = [
     meta: {
       isPage: true,
       title: '歌曲组件4',
+      tags: [
+        { label: '通用组件', type: 'success' }
+      ],
     },
   },
   {
@@ -62,7 +74,10 @@ const routes = [
     meta: {
       isPage: true,
       title: '歌曲组件5',
-      description: '都市天际线风格',
+      tags: [
+        { label: '固定组件', type: 'warning' },
+        { label: '都市天际线', type: 'primary' },
+      ],
     },
   },
   // {

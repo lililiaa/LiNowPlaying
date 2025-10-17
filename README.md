@@ -13,5 +13,13 @@
 
 ## 使用
 
+### 方法一
+
+将源代码拉到本地，然后运行
+
 1. `yarn install`
 2. `yarn run dev`
+
+### 方法二
+
+直接使用在线链接 <https://lililiaa.github.io/myNowPlaying/>

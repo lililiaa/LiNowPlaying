@@ -1,186 +1,322 @@
 <template>
   <div class="main">
-    <MyHeader />
+    <MyHeader @open-tour="openTour" />
     <div class="content">
       <!-- 左侧内容 -->
-      <div class="content-left">
-        <div
-          class="page-container"
-          v-for="(item, index) in filterdPageList"
-          :key="index"
-        >
-          <div class="page-header">
-            <div>
-              <i class="iconfont icon-yemian"></i>
-              <span>{{ item.meta.title }}</span>
-              <span>{{ item.meta.description }}</span>
+      <el-scrollbar
+        height="100%"
+        style="flex: 1;"
+        always
+      >
+        <div class="content-left">
+          <div
+            class="page-container"
+            v-for="(item, index) in filterdPageList"
+            :key="index"
+          >
+            <div class="page-header">
+              <div class="header-left">
+                <i class="iconfont icon-yemian"></i>
+                <span class="title-span">{{ item.meta.title }}</span>
+                <div class="tag-container">
+                  <el-tag
+                    v-for="tag in item.meta.tags"
+                    :type="tag.type"
+                    :effect="params.tags.includes(tag.label) ? 'dark' : 'plain'"
+                  >{{ tag.label }}</el-tag>
+                </div>
+              </div>
+              <div class="page-header-btn">
+                <div @click="refresh(item.url, index)">
+                  <el-tooltip
+                    content="刷新组件"
+                    placement="top"
+                    effect="dark"
+                  >
+                    <img
+                      :class="{ 'refresh-rotate': isRotating[index] }"
+                      src="../assets/icons/refresh.svg"
+                      alt="refresh"
+                    >
+                  </el-tooltip>
+                </div>
+                <div @click="copyUrl(item.url, index)">
+                  <el-tooltip
+                    content="复制URL"
+                    placement="top"
+                    effect="dark"
+                  >
+                    <img
+                      v-if="!copied[index]"
+                      class="fade"
+                      src="../assets/icons/copy.svg"
+                      alt="copy"
+                    >
+                    <img
+                      v-else
+                      class="fade"
+                      src="../assets/icons/success.svg"
+                      alt="success"
+                    >
+                  </el-tooltip>
+                </div>
+                <div @click.stop="openNow(item)">
+                  <el-tooltip
+                    content="在当前窗口打开"
+                    placement="top"
+                    effect="dark"
+                  >
+                    <img
+                      src="../assets/icons/open-in-window.svg"
+                      alt="open-in-window"
+                    >
+                  </el-tooltip>
+                </div>
+                <div @click="openNew(item.url)">
+                  <el-tooltip
+                    content="在新窗口打开"
+                    placement="top"
+                    effect="dark"
+                  >
+                    <img
+                      src="../assets/icons/open-in-new.svg"
+                      alt="open-in-new"
+                    >
+                  </el-tooltip>
+                </div>
+              </div>
             </div>
-            <span class="page-header-url">{{ item.url }}</span>
-            <div class="page-header-btn">
-              <div @click="refresh(item.url, index)">
-                <el-tooltip
-                  content="刷新组件"
-                  placement="top"
-                  effect="dark"
-                >
-                  <img
-                    :class="{ 'refresh-rotate': isRotating[index] }"
-                    src="../assets/icons/refresh.svg"
-                    alt="refresh"
-                  >
-                </el-tooltip>
-              </div>
-              <div @click="copyUrl(item.url, index)">
-                <el-tooltip
-                  content="复制URL"
-                  placement="top"
-                  effect="dark"
-                >
-                  <img
-                    v-if="!copied[index]"
-                    class="fade"
-                    src="../assets/icons/copy.svg"
-                    alt="copy"
-                  >
-                  <img
-                    v-else
-                    class="fade"
-                    src="../assets/icons/success.svg"
-                    alt="success"
-                  >
-                </el-tooltip>
-              </div>
-              <div @click.stop="openNow(item)">
-                <el-tooltip
-                  content="在当前窗口打开"
-                  placement="top"
-                  effect="dark"
-                >
-                  <img
-                    src="../assets/icons/open-in-window.svg"
-                    alt="open-in-window"
-                  >
-                </el-tooltip>
-              </div>
-              <div @click="openNew(item.url)">
-                <el-tooltip
-                  content="在新窗口打开"
-                  placement="top"
-                  effect="dark"
-                >
-                  <img
-                    src="../assets/icons/open-in-new.svg"
-                    alt="open-in-new"
-                  >
-                </el-tooltip>
-              </div>
+            <div class="page-content">
+              <iframe
+                :src="item.url"
+                frameborder="0"
+                loading="lazy"
+              ></iframe>
             </div>
           </div>
-          <div class="page-content">
-            <iframe
-              :src="item.url"
-              frameborder="0"
-              loading="lazy"
-            ></iframe>
-          </div>
+          <!-- 回到顶部 -->
+          <el-backtop
+            :target="'.content-left'"
+            :visibility-height="100"
+            :right="350"
+            :bottom="40"
+            class="back-top"
+          />
         </div>
-        <!-- 回到顶部 -->
-        <el-backtop
-          :target="'.content-left'"
-          :visibility-height="100"
-          :right="350"
-          :bottom="40"
-          class="back-top"
+        <el-empty
+          v-if="filterdPageList.length === 0"
+          description="暂无数据"
         />
-      </div>
+      </el-scrollbar>
       <!-- 右侧内容 -->
-      <div class="content-right">
-        <div>
-          <span class="title">筛选</span>
-          <div>
-            <el-input
-              v-model="params.name"
-              placeholder="请输入组件名称或描述"
-              clearable
-            />
+      <div class="content-right-box">
+        <el-scrollbar
+          height="100%"
+          always
+        >
+          <div class="content-right">
+            <div>
+              <span class="title">组件筛选</span>
+              <div class="form-item">
+                <span>组件名称</span>
+                <el-input
+                  v-model="params.name"
+                  placeholder="请输入组件名称"
+                  clearable
+                />
+              </div>
+              <div class="form-item">
+                <span>组件标签</span>
+                <el-select
+                  v-model="params.tags"
+                  placeholder="请选择组件标签"
+                  filterable
+                  multiple
+                  collapse-tags
+                  collapse-tags-tooltip
+                  :max-collapse-tags="3"
+                >
+                  <el-option
+                    v-for="item in tagOptions"
+                    :key="item"
+                    :label="item"
+                    :value="item"
+                  >
+                  </el-option>
+                </el-select>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div>
+              <span class="title">统计信息</span>
+              <div>
+                <span>组件数量：</span>
+                <span>{{ filterdPageList.length }} / {{ pageList.length }}&ensp;个</span>
+              </div>
+            </div>
+            <div class="divider"></div>
+            <div class="system-box">
+              <span class="title">系统信息</span>
+              <div>
+                <span>请求间隔：</span>
+                <span
+                  class="right-text"
+                  :title="queryTime"
+                >{{ queryTime }}&ensp;ms</span>
+                <el-icon
+                  class="edit-btn"
+                  title="点击修改请求间隔"
+                  @click="editQueryTime"
+                >
+                  <Edit />
+                </el-icon>
+              </div>
+              <div>
+                <span>游戏名称：</span>
+                <span
+                  class="right-text"
+                  :title="gameName"
+                >{{ gameName }}</span>
+                <el-icon
+                  class="edit-btn"
+                  title="点击修改游戏名称"
+                  @click="editGameName"
+                >
+                  <Edit />
+                </el-icon>
+              </div>
+              <div>
+                <span>电脑配置：</span>
+                <span
+                  class="right-text"
+                  :title="PCConfig"
+                >{{ PCConfig }}</span>
+                <el-icon
+                  class="edit-btn"
+                  title="点击修改电脑配置"
+                  @click="editPCConfig"
+                >
+                  <Edit />
+                </el-icon>
+              </div>
+              <div>
+                <span>背景颜色：</span>
+                <div
+                  class="color-box"
+                  :style="{ '--box-color': backgroundColor }"
+                  :title="backgroundColor"
+                ></div>
+                <el-icon
+                  v-if="!isDevelopment"
+                  class="edit-btn"
+                  title="点击修改背景颜色"
+                  @click="editBackgroundColor"
+                >
+                  <Edit />
+                </el-icon>
+              </div>
+              <div>
+                <span>文字颜色：</span>
+                <div
+                  class="color-box"
+                  :style="{ '--box-color': textColor }"
+                  :title="textColor"
+                ></div>
+                <el-icon
+                  v-if="!isDevelopment"
+                  class="edit-btn"
+                  title="点击修改文字颜色"
+                  @click="editTextColor"
+                >
+                  <Edit />
+                </el-icon>
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="divider"></div>
-        <div>
-          <span class="title">统计信息</span>
-          <div>
-            <span>组件数量：</span>
-            <span>{{ filterdPageList.length }} / {{ pageList.length }}&ensp;个</span>
-          </div>
-        </div>
-        <div class="divider"></div>
-        <div>
-          <span class="title">系统信息</span>
-          <div>
-            <span>请求间隔：</span>
-            <span
-              class="query-time"
-              :title="queryTime"
-            >{{ queryTime }}&ensp;ms</span>
-            <el-icon
-              class="edit-btn"
-              title="点击修改请求间隔"
-              @click="editQueryTime"
-            >
-              <Edit />
-            </el-icon>
-          </div>
-          <div>
-            <span>游戏名称：</span>
-            <span
-              class="query-time"
-              :title="gameName"
-            >{{ gameName }}</span>
-            <el-icon
-              class="edit-btn"
-              title="点击修改游戏名称"
-              @click="editGameName"
-            >
-              <Edit />
-            </el-icon>
-          </div>
-          <div>
-            <span>电脑配置：</span>
-            <span
-              class="query-time"
-              :title="PCConfig"
-            >{{ PCConfig }}</span>
-            <el-icon
-              class="edit-btn"
-              title="点击修改电脑配置"
-              @click="editPCConfig"
-            >
-              <Edit />
-            </el-icon>
-          </div>
-        </div>
+        </el-scrollbar>
       </div>
     </div>
+    <!-- 漫游式引导 -->
+    <el-tour
+      v-model="tourOpen"
+      :target-area-clickable="false"
+      @close="handleFinishTour"
+    >
+      <el-tour-step
+        target=".page-header-btn"
+        title="歌曲组件"
+        description="每个歌曲组件右上角可以进行组件相关操作"
+        placement="bottom"
+        :prev-button-props="{ children: '上一步' }"
+        :next-button-props="{ children: '下一步' }"
+      />
+      <el-tour-step
+        target=".content-right-box"
+        title="控制面板"
+        description="控制面板包含组件筛选功能、组件信息统计、系统配置信息"
+        placement="left"
+        :prev-button-props="{ children: '上一步' }"
+        :next-button-props="{ children: '下一步' }"
+      />
+      <el-tour-step
+        target=".system-box"
+        title="系统信息"
+        description="系统信息可以进行编辑操作"
+        placement="left"
+        :prev-button-props="{ children: '上一步' }"
+        :next-button-props="{ children: '下一步' }"
+      />
+      <el-tour-step
+        target=".header-right"
+        title="系统操作"
+        description="标题栏右侧为系统相关操作"
+        placement="bottom-right"
+        :prev-button-props="{ children: '上一步' }"
+        :next-button-props="{ children: '下一步' }"
+      />
+      <el-tour-step
+        title="右键菜单"
+        description="鼠标右键可以进行组件刷新、页面跳转操作"
+        :prev-button-props="{ children: '上一步' }"
+        :next-button-props="{ children: '完成' }"
+      />
+      <template #indicators="{ current, total }">
+        <span style="color: var(--el-tour-text-color);">{{ current + 1 }} / {{ total }}</span>
+      </template>
+    </el-tour>
+    <!-- 颜色选取dialog -->
+    <ColorSelectDialog
+      ref="colorSelectRef"
+      @closed="handleColorChange"
+    />
   </div>
 </template>
 <script setup>
 import { computed, onMounted, reactive, ref } from 'vue';
 import router from '../router';
-import { ElMessage, ElTooltip, ElBacktop, ElMessageBox, ElInput } from 'element-plus';
+import { ElMessage, ElTooltip, ElBacktop, ElMessageBox, ElInput, ElTag, ElTour, ElTourStep } from 'element-plus';
 import { Edit } from '@element-plus/icons-vue';
 import MyHeader from '../components/myHeader.vue';
+import ColorSelectDialog from '../components/colorSelectDialog.vue';
 
+const colorSelectRef = ref(null);
+const handleColorChange = () => {
+  window.location.reload();
+};
+const isDevelopment = process.env.NODE_ENV === 'development';
 // 组件列表
 let routeList = router.getRoutes();
 const pageList = routeList.filter(item => item.meta.isPage).map(item => {
   item.url = window.location.origin + window.location.pathname + '#' + item.path;
   return item;
 });
+const tagOptions = [...new Set(pageList.map(i => i.meta.tags).flat(Infinity).map(i => i.label))];
 const params = reactive({
   name: '',
+  tags: tagOptions,
 });
 const filterdPageList = computed(() => {
-  return pageList.filter(item => item.meta.title.includes(params.name) || item.meta.description?.includes(params.name));
+  return pageList.filter(item => item.meta.title.includes(params.name) && item.meta.tags.some(i => params.tags.includes(i.label)));
 });
 
 // 刷新组件
@@ -331,6 +467,16 @@ const editPCConfig = () => {
       PCConfig.value = JSON.parse(localStorage.getItem('extraInfo'))[1].join(' ');
     });
 };
+// 背景颜色
+const backgroundColor = ref(localStorage.getItem('backgroundColor') || 'rgba(0, 0, 0, 1)');
+const editBackgroundColor = () => {
+  colorSelectRef.value.openDialog('修改背景颜色', backgroundColor.value, 'backgroundColor');
+};
+// 文字颜色
+const textColor = ref(localStorage.getItem('textColor') || 'rgba(255, 255, 255, 1)');
+const editTextColor = () => {
+  colorSelectRef.value.openDialog('修改文字颜色', textColor.value, 'textColor');
+};
 // 重新加载所有iframe
 const reloadAll = () => {
   let iframes = document.querySelectorAll('iframe');
@@ -338,8 +484,20 @@ const reloadAll = () => {
     item.contentWindow.location.reload();
   });
 };
+// 漫游式引导
+const tourOpen = ref(false);
+const openTour = () => {
+  tourOpen.value = true;
+};
+const handleFinishTour = () => {
+  localStorage.setItem('tour', 'true');
+  tourOpen.value = false;
+};
 
 onMounted(() => {
+  if (localStorage.getItem('tour') !== 'true') {
+    openTour();
+  }
   pageList.forEach(item => {
     copied.value.push(false);
     isRotating.value.push(false);
@@ -362,21 +520,13 @@ onMounted(() => {
     flex-direction: row;
 
     .content-left {
-      height: 100%;
       flex: 1;
+      min-height: 100%;
       box-sizing: border-box;
       padding: 20px;
       display: grid;
       gap: 20px;
       grid-template-columns: 1fr 1fr;
-      overflow: auto;
-
-      /* 滚动条轨道 */
-      ::-webkit-scrollbar-track {
-        background-color: transparent;
-      }
-
-      scrollbar-color: #888 transparent;
 
       .page-container {
         width: 100%;
@@ -390,7 +540,7 @@ onMounted(() => {
 
         &:hover {
           box-shadow: 0 6px 10px var(--shadow-color-hover);
-          // transform: translateY(-5px);
+          transform: translateY(-5px);
         }
 
         .page-header {
@@ -410,54 +560,31 @@ onMounted(() => {
           background: linear-gradient(to right, #BE5869, #c48791);
           position: relative;
 
-          &>div:nth-child(1) {
-            transition: all 0.3s ease;
+          .header-left {
             user-select: none;
-            transform-origin: 0% 50%;
+            display: flex;
+            align-items: center;
+            gap: 10px;
 
-            &>span:nth-child(3) {
-              font-size: 20px;
-              opacity: 0.8;
-              margin-left: 15px;
+            .title-span {
+              font-size: 30px;
+              white-space: nowrap;
+            }
+
+            .tag-container {
+              margin-left: 10px;
+              display: flex;
+              gap: 5px;
             }
           }
 
           i {
             font-size: 30px;
-            margin-right: 10px;
           }
 
           img {
             width: 35px;
             height: 35px;
-          }
-
-          span {
-            font-size: 30px;
-            white-space: nowrap;
-          }
-
-          &:hover {
-            &>div:nth-child(1) {
-              opacity: 0.4;
-              filter: blur(2px);
-              transform: scale(0.9);
-            }
-
-            .page-header-url {
-              opacity: 1;
-              transform: scale(1);
-            }
-          }
-
-          .page-header-url {
-            position: absolute;
-            margin-right: auto;
-            font-size: 25px;
-            opacity: 0;
-            transform: scale(0.9);
-            transform-origin: 0% 50%;
-            transition: all 0.3s ease;
           }
 
           .page-header-btn {
@@ -542,84 +669,93 @@ onMounted(() => {
       }
     }
 
-    .content-right {
+    .content-right-box {
       width: 300px;
       height: calc(100% - 20px);
       margin: 10px;
-      overflow: auto;
-      display: flex;
-      flex-direction: column;
       justify-content: flex-start;
       box-sizing: border-box;
       border-radius: 10px;
       box-shadow: 0 0 10px var(--shadow-color-hover);
       color: var(--text-color);
-      font-size: 18px;
+      font-size: 15px;
       transition: all 0.3s ease;
 
-      /* 滚动条轨道 */
-      ::-webkit-scrollbar-track {
-        background-color: transparent;
-      }
-
-      scrollbar-color: #888 transparent;
-
-      // 模块
-      &>div:not(.divider) {
-        width: 100%;
-        box-sizing: border-box;
-        padding: 10px;
+      .content-right {
         display: flex;
         flex-direction: column;
 
-        .title {
-          font-size: 22px;
-          font-weight: bold;
-          margin-bottom: 10px;
-          border-left: 6px solid #4286f4;
-          padding-left: 5px;
-        }
-
-        // 单行内容
-        &>div {
+        // 模块
+        &>div:not(.divider) {
+          width: 100%;
+          box-sizing: border-box;
+          padding: 10px;
           display: flex;
-          justify-content: space-between;
-          margin: 5px 15px;
-          position: relative;
+          flex-direction: column;
+          gap: 10px;
 
-          span {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+          .title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border-left: 6px solid #4286f4;
+            padding-left: 5px;
           }
 
-          .query-time {
-            flex: 1;
-            text-align: right;
+          .form-item {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
           }
 
-          .edit-btn {
-            position: absolute;
-            opacity: 0;
-            right: -20px;
-            top: 0;
-            transition: all 0.3s ease;
-            user-select: none;
-            cursor: pointer;
-          }
+          // 单行内容
+          &>div {
+            display: flex;
+            justify-content: space-between;
+            margin: 0 15px;
+            position: relative;
 
-          &:hover {
+            span {
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+
+            .right-text {
+              flex: 1;
+              text-align: right;
+            }
+
+            .color-box {
+              width: 50px;
+              height: 15px;
+              background-color: var(--box-color);
+              box-shadow: 0 0 5px 2px var(--shadow-color);
+            }
+
             .edit-btn {
-              opacity: 1;
+              position: absolute;
+              opacity: 0;
+              right: -20px;
+              top: 0;
+              transition: all 0.3s ease;
+              user-select: none;
+              cursor: pointer;
+            }
+
+            &:hover {
+              .edit-btn {
+                opacity: 1;
+              }
             }
           }
         }
-      }
 
-      .divider {
-        width: 100%;
-        height: 1px;
-        background-color: var(--shadow-color);
+        .divider {
+          width: 100%;
+          height: 1px;
+          background-color: var(--shadow-color);
+        }
       }
     }
   }

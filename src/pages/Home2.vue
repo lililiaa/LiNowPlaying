@@ -6,7 +6,7 @@
   >
     <div
       class="song-container"
-      :style="{ '--theme-color': themeColor, '--text-color': textColor, '--bg-color': themeColorList[2], '--stress-color': themeColorList[3] }"
+      :style="{ '--theme-color': themeColor, '--text-color': textColor, '--bg-color': themeColorList[2] || textColor, '--stress-color': themeColorList[3] }"
     >
       <img
         v-show="songStore.songData?.track?.cover"
@@ -87,7 +87,7 @@
           <span>{{ songStore.songData?.player?.seekbarCurrentPositionHuman }}</span>
           <div
             class="process-bar"
-            :style="{ '--bg-color': themeColorList[2], '--stress-color': themeColorList[3], '--process': songStore.songData?.player?.statePercent || 0 }"
+            :style="{ '--bg-color': themeColorList[2]||themeColor, '--stress-color': themeColorList[3] || textColor, '--process': songStore.songData?.player?.statePercent || 0 }"
           >
           </div>
           <span>{{ songStore.songData?.track?.durationHuman }}</span>
@@ -144,6 +144,7 @@ import { computed, onMounted, reactive, ref, watch } from 'vue';
 import overflowText from '../components/overflowText.vue';
 import VScaleScreen from 'v-scale-screen';
 import { useSongStore } from '../stores/song';
+import { getCoverUrl } from '../utils/cover';
 
 const songStore = useSongStore();
 
@@ -161,8 +162,8 @@ const changExtraText = () => {
   setTimeout(changExtraText, 8000);
 };
 // 主体颜色
-const themeColor = ref('rgba(0, 0, 0, 0.8)');
-const textColor = ref('rgba(255, 255, 255, 1)');
+const themeColor = ref(localStorage.getItem('backgroundColor') || 'rgba(0, 0, 0, 0.8)');
+const textColor = ref(localStorage.getItem('textColor') || 'rgba(255, 255, 255, 1)');
 const themeColorList = ref([]);
 // 计算当前显示歌词
 const currentLyricIndex = computed(() => {
@@ -197,7 +198,8 @@ const currentLyricIndex = computed(() => {
 // 提取图片主题色
 const getImgColor = () => {
   const colorThief = new ColorThief();
-  const img = document.getElementsByClassName('cover')[0];
+  const img = new Image();
+  img.src = getCoverUrl(songStore.songData?.track?.cover);
   img.onload = function () {
     const color = colorThief.getColor(img);
     themeColor.value = `rgba(${color.join(',')}, 1)`;
@@ -206,15 +208,17 @@ const getImgColor = () => {
   };
 };
 // 监听封面变化
-watch(
-  () => songStore.songData?.track?.cover,
-  (newVal, oldVal) => {
-    if (newVal && (newVal !== oldVal)) {
-      // 获取主题色
-      getImgColor();
-    }
-  },
-);
+if (process.env.NODE_ENV === 'development') {
+  watch(
+    () => songStore.songData?.track?.cover,
+    (newVal, oldVal) => {
+      if (newVal && (newVal !== oldVal)) {
+        // 获取主题色
+        getImgColor();
+      }
+    },
+  );
+}
 // 网页标题
 const titleData = reactive({
   status: "已暂停",

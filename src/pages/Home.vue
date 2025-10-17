@@ -243,6 +243,11 @@
       @close="handleFinishTour"
     >
       <el-tour-step
+        title="自定义歌曲组件"
+        description="欢迎使用myNowPlaying，点击开始新手引导"
+        :next-button-props="{ children: '开始' }"
+      />
+      <el-tour-step
         target=".page-header-btn"
         title="歌曲组件"
         description="每个歌曲组件右上角可以进行组件相关操作"
@@ -496,7 +501,9 @@ const handleFinishTour = () => {
 
 onMounted(() => {
   if (localStorage.getItem('tour') !== 'true') {
-    openTour();
+    setTimeout(() => {
+      openTour();
+    }, 1000);
   }
   pageList.forEach(item => {
     copied.value.push(false);

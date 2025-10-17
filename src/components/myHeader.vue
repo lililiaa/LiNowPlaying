@@ -4,7 +4,7 @@
       src="../assets/icons/music.svg"
       alt="music"
     >
-    <span>自定义歌曲播放器&ensp;-&ensp;{{ router.currentRoute.value.meta.title }}</span>
+    <span>自定义歌曲组件&ensp;-&ensp;{{ router.currentRoute.value.meta.title }}</span>
     <span class="time">{{ timeNow }}</span>
     <div class="header-right">
       <img

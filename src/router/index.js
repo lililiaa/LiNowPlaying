@@ -27,7 +27,7 @@ const routes = [
       isPage: true,
       title: '歌曲组件1',
       tags: [
-        { label: '通用组件', type: 'success' }
+        { label: '通用组件', type: 'success', description: '组件样式可变，根据系统信息中的颜色变化' }
       ],
     },
   },
@@ -39,7 +39,7 @@ const routes = [
       isPage: true,
       title: '歌曲组件2',
       tags: [
-        { label: '通用组件', type: 'success' }
+        { label: '通用组件', type: 'success', description: '组件样式可变，根据系统信息中的颜色变化' }
       ],
     },
   },
@@ -51,7 +51,7 @@ const routes = [
       isPage: true,
       title: '歌曲组件3',
       tags: [
-        { label: '通用组件', type: 'success' }
+        { label: '通用组件', type: 'success', description: '组件样式可变，根据系统信息中的颜色变化' }
       ],
     },
   },
@@ -63,7 +63,7 @@ const routes = [
       isPage: true,
       title: '歌曲组件4',
       tags: [
-        { label: '通用组件', type: 'success' }
+        { label: '通用组件', type: 'success', description: '组件样式可变，根据系统信息中的颜色变化' }
       ],
     },
   },
@@ -75,8 +75,8 @@ const routes = [
       isPage: true,
       title: '歌曲组件5',
       tags: [
-        { label: '固定组件', type: 'warning' },
-        { label: '都市天际线', type: 'primary' },
+        { label: '固定组件', type: 'warning', description: '组件样式固定，不根据系统信息中的颜色变化' },
+        { label: '都市天际线1', type: 'primary', description: '都市天际线1风格的歌曲组件' },
       ],
     },
   },

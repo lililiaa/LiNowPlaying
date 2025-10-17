@@ -19,11 +19,21 @@
                 <i class="iconfont icon-yemian"></i>
                 <span class="title-span">{{ item.meta.title }}</span>
                 <div class="tag-container">
-                  <el-tag
-                    v-for="tag in item.meta.tags"
-                    :type="tag.type"
-                    :effect="params.tags.includes(tag.label) ? 'dark' : 'plain'"
-                  >{{ tag.label }}</el-tag>
+                  <template
+                    v-for="(tag, index) in item.meta.tags"
+                    :key="index"
+                  >
+                    <el-tooltip
+                      :content="tag.description"
+                      placement="top"
+                      effect="dark"
+                    >
+                      <el-tag
+                        :type="tag.type"
+                        :effect="params.tags.includes(tag.label) ? 'dark' : 'plain'"
+                      >{{ tag.label }}</el-tag>
+                    </el-tooltip>
+                  </template>
                 </div>
               </div>
               <div class="page-header-btn">

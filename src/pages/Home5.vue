@@ -38,10 +38,9 @@
           <img
             v-show="songStore.songData?.track?.cover"
             id="cover"
-            crossorigin="anonymous"
             :class="{ 'changing': songStore.isChanging }"
             :style="{ 'animation-play-state': songStore.songData?.player?.isPaused ? 'paused' : 'running' }"
-            :src="getCoverUrl(songStore.songData?.track?.cover)"
+            :src="songStore.songData?.track?.cover"
             alt="封面"
           />
           <img
@@ -122,7 +121,6 @@ import VScaleScreen from 'v-scale-screen';
 import { computed, onMounted, reactive, watch } from 'vue';
 import { ElProgress } from 'element-plus';
 import { useSongStore } from '../stores/song';
-import { getCoverUrl } from '../utils/cover';
 
 const songStore = useSongStore();
 

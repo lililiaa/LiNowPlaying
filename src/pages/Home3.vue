@@ -47,9 +47,8 @@
           v-show="songStore.songData?.track?.cover"
           id="cover"
           class="cover"
-          crossorigin="anonymous"
           :class="{ 'changing': songStore.isChanging }"
-          :src="getCoverUrl(songStore.songData?.track?.cover)"
+          :src="songStore.songData?.track?.cover"
           alt="封面"
         />
         <img
@@ -116,7 +115,6 @@ import overflowText from '../components/overflowText.vue';
 import VScaleScreen from 'v-scale-screen';
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 import { useSongStore } from '../stores/song';
-import { getCoverUrl } from '../utils/cover';
 
 const songStore = useSongStore();
 

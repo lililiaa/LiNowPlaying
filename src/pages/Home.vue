@@ -241,6 +241,22 @@
                   <Edit />
                 </el-icon>
               </div>
+              <div>
+                <span>阴影颜色：</span>
+                <div
+                  class="color-box"
+                  :style="{ '--box-color': shadowColor }"
+                  :title="shadowColor"
+                ></div>
+                <el-icon
+                  v-if="!isDevelopment"
+                  class="edit-btn"
+                  title="点击修改阴影颜色："
+                  @click="editShadowColor"
+                >
+                  <Edit />
+                </el-icon>
+              </div>
             </div>
           </div>
         </el-scrollbar>
@@ -491,6 +507,11 @@ const editBackgroundColor = () => {
 const textColor = ref(localStorage.getItem('textColor') || 'rgba(255, 255, 255, 1)');
 const editTextColor = () => {
   colorSelectRef.value.openDialog('修改文字颜色', textColor.value, 'textColor');
+};
+// 阴影颜色
+const shadowColor = ref(localStorage.getItem('shadowColor') || 'rgba(255, 255, 255, 1)');
+const editShadowColor = () => {
+  colorSelectRef.value.openDialog('修改阴影颜色', shadowColor.value, 'shadowColor');
 };
 // 重新加载所有iframe
 const reloadAll = () => {

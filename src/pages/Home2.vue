@@ -6,7 +6,7 @@
   >
     <div
       class="song-container"
-      :style="{ '--theme-color': themeColor, '--text-color': textColor, '--bg-color': themeColorList[2] || textColor, '--stress-color': themeColorList[3] }"
+      :style="{ '--theme-color': themeColor, '--text-color': textColor, '--bg-color': themeColorList[2] || textColor, '--shadow-color': shadowColor, '--stress-color': themeColorList[3] }"
     >
       <img
         v-show="songStore.songData?.track?.cover"
@@ -87,7 +87,7 @@
           <span>{{ songStore.songData?.player?.seekbarCurrentPositionHuman }}</span>
           <div
             class="process-bar"
-            :style="{ '--bg-color': themeColorList[2]||themeColor, '--stress-color': themeColorList[3] || textColor, '--process': songStore.songData?.player?.statePercent || 0 }"
+            :style="{ '--bg-color': themeColorList[2] || themeColor, '--stress-color': themeColorList[3] || textColor, '--process': songStore.songData?.player?.statePercent || 0 }"
           >
           </div>
           <span>{{ songStore.songData?.track?.durationHuman }}</span>
@@ -164,6 +164,7 @@ const changExtraText = () => {
 // 主体颜色
 const themeColor = ref(localStorage.getItem('backgroundColor') || 'rgba(0, 0, 0, 0.8)');
 const textColor = ref(localStorage.getItem('textColor') || 'rgba(255, 255, 255, 1)');
+const shadowColor = ref(localStorage.getItem('shadowColor') || 'rgba(255, 255, 255, 1)');
 const themeColorList = ref([]);
 // 计算当前显示歌词
 const currentLyricIndex = computed(() => {

@@ -6,7 +6,7 @@
   >
     <div
       class="song-container"
-      :style="{ '--theme-color': themeColor, '--text-color': textColor, '--bg-color': themeColorList[2] || textColor, '--stress-color': themeColorList[3] }"
+      :style="{ '--theme-color': themeColor, '--text-color': textColor, '--bg-color': themeColorList[2] || textColor, '--shadow-color': shadowColor, '--stress-color': themeColorList[3] }"
     >
       <img
         v-show="songStore.songData?.track?.cover"
@@ -175,6 +175,7 @@ const extraTextList = reactive(JSON.parse(localStorage.getItem('extraInfo')));
 // 主体颜色
 const themeColor = ref(localStorage.getItem('backgroundColor') || 'rgba(0, 0, 0, 0.8)');
 const textColor = ref(localStorage.getItem('textColor') || 'rgba(255, 255, 255, 1)');
+const shadowColor = ref(localStorage.getItem('shadowColor') || 'rgba(255, 255, 255, 1)');
 const themeColorList = ref([]);
 // 计算当前显示歌词
 const currentLyricIndex = computed(() => {
@@ -334,7 +335,7 @@ onMounted(() => {
   border-radius: @border-radius;
   transition: box-shadow @bg-transition-time ease;
   // box-shadow: 0 4px 10px 1px var(--bg-color);
-  filter: drop-shadow(0 5px 10px var(--bg-color));
+  filter: drop-shadow(0 5px 10px var(--shadow-color));
 }
 
 .song-container {

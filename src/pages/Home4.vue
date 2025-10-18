@@ -6,7 +6,7 @@
   >
     <div
       class="main"
-      :style="{ '--theme-color': themeColor, '--text-color': textColor, '--bg-color': themeColorList[2] || textColor, '--stress-color': themeColorList[3] }"
+      :style="{ '--theme-color': themeColor, '--text-color': textColor, '--bg-color': themeColorList[2] || textColor, '--shadow-color': shadowColor, '--stress-color': themeColorList[3] }"
     >
       <div class="top-container">
         <img
@@ -127,6 +127,7 @@ const extraTextList = reactive(JSON.parse(localStorage.getItem('extraInfo')));
 // 主体颜色
 const themeColor = ref(localStorage.getItem('backgroundColor') || 'rgba(0, 0, 0, 0.8)');
 const textColor = ref(localStorage.getItem('textColor') || 'rgba(255, 255, 255, 1)');
+const shadowColor = ref(localStorage.getItem('shadowColor') || 'rgba(255, 255, 255, 1)');
 const themeColorList = ref([]);
 
 // 计算当前显示歌词

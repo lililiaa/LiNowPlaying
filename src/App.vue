@@ -54,6 +54,9 @@ if (!localStorage.getItem('backgroundColor')) {
 if (!localStorage.getItem('textColor')) {
   localStorage.setItem('textColor', 'rgba(255, 255, 255, 1)');
 }
+if (!localStorage.getItem('shadowColor')) {
+  localStorage.setItem('shadowColor', 'rgba(255, 255, 255, 1)');
+}
 // 切换主题
 const changTheme = () => {
   let theme = localStorage.getItem('theme');

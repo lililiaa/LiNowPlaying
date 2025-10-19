@@ -241,8 +241,8 @@ onMounted(() => {
 .box() {
   border-radius: @border-radius;
   transition: box-shadow @bg-transition-time ease, filter @bg-transition-time ease;
-  // box-shadow: 0 4px 10px 0 var(--bg-color);
-  filter: drop-shadow(0 4px 10px var(--bg-color));
+  // box-shadow: 0 4px 10px 0 var(--shadow-color);
+  filter: drop-shadow(0 4px 10px var(--shadow-color));
 }
 
 .main {

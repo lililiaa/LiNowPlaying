@@ -334,7 +334,7 @@ onMounted(() => {
 .box() {
   border-radius: @border-radius;
   transition: box-shadow @bg-transition-time ease;
-  // box-shadow: 0 4px 10px 1px var(--bg-color);
+  // box-shadow: 0 4px 10px 1px var(--shadow-color);
   filter: drop-shadow(0 5px 10px var(--shadow-color));
 }
 

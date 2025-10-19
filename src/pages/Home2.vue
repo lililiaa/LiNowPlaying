@@ -115,10 +115,11 @@
               :class="{ 'active': index === currentLyricIndex }"
               :key="index"
             >
-              <span class="original">{{ item[2] }}</span>
+              <span class="original">{{songStore.lyricData.translatedLyric.find(i => i[1] ===
+                songStore.lyricData.lyric[index][1])?.[2] ? item[2] : ''}}</span>
               <span class="translated">{{songStore.lyricData.translatedLyric.find(i => i[1] ===
                 songStore.lyricData.lyric[index][1])?.[2]
-                || ''}}</span>
+                || item[2]}}</span>
             </div>
           </template>
         </div>

@@ -215,6 +215,7 @@ const getImgColor1 = () => {
     const color = colorThief.getColor(img);
     themeColor.value = `rgba(${color.join(',')}, 1)`;
     textColor.value = `rgba(${color.map(i => 255 - i).join(',')}, 1)`;
+    shadowColor.value = `rgba(${color.map(i => 255 - i).join(',')}, 1)`;
     themeColorList.value = colorThief.getPalette(img).map((color) => `rgba(${color.join(',')}, 1)`);
   };
 };
@@ -334,8 +335,8 @@ onMounted(() => {
 .box() {
   border-radius: @border-radius;
   transition: box-shadow @bg-transition-time ease;
-  // box-shadow: 0 4px 10px 1px var(--shadow-color);
-  filter: drop-shadow(0 5px 10px var(--shadow-color));
+  // box-shadow: 0 4px 10px 0 var(--shadow-color);
+  filter: drop-shadow(0 4px 10px var(--shadow-color));
 }
 
 .song-container {

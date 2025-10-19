@@ -205,6 +205,7 @@ const getImgColor = () => {
     const color = colorThief.getColor(img);
     themeColor.value = `rgba(${color.join(',')}, 1)`;
     textColor.value = `rgba(${color.map(i => 255 - i).join(',')}, 1)`;
+    shadowColor.value = `rgba(${color.map(i => 255 - i).join(',')}, 1)`;
     themeColorList.value = colorThief.getPalette(img).map((color) => `rgba(${color.join(',')}, 1)`);
   };
 };

@@ -210,49 +210,17 @@
                 </el-icon>
               </div>
               <div>
-                <span>背景颜色：</span>
+                <span>颜色搭配：</span>
                 <div
                   class="color-box"
-                  :style="{ '--box-color': backgroundColor }"
-                  :title="backgroundColor"
-                ></div>
-                <el-icon
-                  v-if="!isDevelopment"
-                  class="edit-btn"
-                  title="点击修改背景颜色"
-                  @click="editBackgroundColor"
+                  :style="{ backgroundColor: backgroundColor, color: textColor, filter: `drop-shadow(0 1px 4px ${shadowColor})` }"
                 >
-                  <Edit />
-                </el-icon>
-              </div>
-              <div>
-                <span>文字颜色：</span>
-                <div
-                  class="color-box"
-                  :style="{ '--box-color': textColor }"
-                  :title="textColor"
-                ></div>
+                  <span>预览文本</span>
+                </div>
                 <el-icon
-                  v-if="!isDevelopment"
                   class="edit-btn"
-                  title="点击修改文字颜色"
-                  @click="editTextColor"
-                >
-                  <Edit />
-                </el-icon>
-              </div>
-              <div>
-                <span>阴影颜色：</span>
-                <div
-                  class="color-box"
-                  :style="{ '--box-color': shadowColor }"
-                  :title="shadowColor"
-                ></div>
-                <el-icon
-                  v-if="!isDevelopment"
-                  class="edit-btn"
-                  title="点击修改阴影颜色："
-                  @click="editShadowColor"
+                  title="点击修改颜色搭配"
+                  @click="editColor"
                 >
                   <Edit />
                 </el-icon>
@@ -334,7 +302,6 @@ const colorSelectRef = ref(null);
 const handleColorChange = () => {
   window.location.reload();
 };
-const isDevelopment = process.env.NODE_ENV === 'development';
 // 组件列表
 let routeList = router.getRoutes();
 const pageList = routeList.filter(item => item.meta.isPage).map(item => {
@@ -498,20 +465,12 @@ const editPCConfig = () => {
       PCConfig.value = JSON.parse(localStorage.getItem('extraInfo'))[1].join(' ');
     });
 };
-// 背景颜色
+// 颜色搭配
 const backgroundColor = ref(localStorage.getItem('backgroundColor') || 'rgba(0, 0, 0, 1)');
-const editBackgroundColor = () => {
-  colorSelectRef.value.openDialog('修改背景颜色', backgroundColor.value, 'backgroundColor');
-};
-// 文字颜色
 const textColor = ref(localStorage.getItem('textColor') || 'rgba(255, 255, 255, 1)');
-const editTextColor = () => {
-  colorSelectRef.value.openDialog('修改文字颜色', textColor.value, 'textColor');
-};
-// 阴影颜色
 const shadowColor = ref(localStorage.getItem('shadowColor') || 'rgba(255, 255, 255, 1)');
-const editShadowColor = () => {
-  colorSelectRef.value.openDialog('修改阴影颜色', shadowColor.value, 'shadowColor');
+const editColor = () => {
+  colorSelectRef.value.openDialog();
 };
 // 重新加载所有iframe
 const reloadAll = () => {
@@ -743,6 +702,7 @@ onMounted(() => {
           .form-item {
             display: flex;
             flex-direction: column;
+            align-items: flex-start;
             gap: 5px;
           }
 
@@ -750,7 +710,9 @@ onMounted(() => {
           &>div {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             margin: 0 15px;
+            min-height: 20px;
             position: relative;
 
             span {
@@ -765,17 +727,20 @@ onMounted(() => {
             }
 
             .color-box {
-              width: 50px;
-              height: 15px;
-              background-color: var(--box-color);
-              box-shadow: 0 0 5px 2px var(--shadow-color);
+              height: 20px;
+              padding: 0 10px;
+              border-radius: 5px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
             }
 
             .edit-btn {
               position: absolute;
               opacity: 0;
               right: -20px;
-              top: 0;
+              top: 50%;
+              transform: translateY(-50%);
               transition: all 0.3s ease;
               user-select: none;
               cursor: pointer;

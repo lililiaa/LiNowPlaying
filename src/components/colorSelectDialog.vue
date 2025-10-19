@@ -1,20 +1,37 @@
 <template>
   <el-dialog
-    :title="title"
+    title="修改颜色搭配"
     v-model="dialogVisible"
-    width="500"
+    width="800"
     draggable
     align-center
+    destroy-on-close
+    @closed="handleClose"
   >
     <template #default>
-      <div style="display: flex;justify-content: center;">
-        <el-color-picker-panel
-          v-model="color"
-          show-alpha
-          :border="true"
-          color-format="rgb"
-          :predefine="predefineColors"
-        />
+      <div class="container">
+        <div class="preview-container">
+          <div
+            class="preview"
+            :style="{ backgroundColor: colors.backgroundColor, color: colors.textColor, filter: `drop-shadow(0 4px 10px ${colors.shadowColor})` }"
+          >
+            <span>预览文本</span>
+          </div>
+        </div>
+        <div>
+          <el-radio-group v-model="key">
+            <el-radio value="backgroundColor">背景颜色</el-radio>
+            <el-radio value="textColor">文字颜色</el-radio>
+            <el-radio value="shadowColor">阴影颜色</el-radio>
+          </el-radio-group>
+          <el-color-picker-panel
+            v-model="colors[key]"
+            show-alpha
+            :border="true"
+            color-format="rgb"
+            :predefine="predefineColors"
+          />
+        </div>
       </div>
     </template>
     <template #footer>
@@ -31,7 +48,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { reactive, ref, watch } from 'vue';
 import { ElColorPickerPanel } from 'element-plus';
 
 // 预定义颜色
@@ -47,20 +64,29 @@ const predefineColors = [
 
 const emit = defineEmits(['closed']);
 
+const colors = reactive({
+  backgroundColor: localStorage.getItem('backgroundColor') || 'rgba(0, 0, 0, 1)',
+  textColor: localStorage.getItem('textColor') || 'rgba(255, 255, 255, 1)',
+  shadowColor: localStorage.getItem('shadowColor') || 'rgba(255, 255, 255, 1)',
+});
+const key = ref('backgroundColor');
+
 const dialogVisible = ref(false);
-const color = ref('');
-const title = ref('修改颜色');
-const key = ref('');
-const openDialog = (_title, _color, _key) => {
-  color.value = _color;
-  title.value = _title;
-  key.value = _key;
+const openDialog = () => {
   dialogVisible.value = true;
 }
 const handleSubmit = () => {
-  localStorage.setItem(key.value, color.value);
+  Object.keys(colors).forEach((key) => {
+    localStorage.setItem(key, colors[key]);
+  });
   dialogVisible.value = false;
   emit('closed');
+};
+const handleClose = () => {
+  key.value = 'backgroundColor';
+  colors.backgroundColor = localStorage.getItem('backgroundColor') || 'rgba(0, 0, 0, 1)';
+  colors.textColor = localStorage.getItem('textColor') || 'rgba(255, 255, 255, 1)';
+  colors.shadowColor = localStorage.getItem('shadowColor') || 'rgba(255, 255, 255, 1)';
 };
 
 defineExpose({
@@ -68,4 +94,30 @@ defineExpose({
 })
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+.container {
+  height: 300px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .preview-container {
+    flex: 1;
+    height: 100%;
+    display: flex;
+
+    .preview {
+      margin: auto;
+      width: 60%;
+      height: 50%;
+      display: flex;
+      border-radius: 10px;
+
+      span {
+        margin: auto;
+        font-size: 40px;
+      }
+    }
+  }
+}
+</style>

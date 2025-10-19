@@ -293,7 +293,7 @@ onMounted(() => {
         width: 180px;
         height: 180px;
         border-radius: 50%;
-        animation: rotate 20s linear 1.5s infinite;
+        animation: rotate 20s linear 1s infinite;
       }
 
       .progress-circle {

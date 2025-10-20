@@ -1,8 +1,8 @@
 <template>
   <v-scale-screen
-    width="1880"
-    height="280"
-    :box-style="{ backgroundColor: none }"
+    :width="1880"
+    :height="280"
+    :box-style="{ backgroundColor: 'none' }"
   >
     <div
       class="song-container"

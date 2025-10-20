@@ -1,8 +1,8 @@
 <template>
   <v-scale-screen
-    width="1880"
-    height="400"
-    :box-style="{ backgroundColor: none }"
+    :width="1880"
+    :height="400"
+    :box-style="{ backgroundColor: 'none' }"
   >
     <div class="main">
       <!-- 标题 -->
@@ -55,7 +55,7 @@
             type="circle"
             :percentage="progress"
             :show-text="false"
-            width="210"
+            :width="210"
             color="#2a3338"
           />
         </div>
@@ -135,7 +135,7 @@ const extraTextList = reactive(JSON.parse(localStorage.getItem('extraInfo')));
 // 进度
 const progress = computed(() => {
   if (songStore.songData?.player?.statePercent) {
-    return (songStore.songData?.player?.statePercent * 100).toFixed(2);
+    return +(songStore.songData?.player?.statePercent * 100).toFixed(2);
   }
   return 0;
 });

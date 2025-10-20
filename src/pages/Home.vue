@@ -268,7 +268,7 @@
       <el-tour-step
         target=".header-right"
         title="系统操作"
-        description="标题栏右侧为系统相关操作"
+        description="标题栏右侧可以进行系统相关操作"
         placement="bottom-right"
         :prev-button-props="{ children: '上一步' }"
         :next-button-props="{ children: '下一步' }"
@@ -744,6 +744,7 @@ onMounted(() => {
               transition: all 0.3s ease;
               user-select: none;
               cursor: pointer;
+              font-size: 18px;
             }
 
             &:hover {

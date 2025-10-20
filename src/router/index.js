@@ -80,6 +80,18 @@ const routes = [
       ],
     },
   },
+  {
+    path: '/home6',
+    name: 'Home6',
+    component: () => import('../pages/Home6.vue'),
+    meta: {
+      isPage: true,
+      title: '歌曲组件6',
+      tags: [
+        { label: '固定组件', type: 'warning', description: '组件样式固定，不根据系统信息中的颜色变化' },
+      ],
+    },
+  },
   // {
   //   path: '/page1',
   //   name: 'Page1',

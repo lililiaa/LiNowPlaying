@@ -1,8 +1,8 @@
 <template>
   <v-scale-screen
-    width="1280"
-    height="480"
-    :box-style="{ backgroundColor: none }"
+    :width="1280"
+    :height="480"
+    :box-style="{ backgroundColor: 'none' }"
   >
     <div
       class="main"

@@ -390,6 +390,12 @@ onMounted(() => {
       &>div {
         width: 100%;
       }
+
+      span {
+        font-size: @font-size-big;
+        font-weight: bold;
+        color: var(--text-color);
+      }
     }
 
     svg {

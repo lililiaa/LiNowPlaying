@@ -11,7 +11,7 @@ export const useSongStore = defineStore("song", {
     isChanging: false,
   }),
   getters: {
-    
+
   },
   actions: {
     /**
@@ -20,7 +20,9 @@ export const useSongStore = defineStore("song", {
     async fetchSongData() {
       try {
         const res = await fetch('http://localhost:9863/query');
-        this.songData = await res.json();
+        let data = await res.json();
+        if (data.player?.statePercent) data.player.statePercent = +data.player?.statePercent.toFixed(4);
+        this.songData = data;
       } catch (error) {
         this.songData = {};
         console.error(error);

@@ -1,16 +1,24 @@
 <template>
   <v-scale-screen
-    :width="800"
-    :height="1000"
+    :width="850"
+    :height="1100"
     :box-style="{ backgroundColor: 'none' }"
   >
     <div
       class="main"
-      :style="{ '--theme-color': themeColor, '--text-color': textColor, '--bg-color': themeColorList[2] || textColor, '--shadow-color': shadowColor, '--stress-color': themeColorList[3] }"
+      :style="{
+        '--theme-color': themeColor,
+        '--text-color': textColor,
+        '--bg-color': themeColorList[2] || textColor,
+        '--shadow-color': shadowColor,
+        '--stress-color': themeColorList[3],
+        '--outline-color': outlineColor,
+        '--outline-color2': outlineColor2,
+      }"
     >
       <div
         class="cover"
-        :style="{ outline: `10px solid ${outlineColor}` }"
+        :style="{ border: `10px solid ${outlineColor}` }"
       >
         <img
           v-show="songStore.songData?.track?.cover"
@@ -56,6 +64,25 @@
         </overflow-text>
         <span v-if="!songStore.songData?.track?.title && !songStore.songData?.track?.author">暂无歌曲信息</span>
       </div>
+      <div class="status-container">
+        <div
+          class="process-container"
+          :style="{ '--process': songStore.songData?.player?.statePercent || 0 }"
+        ></div>
+        <div class="play-container">
+          <span>{{ songStore.songData?.player?.seekbarCurrentPositionHuman }}</span>
+          <div
+            class="status"
+            :class="{ 'pause': songStore.songData?.player?.isPaused }"
+          >
+            <div class="line line1"></div>
+            <div class="line line2"></div>
+            <div class="line line3"></div>
+            <div class="line line4"></div>
+          </div>
+          <span>{{ songStore.songData?.track?.durationHuman }}</span>
+        </div>
+      </div>
     </div>
   </v-scale-screen>
 </template>
@@ -67,7 +94,7 @@ import { useSongStore } from '../stores/song';
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 import ColorThief from 'colorthief';
 import { getCoverUrl } from '../utils/cover';
-import { isColorDark } from '../stores/color';
+import { isColorDark } from '../utils/color';
 
 const songStore = useSongStore();
 // 游戏&配置
@@ -79,6 +106,7 @@ const textColor = ref(localStorage.getItem('textColor') || 'rgba(255, 255, 255, 
 const shadowColor = ref(localStorage.getItem('shadowColor') || 'rgba(255, 255, 255, 1)');
 const themeColorList = ref([]);
 const outlineColor = ref('rgb(255, 255, 255)');
+const outlineColor2 = ref('rgb(255, 255, 255)');
 
 // 进度
 const progress = computed(() => {
@@ -100,6 +128,7 @@ const getImgColor = () => {
     shadowColor.value = `rgba(${color.map(i => 255 - i).join(',')}, 0.8)`;
     themeColorList.value = colorThief.getPalette(img).map((color) => `rgba(${color.join(',')}, 1)`);
     outlineColor.value = isColorDark(themeColor.value) ? 'rgb(255, 255, 255)' : 'rgb(0, 0, 0)';
+    outlineColor2.value = isColorDark(textColor.value) ? 'rgb(255, 255, 255)' : 'rgb(0, 0, 0)';
   };
 };
 // 监听封面变化
@@ -166,16 +195,18 @@ onMounted(() => {
 }
 
 .main {
-  width: 700px;
+  width: 650px;
   height: 900px;
-  margin: 50px;
+  margin: 100px;
+  box-sizing: border-box;
+  padding: 100px 0 50px;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
   transition: all 0.3s ease;
   background-color: var(--theme-color);
-  box-shadow: 0 15px 40px 0 var(--shadow-color);
+  box-shadow: 0 20px 40px 0 var(--shadow-color);
   // filter: drop-shadow(0 4px 10px var(--shadow-color));
 
   span {
@@ -183,11 +214,12 @@ onMounted(() => {
   }
 
   .cover {
-    width: 70%;
+    width: calc(100% - 200px);
     aspect-ratio: 1 / 1;
     position: relative;
     overflow: hidden;
     transition: outline-color 1s ease;
+    box-sizing: border-box;
 
     img {
       width: 100%;
@@ -225,7 +257,101 @@ onMounted(() => {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    mask-image: linear-gradient(to right, rgba(0, 0, 0, 0), #000 10%, #000 90%, rgba(0, 0, 0, 0));
+    // mask-image: linear-gradient(to right, rgba(0, 0, 0, 0), #000 10%, #000 90%, rgba(0, 0, 0, 0));
+    font-size: 50px;
+
+    span {
+      margin: auto;
+    }
+  }
+
+  .status-container {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+
+    .process-container {
+      width: 90%;
+      height: 20px;
+      position: relative;
+      border-radius: 10px;
+      box-sizing: border-box;
+      background-color: var(--outline-color2);
+      overflow: hidden;
+
+      &::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: 0;
+        height: 200%;
+        width: calc(var(--process) * 100%);
+        box-sizing: border-box;
+        background-color: var(--text-color);
+        transition: width 1s ease;
+      }
+    }
+
+    .play-container {
+      width: 90%;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      font-size: 30px;
+
+      .status {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background-color: var(--text-color);
+        position: relative;
+
+        .line {
+          position: absolute;
+          width: 8px;
+          height: 40px;
+          border-radius: 4px;
+          background-color: var(--outline-color2);
+          left: 22px;
+          top: 20px;
+          transition: all 0.5s ease;
+        }
+
+        .line2 {
+          transform-origin: 50% 4px;
+        }
+
+        .line3 {
+          top: auto;
+          bottom: 20px;
+          transform-origin: 50% calc(100% - 4px);
+        }
+
+        .line4 {
+          left: auto;
+          right: 22px;
+          transform-origin: 100% 50%;
+        }
+      }
+
+      .pause {
+        .line2 {
+          height: 43px;
+          transform: rotate(atan2(-2, 1));
+        }
+
+        .line3 {
+          height: 43px;
+          transform: rotate(atan2(2, 1));
+        }
+
+        .line4 {
+          transform: scaleX(0);
+        }
+      }
+    }
   }
 }
 </style>

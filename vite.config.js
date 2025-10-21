@@ -56,10 +56,15 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      '/image-proxy': {
+      '/qq-proxy': {
         target: 'https://y.qq.com',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/image-proxy/, '')
+        rewrite: (path) => path.replace(/^\/qq-proxy/, '')
+      },
+      '/netease-proxy': {
+        target: 'http://p3.music.126.net',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/netease-proxy/, '')
       }
     }
   }

@@ -94,7 +94,7 @@ defineExpose({
 })
 </script>
 
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .container {
   height: 300px;
   display: flex;

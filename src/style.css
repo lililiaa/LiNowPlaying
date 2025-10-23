@@ -12,6 +12,13 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'hyp';
+  src: url(/src/assets/fonts/hyp.ttf) format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
 :root {
   /* font-family: system-ui, Avenir, Helvetica, Arial, sans-serif; */
   /* font-family:'Times New Roman', Times, serif; */

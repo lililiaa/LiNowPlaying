@@ -501,7 +501,7 @@ onMounted(() => {
   });
 });
 </script>
-<style lang="less" scoped>
+<style lang="scss" scoped>
 .main {
   height: 100vh;
   width: 100vw;
@@ -523,10 +523,10 @@ onMounted(() => {
       padding: 20px;
       display: grid;
       gap: 20px;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(auto-fit, minmax(700px, auto));
 
       .page-container {
-        width: 100%;
+        // width: 100%;
         height: min-content;
         border-radius: 10px;
         box-shadow: 0 4px 10px var(--shadow-color);
@@ -536,8 +536,8 @@ onMounted(() => {
         overflow: hidden;
 
         &:hover {
-          box-shadow: 0 6px 10px var(--shadow-color-hover);
-          transform: translateY(-5px);
+          box-shadow: 0 4px 12px var(--shadow-color-hover);
+          // transform: translateY(-5px);
         }
 
         .page-header {

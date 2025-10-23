@@ -41,11 +41,11 @@ export default defineComponent({
   }
 });
 </script>
-<style lang="less" scoped>
+<style lang="scss" scoped>
 // 背景过渡时间
-@bg-transition-time: 2s;
+$bg-transition-time: 2s;
 // 文字滚动时间
-@text-transition-time: 8s;
+$text-transition-time: 8s;
 
 @keyframes marquee-wrap {
 
@@ -79,7 +79,7 @@ export default defineComponent({
 
   .marquee-warp {
     width: 100%;
-    animation: marquee-wrap @text-transition-time linear infinite;
+    animation: marquee-wrap $text-transition-time linear infinite;
 
     .marquee-content {
       display: flex;
@@ -88,12 +88,12 @@ export default defineComponent({
       float: left;
       white-space: nowrap;
       min-width: 100%;
-      animation: marquee-content @text-transition-time infinite linear;
+      animation: marquee-content $text-transition-time infinite linear;
 
       font-size: v-bind(fontSize);
       font-weight: v-bind(isBold);
       color: v-bind(color);
-      transition: color @bg-transition-time ease;
+      transition: color $bg-transition-time ease;
     }
   }
 }

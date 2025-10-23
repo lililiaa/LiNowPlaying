@@ -13,9 +13,9 @@
     "@imengyu/vue3-context-menu": "^1.5.2",
     "colorthief": "^2.6.0",
     "element-plus": "^2.11.5",
-    "less": "^4.4.1",
-    "less-loader": "^12.3.0",
     "pinia": "^3.0.3",
+    "sass": "^1.93.2",
+    "sass-loader": "^16.0.6",
     "v-scale-screen": "^2.3.0",
     "vue": "^3.5.18",
     "vue-router": "4"

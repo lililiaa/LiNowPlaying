@@ -22,7 +22,7 @@ const routes = [
   {
     path: '/home1',
     name: 'Home1',
-    component: () => import('../pages/Home1.vue'),
+    component: () => import('../pages/items/Home1.vue'),
     meta: {
       isPage: true,
       title: '歌曲组件1',
@@ -34,7 +34,7 @@ const routes = [
   {
     path: '/home2',
     name: 'Home2',
-    component: () => import('../pages/Home2.vue'),
+    component: () => import('../pages/items/Home2.vue'),
     meta: {
       isPage: true,
       title: '歌曲组件2',
@@ -46,7 +46,7 @@ const routes = [
   {
     path: '/home3',
     name: 'Home3',
-    component: () => import('../pages/Home3.vue'),
+    component: () => import('../pages/items/Home3.vue'),
     meta: {
       isPage: true,
       title: '歌曲组件3',
@@ -58,7 +58,7 @@ const routes = [
   {
     path: '/home4',
     name: 'Home4',
-    component: () => import('../pages/Home4.vue'),
+    component: () => import('../pages/items/Home4.vue'),
     meta: {
       isPage: true,
       title: '歌曲组件4',
@@ -70,10 +70,10 @@ const routes = [
   {
     path: '/home5',
     name: 'Home5',
-    component: () => import('../pages/Home5.vue'),
+    component: () => import('../pages/items/Home5.vue'),
     meta: {
       isPage: true,
-      title: '歌曲组件5',
+      title: '都市天际线1',
       tags: [
         { label: '固定组件', type: 'warning', description: '组件样式固定，不根据系统信息中的颜色变化' },
         { label: '都市天际线1', type: 'primary', description: '都市天际线1风格的歌曲组件' },
@@ -83,24 +83,27 @@ const routes = [
   {
     path: '/home6',
     name: 'Home6',
-    component: () => import('../pages/Home6.vue'),
+    component: () => import('../pages/items/Home6.vue'),
     meta: {
       isPage: true,
-      title: '歌曲组件6',
+      title: '卡片',
       tags: [
-        { label: '固定组件', type: 'warning', description: '组件样式固定，不根据系统信息中的颜色变化' },
+        { label: '通用组件', type: 'success', description: '组件样式可变，根据系统信息中的颜色变化' },
       ],
     },
   },
-  // {
-  //   path: '/page1',
-  //   name: 'Page1',
-  //   component: () => import('../pages/Page1.vue'),
-  //   meta: {
-  //     isPage: true,
-  //     title: '全屏组件1',
-  //   },
-  // },
+  {
+    path: '/home7',
+    name: 'Home7',
+    component: () => import('../pages/items/Home7.vue'),
+    meta: {
+      isPage: true,
+      title: 'rain',
+      tags: [
+        { label: '通用组件', type: 'success', description: '组件样式可变，根据系统信息中的颜色变化' },
+      ],
+    },
+  },
 ];
 
 // 创建路由实例

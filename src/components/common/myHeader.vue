@@ -1,32 +1,32 @@
 <template>
   <div class="header">
     <img
-      src="../assets/icons/music.svg"
+      src="../../assets/icons/music.svg"
       alt="music"
     >
     <span>自定义歌曲组件&ensp;-&ensp;{{ router.currentRoute.value.meta.title }}</span>
     <span class="time">{{ timeNow }}</span>
     <div class="header-right">
       <img
-        src="../assets/icons/email.svg"
+        src="../../assets/icons/email.svg"
         alt="email"
         title="联系作者"
         @click="openEmail"
       >
       <img
-        src="../assets/icons/theme.svg"
+        src="../../assets/icons/theme.svg"
         alt="github"
         title="切换主题"
         @click="changTheme"
       >
       <img
-        src="../assets/icons/github.svg"
+        src="../../assets/icons/github.svg"
         alt="github"
         title="在github上查看"
         @click="openGithub"
       >
       <img
-        src="../assets/icons/question.svg"
+        src="../../assets/icons/question.svg"
         alt="question"
         title="如何使用"
         @click="openTour"
@@ -37,7 +37,7 @@
 
 <script setup>
 import { markRaw, onBeforeUnmount, onMounted, ref } from 'vue';
-import router from '../router';
+import router from '../../router';
 import { ElMessageBox } from 'element-plus';
 import { Message } from '@element-plus/icons-vue';
 

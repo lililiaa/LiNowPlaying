@@ -66,15 +66,25 @@ const changTheme = () => {
     document.documentElement.setAttribute('data-theme', 'light');
   }
 };
-// 设置请求间隔
+// 初始化请求间隔
 const setQueryTime = () => {
   let queryTime = localStorage.getItem('queryTime');
   if (!queryTime) localStorage.setItem('queryTime', 1000);
 };
-// 设置额外信息
+// 初始化额外信息
 const setExtraInfo = () => {
   let extraInfo = localStorage.getItem('extraInfo');
   if (!extraInfo) localStorage.setItem('extraInfo', '[["游戏名称"], ["配置信息"]]');
+};
+// 初始化rain设置
+const setRain = () => {
+  let rain = localStorage.getItem('rainConfig');
+  if (!rain) localStorage.setItem('rainConfig', JSON.stringify({
+    isRain: true,
+    amount: 100,
+    angle: 10,
+    speed: 5,
+  }));
 };
 // 获取歌曲信息
 const songStore = useSongStore();
@@ -106,6 +116,7 @@ if (window === window.parent) {
     changTheme();
     setQueryTime();
     setExtraInfo();
+    setRain();
   });
 
   onBeforeUnmount(() => {

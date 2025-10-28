@@ -6,6 +6,7 @@
     draggable
     align-center
     destroy-on-close
+    :close-on-click-modal="false"
     @closed="handleClose"
   >
     <template #default>
@@ -44,7 +45,6 @@
       </span>
     </template>
   </el-dialog>
-
 </template>
 
 <script setup>

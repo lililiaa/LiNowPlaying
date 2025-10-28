@@ -104,18 +104,18 @@
               ></iframe>
             </div>
           </div>
-          <!-- 回到顶部 -->
-          <el-backtop
-            :target="'.content-left'"
-            :visibility-height="100"
-            :right="350"
-            :bottom="40"
-            class="back-top"
-          />
         </div>
         <el-empty
           v-if="filterdPageList.length === 0"
           description="暂无数据"
+        />
+        <!-- 回到顶部 -->
+        <el-backtop
+          :target="'.el-scrollbar__wrap'"
+          :visibility-height="200"
+          :right="350"
+          :bottom="40"
+          class="back-top"
         />
       </el-scrollbar>
       <!-- 右侧内容 -->
@@ -166,7 +166,7 @@
             </div>
             <div class="divider"></div>
             <div class="system-box">
-              <span class="title">系统信息</span>
+              <span class="title">系统配置</span>
               <div>
                 <span>请求间隔：</span>
                 <span
@@ -221,6 +221,21 @@
                   class="edit-btn"
                   title="点击修改颜色搭配"
                   @click="editColor"
+                >
+                  <Edit />
+                </el-icon>
+              </div>
+              <div>
+                <span>rain组件配置：</span>
+                <span
+                  class="right-text"
+                  :title="`是否有雨：${rainConfig.isRain ? '是' : '否'}，雨滴数量：${rainConfig.amount}，雨滴角度：${rainConfig.angle}°，雨滴速度：${rainConfig.speed}`"
+                >{{
+                  Object.values(rainConfig).join(", ") }}</span>
+                <el-icon
+                  class="edit-btn"
+                  title="点击修改rain组件配置"
+                  @click="editRainConfig"
                 >
                   <Edit />
                 </el-icon>
@@ -288,6 +303,11 @@
       ref="colorSelectRef"
       @closed="handleColorChange"
     />
+    <!-- rain配置dialog -->
+    <RainConfigDialog
+      ref="rainConfigRef"
+      @closed="handleRainChange"
+    />
   </div>
 </template>
 <script setup>
@@ -295,11 +315,18 @@ import { computed, onMounted, reactive, ref } from 'vue';
 import router from '../router';
 import { ElMessage, ElTooltip, ElBacktop, ElMessageBox, ElInput, ElTag, ElTour, ElTourStep } from 'element-plus';
 import { Edit } from '@element-plus/icons-vue';
-import MyHeader from '../components/myHeader.vue';
+import MyHeader from '../components/common/myHeader.vue';
 import ColorSelectDialog from '../components/colorSelectDialog.vue';
+import RainConfigDialog from '../components/rainConfigDialog.vue';
 
+// 颜色选取dialog
 const colorSelectRef = ref(null);
 const handleColorChange = () => {
+  window.location.reload();
+};
+// rain配置dialog
+const rainConfigRef = ref(null);
+const handleRainChange = () => {
   window.location.reload();
 };
 // 组件列表
@@ -324,7 +351,11 @@ const refresh = (url, index) => {
 
   const iframes = document.querySelectorAll('iframe');
   if (iframes[index]) {
-    iframes[index].contentWindow.location.reload();
+    // iframes[index].contentWindow.location.reload();
+    iframes[index].src = 'about:blank';
+    setTimeout(() => {
+      iframes[index].src = url;
+    }, 100)
   }
 
   setTimeout(() => (isRotating.value[index] = false), 1000);
@@ -369,6 +400,7 @@ const editQueryTime = () => {
     inputPattern: /^[0-9]+$/,
     inputErrorMessage: '请输入数字',
     draggable: true,
+    closeOnClickModal: false,
   })
     .then(({ value }) => {
       localStorage.setItem('queryTime', value);
@@ -403,6 +435,7 @@ const editGameName = () => {
     //   return true;
     // },
     draggable: true,
+    closeOnClickModal: false,
   })
     .then(({ value }) => {
       if (value !== '') {
@@ -441,6 +474,7 @@ const editPCConfig = () => {
     //   return true;
     // },
     draggable: true,
+    closeOnClickModal: false,
   })
     .then(({ value }) => {
       if (value !== '') {
@@ -471,6 +505,11 @@ const textColor = ref(localStorage.getItem('textColor') || 'rgba(255, 255, 255, 
 const shadowColor = ref(localStorage.getItem('shadowColor') || 'rgba(255, 255, 255, 1)');
 const editColor = () => {
   colorSelectRef.value.openDialog();
+};
+// rain配置
+const rainConfig = JSON.parse(localStorage.getItem('rainConfig') || {});
+const editRainConfig = () => {
+  rainConfigRef.value.openDialog();
 };
 // 重新加载所有iframe
 const reloadAll = () => {
@@ -659,15 +698,15 @@ onMounted(() => {
           }
         }
       }
+    }
 
-      .back-top {
-        background-color: var(--background-color);
-        box-shadow: 0 0 6px var(--shadow-color-hover);
-      }
+    .back-top {
+      background-color: var(--background-color);
+      box-shadow: 0 0 6px var(--shadow-color-hover);
     }
 
     .content-right-box {
-      width: 300px;
+      width: 320px;
       height: calc(100% - 20px);
       margin: 10px;
       justify-content: flex-start;

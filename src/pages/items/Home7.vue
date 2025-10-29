@@ -28,7 +28,10 @@
               :font-size="fontSizeBig"
               is-bold="bold"
             >{{ songStore.songData?.track?.title }}</overflow-text>
-            <span v-if="songStore.songData?.track?.title && songStore.songData?.track?.author">&ensp;-&ensp;</span>
+            <span
+              v-if="songStore.songData?.track?.title && songStore.songData?.track?.author"
+              class="separate"
+            >-</span>
             <overflow-text
               v-if="songStore.songData?.track?.author"
               :color="textColor"
@@ -43,11 +46,17 @@
                 v-if="songStore.lyricData.translatedLyric.length === 0"
                 ref="lyricRef"
                 class="lyric-line"
-              >{{ songStore.lyricData.lyric[currentLyricIndex][2] || '......' }}</span>
-              <span
+              >{{ songStore.lyricData.lyric[currentLyricIndex]?.length > 0 ?
+                (songStore.lyricData.lyric[currentLyricIndex][2] || '......')
+                : '......' }}</span>
+              <div
                 v-else
+                ref="lyricRef"
                 class="lyric-line-translated"
-              ></span>
+              >
+                <span class="original">{{ originalLyric }}</span>
+                <span class="translated">{{ translatedLyric }}</span>
+              </div>
             </template>
             <span
               v-else
@@ -96,8 +105,8 @@ const songStore = useSongStore();
 
 // 字体大小
 const fontSizeBig = "75px";
-const fontSizeMedium = "60px";
-const fontSizeSmall = "50px";
+const fontSizeMedium = "65px";
+const fontSizeSmall = "45px";
 // 主体颜色
 const themeColor = ref(localStorage.getItem('backgroundColor') || 'rgba(0, 0, 0, 0.8)');
 const textColor = ref(localStorage.getItem('textColor') || 'rgba(255, 255, 255, 1)');
@@ -205,9 +214,27 @@ const currentLyricIndex = computed(() => {
   }
   return index;
 });
+const originalLyric = ref("");
+const translatedLyric = ref("");
 // 文字动画
 const lyricRef = ref(null);
 watch(currentLyricIndex, (newVal, oldVal) => {
+  if (songStore.lyricData.translatedLyric.length > 0) {
+    if (newVal === -1) {
+      originalLyric.value = "";
+      translatedLyric.value = "";
+    } else {
+      let timeStr = songStore.lyricData.lyric[newVal][1];
+      let translated = songStore.lyricData.translatedLyric.find((item) => item[1] === timeStr);
+      if (translated && translated[2]) {
+        translatedLyric.value = translated[2];
+        originalLyric.value = songStore.lyricData.lyric[newVal][2];
+      } else {
+        translatedLyric.value = songStore.lyricData.lyric[newVal][2];
+        originalLyric.value = "";
+      }
+    }
+  }
   if (newVal !== oldVal && lyricRef.value) {
     gsap.fromTo(
       lyricRef.value,
@@ -337,7 +364,7 @@ $font-size-small: v-bind(fontSizeSmall);
       height: 100%;
       overflow: hidden;
       mask-image:
-        linear-gradient(to bottom, transparent, #000 20%),
+        linear-gradient(to bottom, transparent, #000 100px),
         linear-gradient(to right, transparent, #000 100px, #000 calc(100% - 100px), transparent);
       mask-composite: intersect;
       z-index: 2;
@@ -351,14 +378,16 @@ $font-size-small: v-bind(fontSizeSmall);
 
       .song-container {
         margin-right: 100px;
-        width: 1250px;
+        width: 1300px;
         overflow: hidden;
         font-size: 50px;
         display: flex;
         align-items: flex-end;
+        padding-bottom: 10px;
         z-index: 3;
 
-        span {
+        .separate {
+          margin: 0 5px;
           color: var(--text-color);
           font-size: $font-size-big;
           transition: color 2s ease;
@@ -367,7 +396,7 @@ $font-size-small: v-bind(fontSizeSmall);
 
       .lyric-container {
         margin-right: 100px;
-        width: 1250px;
+        width: 1300px;
         height: 100px;
         overflow: hidden;
         z-index: 3;
@@ -381,7 +410,29 @@ $font-size-small: v-bind(fontSizeSmall);
           white-space: nowrap;
         }
 
-        .lyric-line-translated {}
+        .lyric-line-translated {
+          height: 100%;
+          width: 100%;
+          color: var(--text-color);
+          white-space: nowrap;
+          position: relative;
+
+          .original {
+            position: absolute;
+            top: 2px;
+            right: 0;
+            font-size: $font-size-small;
+            opacity: 0.8;
+            filter: blur(2px);
+          }
+
+          .translated {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            font-size: $font-size-medium;
+          }
+        }
 
         .lyric-empty {
           color: var(--text-color);
@@ -396,7 +447,7 @@ $font-size-small: v-bind(fontSizeSmall);
       height: 100%;
       width: 300px;
       position: absolute;
-      left: 150px;
+      left: 120px;
       top: 0;
       display: flex;
       flex-direction: column;
@@ -426,14 +477,14 @@ $font-size-small: v-bind(fontSizeSmall);
 
         .light {
           position: absolute;
-          width: 600px;
+          width: 500px;
           height: 400px;
           left: 50%;
           top: -32px;
           transform: translateX(-50%);
-          background: radial-gradient(circle 300px at center 10px, var(--shadow-color) 30px, transparent);
+          background: radial-gradient(circle 200px at center 10px, var(--shadow-color) 30px, transparent);
           // background: radial-gradient(farthest-side at center 32px, var(--text-color), transparent);
-          clip-path: polygon(240px 29px, 360px 29px, 100% 55%, 100% 100%, 0 100%, 0 55%);
+          clip-path: polygon(190px 29px, 310px 29px, 100% 45%, 100% 100%, 0 100%, 0 45%);
         }
 
         .fade-enter-active,
@@ -449,7 +500,7 @@ $font-size-small: v-bind(fontSizeSmall);
 
       .center {
         width: 25px;
-        height: 380px;
+        height: 320px;
         border: 5px dashed var(--theme-color);
         border-top: none;
         border-bottom: none;
@@ -466,7 +517,7 @@ $font-size-small: v-bind(fontSizeSmall);
 
   .curb-container {
     width: 100%;
-    height: 120px;
+    height: 80px;
     display: flex;
     justify-content: space-around;
     box-sizing: border-box;

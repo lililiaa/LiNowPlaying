@@ -4,7 +4,8 @@
       src="../../assets/icons/music.svg"
       alt="music"
     >
-    <span>自定义歌曲组件&ensp;-&ensp;{{ router.currentRoute.value.meta.title }}</span>
+    <span>自定义歌曲组件</span>
+    <!-- <span>自定义歌曲组件&ensp;-&ensp;{{ router.currentRoute.value.meta.title }}</span> -->
     <span class="time">{{ timeNow }}</span>
     <div class="header-right">
       <img
@@ -67,7 +68,7 @@ const changTheme = () => {
 };
 // 打开github
 const openGithub = () => {
-  window.open('https://github.com/lililiaa/myNowPlaying', '_blank');
+  window.open('https://github.com/lililiaa/LiNowPlaying', '_blank');
 };
 // 如何使用
 const openTour = () => {

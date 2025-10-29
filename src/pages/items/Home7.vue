@@ -1,7 +1,7 @@
 <template>
   <v-scale-screen
     :width="1900"
-    :height="1200"
+    :height="900"
     :box-style="{ backgroundColor: 'none' }"
   >
     <div
@@ -16,15 +16,44 @@
       <div class="surface-container">
         <!-- 下雨 -->
         <div class="rain-container">
-          <!-- <div
-            v-for="value in rainDropCount"
-            class="rain-drop"
-          ></div> -->
           <canvas
             v-show="rainConfig.isRain"
             id="rainCanvas"
             ref="rainCanvas"
           ></canvas>
+          <div class="song-container">
+            <overflow-text
+              v-if="songStore.songData?.track?.title"
+              :color="textColor"
+              :font-size="fontSizeBig"
+              is-bold="bold"
+            >{{ songStore.songData?.track?.title }}</overflow-text>
+            <span v-if="songStore.songData?.track?.title && songStore.songData?.track?.author">&ensp;-&ensp;</span>
+            <overflow-text
+              v-if="songStore.songData?.track?.author"
+              :color="textColor"
+              :font-size="fontSizeSmall"
+              is-bold="bold"
+            >{{ songStore.songData?.track?.author }}</overflow-text>
+            <span v-if="!songStore.songData?.track?.title && !songStore.songData?.track?.author">暂无歌曲信息</span>
+          </div>
+          <div class="lyric-container">
+            <template v-if="songStore.lyricData.lyric.length > 0">
+              <span
+                v-if="songStore.lyricData.translatedLyric.length === 0"
+                ref="lyricRef"
+                class="lyric-line"
+              >{{ songStore.lyricData.lyric[currentLyricIndex][2] || '......' }}</span>
+              <span
+                v-else
+                class="lyric-line-translated"
+              ></span>
+            </template>
+            <span
+              v-else
+              class="lyric-empty"
+            >暂无歌词</span>
+          </div>
         </div>
         <!-- 路灯 -->
         <div class="street-light">
@@ -58,12 +87,17 @@
 import overflowText from '../../components/overflowText.vue';
 import VScaleScreen from 'v-scale-screen';
 import { useSongStore } from '../../stores/song';
-import { onMounted, onUnmounted, reactive, ref, watch } from 'vue';
+import { computed, onMounted, onUnmounted, reactive, ref, watch } from 'vue';
 import ColorThief from 'colorthief';
 import { getCoverUrl } from '../../utils/cover';
+import gsap from 'gsap';
 
 const songStore = useSongStore();
 
+// 字体大小
+const fontSizeBig = "75px";
+const fontSizeMedium = "60px";
+const fontSizeSmall = "50px";
 // 主体颜色
 const themeColor = ref(localStorage.getItem('backgroundColor') || 'rgba(0, 0, 0, 0.8)');
 const textColor = ref(localStorage.getItem('textColor') || 'rgba(255, 255, 255, 1)');
@@ -80,9 +114,9 @@ class Raindrop {
   reset() {
     this.y = Math.random() * -this.canvasHeight;
     if (rainConfig.value.angle >= 0) {
-      this.x = (Math.random() * 1.3 - 0.3) * this.canvasWidth;
+      this.x = (Math.random() * 1.2 - 0.2) * this.canvasWidth;
     } else {
-      this.x = Math.random() * 1.3 * this.canvasWidth;
+      this.x = Math.random() * 1.2 * this.canvasWidth;
     }
     this.length = Math.random() * 20 + 20;
     this.width = Math.random() * 1 + 2;
@@ -125,8 +159,8 @@ let animationId = null;
 const rainConfig = ref(JSON.parse(localStorage.getItem('rainConfig') || {
   isRain: true,
   amount: 100,
-  angle: 10,
-  speed: 5,
+  angle: 0,
+  speed: 10,
 }));
 
 // 提取图片主题色
@@ -154,7 +188,42 @@ if (process.env.NODE_ENV === 'development1') {
     },
   );
 }
-
+// 当前歌词
+const currentLyricIndex = computed(() => {
+  const currentTimeStr = songStore.songData?.player?.seekbarCurrentPositionHuman.split(':') || 0;
+  const currentTime = parseInt(currentTimeStr[0]) * 60 + parseInt(currentTimeStr[1]);
+  let index = -1;
+  for (let i = songStore.lyricData.lyric.length - 1; i >= 0; i--) {
+    const timeStr = songStore.lyricData.lyric[i][1].match(/\[(\d+):(\d+)\.(\d+)\]/);
+    if (timeStr) {
+      const time = parseInt(timeStr[1]) * 60 + parseInt(timeStr[2]);
+      if (currentTime >= time) {
+        index = i;
+        break;
+      }
+    }
+  }
+  return index;
+});
+// 文字动画
+const lyricRef = ref(null);
+watch(currentLyricIndex, (newVal, oldVal) => {
+  if (newVal !== oldVal && lyricRef.value) {
+    gsap.fromTo(
+      lyricRef.value,
+      {
+        opacity: 0,
+        y: 40,
+      },
+      {
+        opacity: 1,
+        y: 0,
+        duration: 1,
+        ease: 'power4.out',
+      }
+    );
+  }
+});
 // 网页标题
 const titleData = reactive({
   status: "已暂停",
@@ -195,7 +264,13 @@ onMounted(() => {
   resizeCanvas(canvas);
   createRaindrops(canvas);
   animationId = requestAnimationFrame(animation);
-  window.addEventListener('resize', () => resizeCanvas(rainCanvas.value));
+  let resizeTimeout = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      resizeCanvas(rainCanvas.value);
+    }, 200);
+  });
 });
 
 onUnmounted(() => {
@@ -219,7 +294,6 @@ function createRaindrops(canvas) {
   for (let i = 0; i < rainConfig.value.amount; i++) {
     raindrops.push(new Raindrop(canvas.width, canvas.height));
   }
-  console.log(raindrops.length);
 }
 // 开始动画
 function animation() {
@@ -235,10 +309,14 @@ function animation() {
 
 <style lang="scss" scoped>
 @use 'sass:math';
+// 文字大小
+$font-size-big: v-bind(fontSizeBig);
+$font-size-medium: v-bind(fontSizeMedium);
+$font-size-small: v-bind(fontSizeSmall);
 
 .main {
   width: 1700px;
-  height: 1000px;
+  height: 700px;
   margin: 100px;
   display: flex;
   flex-direction: column;
@@ -250,50 +328,68 @@ function animation() {
     flex: 1;
 
     .rain-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: flex-end;
       position: relative;
       width: 100%;
       height: 100%;
       overflow: hidden;
       mask-image:
         linear-gradient(to bottom, transparent, #000 20%),
-        linear-gradient(to right, transparent, #000 10%, #000 90%, transparent);
+        linear-gradient(to right, transparent, #000 100px, #000 calc(100% - 100px), transparent);
       mask-composite: intersect;
       z-index: 2;
 
-      // .rain-drop {
-      //   position: absolute;
-      //   top: 0;
-      //   width: 2px;
-      //   background: linear-gradient(to top, var(--theme-color), transparent);
-      //   border-radius: 0 0 1px 1px;
-      //   // transform: rotate(var(--raindrop-angle));
-      //   animation: rain-fall 1.5s linear infinite;
-      //   opacity: 0;
+      canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 5;
+      }
 
-      //   @for $i from 1 through 100 {
-      //     &:nth-child(#{$i}) {
-      //       left: math.random(99) * 1%;
-      //       height: 10px + math.random(10) * 1px;
-      //       animation-delay: math.random(100) * 0.02s;
-      //       animation-duration: 1s + math.random(5) * 0.1s;
-      //     }
-      //   }
+      .song-container {
+        margin-right: 100px;
+        width: 1250px;
+        overflow: hidden;
+        font-size: 50px;
+        display: flex;
+        align-items: flex-end;
+        z-index: 3;
 
-      //   @keyframes rain-fall {
-      //     0% {
-      //       opacity: 0;
-      //     }
+        span {
+          color: var(--text-color);
+          font-size: $font-size-big;
+          transition: color 2s ease;
+        }
+      }
 
-      //     10% {
-      //       opacity: 1;
-      //     }
+      .lyric-container {
+        margin-right: 100px;
+        width: 1250px;
+        height: 100px;
+        overflow: hidden;
+        z-index: 3;
+        display: flex;
+        align-items: center;
+        position: relative;
 
-      //     100% {
-      //       top: 100%;
-      //       opacity: 1;
-      //     }
-      //   }
-      // }
+        .lyric-line {
+          color: var(--text-color);
+          font-size: $font-size-big;
+          white-space: nowrap;
+        }
+
+        .lyric-line-translated {}
+
+        .lyric-empty {
+          color: var(--text-color);
+          font-size: $font-size-big;
+          font-weight: bold;
+          transition: all 0.5s ease-in-out;
+        }
+      }
     }
 
     .street-light {
@@ -335,7 +431,7 @@ function animation() {
           left: 50%;
           top: -32px;
           transform: translateX(-50%);
-          background: radial-gradient(circle 300px at center 10px, var(--text-color) 30px, transparent);
+          background: radial-gradient(circle 300px at center 10px, var(--shadow-color) 30px, transparent);
           // background: radial-gradient(farthest-side at center 32px, var(--text-color), transparent);
           clip-path: polygon(240px 29px, 360px 29px, 100% 55%, 100% 100%, 0 100%, 0 55%);
         }
@@ -353,7 +449,7 @@ function animation() {
 
       .center {
         width: 25px;
-        height: 500px;
+        height: 380px;
         border: 5px dashed var(--theme-color);
         border-top: none;
         border-bottom: none;
@@ -361,7 +457,7 @@ function animation() {
 
       .bottom {
         width: 40px;
-        height: 80px;
+        height: 70px;
         border: 5px dashed var(--theme-color);
         border-bottom: none;
       }
@@ -370,13 +466,14 @@ function animation() {
 
   .curb-container {
     width: 100%;
-    height: 60px;
+    height: 120px;
     display: flex;
     justify-content: space-around;
     box-sizing: border-box;
     border-top: 5px dashed var(--theme-color);
-    mask-image: linear-gradient(to right, transparent, #000 20%, #000 80%, transparent);
+    mask-image: linear-gradient(to right, transparent, #000 200px, #000 calc(100% - 200px), transparent);
     transition: border-color 0.5s ease;
+    z-index: 2;
   }
 }
 </style>

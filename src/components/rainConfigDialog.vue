@@ -38,7 +38,7 @@
         >
           <el-slider
             v-model="form.amount"
-            :min="0"
+            :min="1"
             :max="1000"
             :step="1"
             show-input
@@ -66,8 +66,8 @@
         >
           <el-slider
             v-model="form.speed"
-            :min="0"
-            :max="20"
+            :min="1"
+            :max="30"
             :step="0.1"
             show-input
             size="small"

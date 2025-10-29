@@ -40,7 +40,15 @@ document.addEventListener('contextmenu', (e) => {
         label: '页面跳转',
         icon: 'icon-open-blank',
         children: menuData.items,
-      }
+      },
+      {
+        label: '清除缓存',
+        icon: 'icon-qingchuhuancun',
+        onClick: () => {
+          localStorage.clear();
+          location.reload();
+        }
+      },
     ],
   });
 });
@@ -83,7 +91,7 @@ const setRain = () => {
     isRain: true,
     amount: 100,
     angle: 10,
-    speed: 5,
+    speed: 10,
   }));
 };
 // 获取歌曲信息
@@ -147,61 +155,6 @@ if (window === window.parent) {
     });
   });
 }
-// if (window === window.parent) {
-//   window.songStore = songStore;
-//   watch(
-//     () => songStore.songData?.track?.cover,
-//     (newVal, oldVal) => {
-//       if (newVal && (newVal !== oldVal)) {
-//         // 开始变化
-//         songStore.setChangingStatus(true);
-//         // 获取歌词信息
-//         songStore.getLyricData();
-//         // 动画结束重置状态
-//         setTimeout(() => {
-//           songStore.setChangingStatus(false);
-//         }, 2000);
-//       }
-//     },
-//   );
-
-//   let intervalId = null;
-//   onMounted(() => {
-//     songStore.fetchSongData();
-//     intervalId = setInterval(songStore.fetchSongData, localStorage.getItem("queryTime") || 1000);
-//   });
-
-//   onBeforeMount(() => {
-//     changTheme();
-//     setQueryTime();
-//     setExtraInfo();
-//   });
-
-//   onBeforeUnmount(() => {
-//     if (intervalId) {
-//       clearInterval(intervalId);
-//     }
-//   })
-// } else {
-//   let intervalId = null;
-//   try {
-//     const parentStore = window.parent.songStore;
-//     if (parentStore) {
-//       intervalId = setInterval(() => {
-//         songStore.songData = parentStore.songData;
-//         songStore.lyricData = parentStore.lyricData;
-//         songStore.isChanging = parentStore.isChanging;
-//       }, localStorage.getItem("queryTime") || 1000);
-//     }
-//   } catch (error) {
-//     console.error(error);
-//   }
-//   onBeforeUnmount(() => {
-//     if (intervalId) {
-//       clearInterval(intervalId);
-//     }
-//   })
-// }
 </script>
 
 <style scoped></style>

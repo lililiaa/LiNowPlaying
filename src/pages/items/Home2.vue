@@ -127,13 +127,13 @@
           v-else
           class="lyric-empty"
         >暂无歌词</div>
-        <div class="lyric-bg">
+        <!-- <div class="lyric-bg">
           <img
             :key="songStore.songData?.track?.cover"
             :src="songStore.songData?.track?.cover"
             alt=""
           >
-        </div>
+        </div> -->
       </div>
     </div>
   </v-scale-screen>

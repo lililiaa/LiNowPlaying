@@ -16,10 +16,7 @@
         '--outline-color2': outlineColor2,
       }"
     >
-      <div
-        class="cover"
-        :style="{ border: `10px solid ${outlineColor}` }"
-      >
+      <div class="cover">
         <img
           v-show="songStore.songData?.track?.cover"
           id="cover"
@@ -131,6 +128,14 @@ const getImgColor = () => {
     outlineColor2.value = isColorDark(textColor.value) ? 'rgb(255, 255, 255)' : 'rgb(0, 0, 0)';
   };
 };
+const getImgColor2 = () => {
+  const img = new Image();
+  img.src = getCoverUrl(songStore.songData?.track?.cover);
+  img.onload = function () {
+    outlineColor.value = isColorDark(themeColor.value) ? 'rgb(255, 255, 255)' : 'rgb(0, 0, 0)';
+    outlineColor2.value = isColorDark(textColor.value) ? 'rgb(255, 255, 255)' : 'rgb(0, 0, 0)';
+  };
+};
 // 监听封面变化
 const oldCover = ref('');
 if (process.env.NODE_ENV === 'development') {
@@ -141,6 +146,17 @@ if (process.env.NODE_ENV === 'development') {
       if (newVal && (newVal !== oldVal)) {
         // 获取主题色
         getImgColor();
+      }
+    },
+  );
+} else {
+  watch(
+    () => songStore.songData?.track?.cover,
+    (newVal, oldVal) => {
+      oldCover.value = oldVal || '/assets/icons/music.svg';
+      if (newVal && (newVal !== oldVal)) {
+        // 获取主题色
+        getImgColor2();
       }
     },
   );
@@ -218,8 +234,10 @@ onMounted(() => {
     aspect-ratio: 1 / 1;
     position: relative;
     overflow: hidden;
-    transition: border-color 1s ease;
+    transition: border-color 1s ease, background-color 1s ease;
     box-sizing: border-box;
+    border: 10px solid var(--outline-color);
+    background-color: var(--outline-color);
 
     img {
       width: 100%;

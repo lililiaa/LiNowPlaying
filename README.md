@@ -23,3 +23,7 @@
 ### 方法二
 
 直接使用在线链接 <https://lililiaa.github.io/myNowPlaying/>
+
+### 方法三
+
+下载doc.zip后直接打开index.html

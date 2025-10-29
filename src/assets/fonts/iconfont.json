@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "2737982",
+      "name": "清除缓存",
+      "font_class": "qingchuhuancun",
+      "unicode": "e649",
+      "unicode_decimal": 58953
+    },
+    {
       "icon_id": "12550606",
       "name": "页面",
       "font_class": "yemian",

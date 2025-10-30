@@ -1,7 +1,7 @@
 <template>
   <v-scale-screen
     :width="1900"
-    :height="900"
+    :height="800"
     :box-style="{ backgroundColor: 'none' }"
   >
     <div
@@ -104,9 +104,9 @@ import gsap from 'gsap';
 const songStore = useSongStore();
 
 // 字体大小
-const fontSizeBig = "75px";
+const fontSizeBig = "80px";
 const fontSizeMedium = "65px";
-const fontSizeSmall = "45px";
+const fontSizeSmall = "50px";
 // 主体颜色
 const themeColor = ref(localStorage.getItem('backgroundColor') || 'rgba(0, 0, 0, 0.8)');
 const textColor = ref(localStorage.getItem('textColor') || 'rgba(255, 255, 255, 1)');
@@ -186,7 +186,7 @@ const getImgColor = () => {
   };
 };
 // 监听封面变化
-if (process.env.NODE_ENV === 'development1') {
+if (!JSON.parse(localStorage.getItem('isCustomColor'))) {
   watch(
     () => songStore.songData?.track?.cover,
     (newVal, oldVal) => {
@@ -343,7 +343,7 @@ $font-size-small: v-bind(fontSizeSmall);
 
 .main {
   width: 1700px;
-  height: 700px;
+  height: 600px;
   margin: 100px;
   display: flex;
   flex-direction: column;
@@ -364,7 +364,7 @@ $font-size-small: v-bind(fontSizeSmall);
       height: 100%;
       overflow: hidden;
       mask-image:
-        linear-gradient(to bottom, transparent, #000 100px),
+        linear-gradient(to bottom, transparent, #000 50px),
         linear-gradient(to right, transparent, #000 100px, #000 calc(100% - 100px), transparent);
       mask-composite: intersect;
       z-index: 2;
@@ -385,11 +385,11 @@ $font-size-small: v-bind(fontSizeSmall);
         align-items: flex-end;
         padding-bottom: 10px;
         z-index: 3;
+        color: var(--text-color);
+        font-size: $font-size-big;
 
         .separate {
           margin: 0 5px;
-          color: var(--text-color);
-          font-size: $font-size-big;
           transition: color 2s ease;
         }
       }
@@ -404,16 +404,23 @@ $font-size-small: v-bind(fontSizeSmall);
         align-items: center;
         position: relative;
 
-        .lyric-line {
+        span {
           color: var(--text-color);
-          font-size: $font-size-big;
+          transition: color 2s ease;
           white-space: nowrap;
+          text-overflow: ellipsis;
+          overflow: hidden;
+        }
+
+        .lyric-line {
+          width: 100%;
+          font-size: $font-size-big;
+          -webkit-box-flex: below 5px;
         }
 
         .lyric-line-translated {
           height: 100%;
           width: 100%;
-          color: var(--text-color);
           white-space: nowrap;
           position: relative;
 
@@ -438,7 +445,7 @@ $font-size-small: v-bind(fontSizeSmall);
           color: var(--text-color);
           font-size: $font-size-big;
           font-weight: bold;
-          transition: all 0.5s ease-in-out;
+          transition: all 2s ease-in-out;
         }
       }
     }
@@ -447,7 +454,7 @@ $font-size-small: v-bind(fontSizeSmall);
       height: 100%;
       width: 300px;
       position: absolute;
-      left: 120px;
+      left: 100px;
       top: 0;
       display: flex;
       flex-direction: column;
@@ -456,7 +463,7 @@ $font-size-small: v-bind(fontSizeSmall);
 
       div {
         box-sizing: border-box;
-        transition: border-color 0.5s ease;
+        transition: border-color 2s ease;
       }
 
       .shade {
@@ -469,8 +476,8 @@ $font-size-small: v-bind(fontSizeSmall);
       }
 
       .top {
-        width: 60px;
-        height: 60px;
+        width: 50px;
+        height: 50px;
         border: 5px dashed var(--theme-color);
         border-top: none;
         position: relative;
@@ -482,7 +489,7 @@ $font-size-small: v-bind(fontSizeSmall);
           left: 50%;
           top: -32px;
           transform: translateX(-50%);
-          background: radial-gradient(circle 200px at center 10px, var(--shadow-color) 30px, transparent);
+          background: radial-gradient(circle 150px at center 10px, var(--shadow-color) 30px, transparent);
           // background: radial-gradient(farthest-side at center 32px, var(--text-color), transparent);
           clip-path: polygon(190px 29px, 310px 29px, 100% 45%, 100% 100%, 0 100%, 0 45%);
         }
@@ -500,15 +507,15 @@ $font-size-small: v-bind(fontSizeSmall);
 
       .center {
         width: 25px;
-        height: 320px;
+        height: 250px;
         border: 5px dashed var(--theme-color);
         border-top: none;
         border-bottom: none;
       }
 
       .bottom {
-        width: 40px;
-        height: 70px;
+        width: 35px;
+        height: 50px;
         border: 5px dashed var(--theme-color);
         border-bottom: none;
       }
@@ -523,7 +530,7 @@ $font-size-small: v-bind(fontSizeSmall);
     box-sizing: border-box;
     border-top: 5px dashed var(--theme-color);
     mask-image: linear-gradient(to right, transparent, #000 200px, #000 calc(100% - 200px), transparent);
-    transition: border-color 0.5s ease;
+    transition: border-color 2s ease;
     z-index: 2;
   }
 }

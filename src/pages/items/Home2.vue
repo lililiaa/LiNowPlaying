@@ -53,7 +53,7 @@
           >
             {{ songStore.songData?.track?.title }}
           </overflow-text>
-          <span>-</span>
+          <span v-if="songStore.songData?.track?.title && songStore.songData?.track?.author">-</span>
           <overflow-text
             v-if="songStore.songData?.track?.author"
             :color="textColor"
@@ -211,7 +211,7 @@ const getImgColor = () => {
   };
 };
 // 监听封面变化
-if (process.env.NODE_ENV === 'development') {
+if (!JSON.parse(localStorage.getItem('isCustomColor'))) {
   watch(
     () => songStore.songData?.track?.cover,
     (newVal, oldVal) => {

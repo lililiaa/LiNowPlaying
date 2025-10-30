@@ -10,30 +10,48 @@
     @closed="handleClose"
   >
     <template #default>
-      <div class="container">
-        <div class="preview-container">
-          <div
-            class="preview"
-            :style="{ backgroundColor: colors.backgroundColor, color: colors.textColor, filter: `drop-shadow(0 4px 10px ${colors.shadowColor})` }"
-          >
-            <span>预览文本</span>
-          </div>
-        </div>
-        <div>
-          <el-radio-group v-model="key">
-            <el-radio value="backgroundColor">背景颜色</el-radio>
-            <el-radio value="textColor">文字颜色</el-radio>
-            <el-radio value="shadowColor">阴影颜色</el-radio>
+      <el-form
+        label-width="auto"
+        label-position="left"
+        label-suffix="："
+      >
+        <el-form-item label="取色方案">
+          <el-radio-group v-model="isCustomColor">
+            <el-radio :value="false">根据封面取色(实验性功能)</el-radio>
+            <el-radio :value="true">自定义配色</el-radio>
           </el-radio-group>
-          <el-color-picker-panel
-            v-model="colors[key]"
-            show-alpha
-            :border="true"
-            color-format="rgb"
-            :predefine="predefineColors"
-          />
-        </div>
-      </div>
+        </el-form-item>
+        <el-form-item label="颜色搭配">
+          <div class="container">
+            <div class="preview-container">
+              <div
+                class="preview"
+                :style="{ backgroundColor: colors.backgroundColor, color: colors.textColor, filter: `drop-shadow(0 4px 10px ${colors.shadowColor})` }"
+              >
+                <span>预览文本</span>
+              </div>
+            </div>
+            <div>
+              <el-radio-group
+                v-model="key"
+                :disabled="!isCustomColor"
+              >
+                <el-radio value="backgroundColor">背景颜色</el-radio>
+                <el-radio value="textColor">文字颜色</el-radio>
+                <el-radio value="shadowColor">阴影颜色</el-radio>
+              </el-radio-group>
+              <el-color-picker-panel
+                v-model="colors[key]"
+                show-alpha
+                :border="true"
+                color-format="rgb"
+                :predefine="predefineColors"
+                :disabled="!isCustomColor"
+              />
+            </div>
+          </div>
+        </el-form-item>
+      </el-form>
     </template>
     <template #footer>
       <span>
@@ -64,6 +82,7 @@ const predefineColors = [
 
 const emit = defineEmits(['closed']);
 
+const isCustomColor = ref(JSON.parse(localStorage.getItem('isCustomColor')) || false);
 const colors = reactive({
   backgroundColor: localStorage.getItem('backgroundColor') || 'rgba(0, 0, 0, 1)',
   textColor: localStorage.getItem('textColor') || 'rgba(255, 255, 255, 1)',
@@ -76,6 +95,7 @@ const openDialog = () => {
   dialogVisible.value = true;
 }
 const handleSubmit = () => {
+  localStorage.setItem('isCustomColor', isCustomColor.value);
   Object.keys(colors).forEach((key) => {
     localStorage.setItem(key, colors[key]);
   });
@@ -83,6 +103,7 @@ const handleSubmit = () => {
   emit('closed');
 };
 const handleClose = () => {
+  isCustomColor.value = JSON.parse(localStorage.getItem('isCustomColor')) || false;
   key.value = 'backgroundColor';
   colors.backgroundColor = localStorage.getItem('backgroundColor') || 'rgba(0, 0, 0, 1)';
   colors.textColor = localStorage.getItem('textColor') || 'rgba(255, 255, 255, 1)';
@@ -97,6 +118,7 @@ defineExpose({
 <style lang="scss" scoped>
 .container {
   height: 300px;
+  width: 100%;
   display: flex;
   justify-content: space-between;
   align-items: center;

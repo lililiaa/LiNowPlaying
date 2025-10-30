@@ -173,7 +173,7 @@ const getImgColor = () => {
   };
 };
 // 监听封面变化
-if (process.env.NODE_ENV === 'development') {
+if (!JSON.parse(localStorage.getItem('isCustomColor'))) {
   watch(
     () => songStore.songData?.track?.cover,
     (newVal, oldVal) => {
@@ -419,6 +419,7 @@ $lyric-font-size-small: 50px;
       align-items: flex-start;
       gap: 10px;
       font-size: $lyric-font-size-small;
+      color: var(--text-color);
 
       &>div {
         width: 100%;

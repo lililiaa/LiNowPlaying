@@ -90,9 +90,16 @@ const setRain = () => {
   if (!rain) localStorage.setItem('rainConfig', JSON.stringify({
     isRain: true,
     amount: 100,
-    angle: 10,
+    angle: 0,
     speed: 10,
   }));
+};
+// 初始化是否自定义配色
+const setIsCustomColor = () => {
+  let isCustomColor = localStorage.getItem('isCustomColor');
+  if (!isCustomColor) {
+    localStorage.setItem('isCustomColor', 'false');
+  }
 };
 // 获取歌曲信息
 const songStore = useSongStore();
@@ -125,6 +132,7 @@ if (window === window.parent) {
     setQueryTime();
     setExtraInfo();
     setRain();
+    setIsCustomColor();
   });
 
   onBeforeUnmount(() => {

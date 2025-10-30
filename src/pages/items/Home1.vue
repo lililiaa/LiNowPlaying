@@ -221,7 +221,7 @@ const getImgColor1 = () => {
   };
 };
 // 监听封面变化
-if (process.env.NODE_ENV === 'development') {
+if (!JSON.parse(localStorage.getItem('isCustomColor'))) {
   watch(
     () => songStore.songData?.track?.cover,
     (newVal, oldVal) => {

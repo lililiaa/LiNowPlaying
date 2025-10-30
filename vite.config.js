@@ -65,7 +65,27 @@ export default defineConfig({
         target: 'http://p3.music.126.net',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/netease-proxy/, '')
-      }
+      },
+      '/kugou-proxy': {
+        target: 'http://imge.kugou.com',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/kugou-proxy/, '')
+      },
+      '/kuwo-proxy': {
+        target: 'https://img2.kuwo.cn',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/kuwo-proxy/, '')
+      },
+      '/p1-proxy': {
+        target: 'https://p1.music.126.net',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/p1-proxy/, '')
+      },
+      '/p2-proxy': {
+        target: 'https://p2.music.126.net',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/p2-proxy/, '')
+      },
     }
   }
 })

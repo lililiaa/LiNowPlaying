@@ -140,6 +140,7 @@
                 <el-select
                   v-model="params.tags"
                   placeholder="请选择组件标签"
+                  value-key="label"
                   filterable
                   multiple
                   collapse-tags
@@ -147,12 +148,11 @@
                   :max-collapse-tags="3"
                 >
                   <el-option
-                    v-for="item in tagOptions"
-                    :key="item"
-                    :label="item"
-                    :value="item"
-                  >
-                  </el-option>
+                    v-for="item in tagList"
+                    :key="item.label"
+                    :label="item.label"
+                    :value="item.label"
+                  ></el-option>
                 </el-select>
               </div>
             </div>
@@ -292,8 +292,22 @@
         title="右键菜单"
         description="鼠标右键可以进行组件刷新、页面跳转操作"
         :prev-button-props="{ children: '上一步' }"
-        :next-button-props="{ children: '完成' }"
+        :next-button-props="{ children: '下一步' }"
       />
+      <el-tour-step
+        target=".fade"
+        title="如何使用"
+        description=""
+        placement="bottom"
+        :prev-button-props="{ children: '上一步' }"
+        :next-button-props="{ children: '完成' }"
+      >
+        <div>方法1：复制组件URL，填入直播软件中浏览器源的URL地址。</div>
+        <br />
+        <div>方法2：直接复制根目录URL，填入直播软件中浏览器源的URL地址，再点击浏览器源组件的交互按钮来切换页面。</div>
+        <br />
+        <div>（注意：直播软件中系统配置与浏览器不通用，浏览器只起预览作用，修改系统配置请在直播软件中选中源并点击交互进行修改）</div>
+      </el-tour-step>
       <template #indicators="{ current, total }">
         <span style="color: var(--el-tour-text-color);">{{ current + 1 }} / {{ total }}</span>
       </template>
@@ -318,6 +332,7 @@ import { Edit } from '@element-plus/icons-vue';
 import MyHeader from '../components/common/myHeader.vue';
 import ColorSelectDialog from '../components/colorSelectDialog.vue';
 import RainConfigDialog from '../components/rainConfigDialog.vue';
+import { tagList } from '../dicts/tags';
 
 // 颜色选取dialog
 const colorSelectRef = ref(null);
@@ -335,10 +350,9 @@ const pageList = routeList.filter(item => item.meta.isPage).map(item => {
   item.url = window.location.origin + window.location.pathname + '#' + item.path;
   return item;
 });
-const tagOptions = [...new Set(pageList.map(i => i.meta.tags).flat(Infinity).map(i => i.label))];
 const params = reactive({
   name: '',
-  tags: tagOptions,
+  tags: Object.values(tagList).map(i => i.label),
 });
 const filterdPageList = computed(() => {
   return pageList.filter(item => item.meta.title.includes(params.name) && item.meta.tags.some(i => params.tags.includes(i.label)));
@@ -557,12 +571,12 @@ onMounted(() => {
 
     .content-left {
       flex: 1;
-      min-height: 100%;
+      height: 100%;
       box-sizing: border-box;
       padding: 20px;
       display: grid;
       gap: 20px;
-      grid-template-columns: repeat(auto-fit, minmax(700px, auto));
+      grid-template-columns: repeat(auto-fit, minmax(600px, auto));
 
       .page-container {
         // width: 100%;

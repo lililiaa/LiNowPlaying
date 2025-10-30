@@ -10,3 +10,33 @@
   to = "https://y.qq.com/:splat"
   status = 200
   force = true
+
+[[redirects]]
+  from = "/netease-proxy/*"
+  to = "http://p3.music.126.net/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/kugou-proxy/*"
+  to = "http://imge.kugou.com/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/kuwo-proxy/*"
+  to = "https://img2.kuwo.cn/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/p1-proxy/*"
+  to = "https://p1.music.126.net/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/p2-proxy/*"
+  to = "https://p2.music.126.net/:splat"
+  status = 200
+  force = true

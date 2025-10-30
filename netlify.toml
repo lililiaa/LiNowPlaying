@@ -7,6 +7,6 @@
 
 [[redirects]]
   from = "/qq-proxy/*"
-  to = "https://y.qq.com/*"
+  to = "https://y.qq.com/:splat"
   status = 200
   force = true

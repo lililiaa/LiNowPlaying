@@ -138,29 +138,29 @@ const getImgColor2 = () => {
 };
 // 监听封面变化
 const oldCover = ref('');
-if (process.env.NODE_ENV === 'development') {
-  watch(
-    () => songStore.songData?.track?.cover,
-    (newVal, oldVal) => {
-      oldCover.value = oldVal || '../assets/icons/music.svg';
-      if (newVal && (newVal !== oldVal)) {
-        // 获取主题色
-        getImgColor();
-      }
-    },
-  );
-} else {
-  watch(
-    () => songStore.songData?.track?.cover,
-    (newVal, oldVal) => {
-      oldCover.value = oldVal || '/assets/icons/music.svg';
-      if (newVal && (newVal !== oldVal)) {
-        // 获取主题色
-        getImgColor2();
-      }
-    },
-  );
-}
+// if (process.env.NODE_ENV === 'development') {
+watch(
+  () => songStore.songData?.track?.cover,
+  (newVal, oldVal) => {
+    oldCover.value = oldVal || '../assets/icons/music.svg';
+    if (newVal && (newVal !== oldVal)) {
+      // 获取主题色
+      getImgColor();
+    }
+  },
+);
+// } else {
+//   watch(
+//     () => songStore.songData?.track?.cover,
+//     (newVal, oldVal) => {
+//       oldCover.value = oldVal || '/assets/icons/music.svg';
+//       if (newVal && (newVal !== oldVal)) {
+//         // 获取主题色
+//         getImgColor2();
+//       }
+//     },
+//   );
+// }
 
 // 网页标题
 const titleData = reactive({

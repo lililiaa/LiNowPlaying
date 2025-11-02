@@ -1,6 +1,6 @@
 <template>
   <div class="main">
-    <MyHeader @open-tour="openTour" />
+    <!-- <MyHeader @open-tour="openTour" /> -->
     <div class="content">
       <!-- 左侧内容 -->
       <el-scrollbar
@@ -108,7 +108,11 @@
         <el-empty
           v-if="filterdPageList.length === 0"
           description="暂无数据"
-        />
+        >
+          <template #image>
+            <div></div>
+          </template>
+        </el-empty>
         <!-- 回到顶部 -->
         <el-backtop
           :target="'.el-scrollbar__wrap'"
@@ -128,10 +132,21 @@
             <div>
               <span class="title">组件筛选</span>
               <div class="form-item">
+                <span>组件类型</span>
+                <el-segmented
+                  v-model="params.type"
+                  :options="typeOptions"
+                >
+                  <template #default="scope">
+                    <span>{{ scope.item.label }}</span>
+                  </template>
+                </el-segmented>
+              </div>
+              <div class="form-item">
                 <span>组件名称</span>
                 <el-input
                   v-model="params.name"
-                  placeholder="请输入组件名称"
+                  placeholder="根据组件名称筛选"
                   clearable
                 />
               </div>
@@ -139,7 +154,7 @@
                 <span>组件标签</span>
                 <el-select
                   v-model="params.tags"
-                  placeholder="请选择组件标签"
+                  placeholder="根据组件标签筛选"
                   value-key="label"
                   filterable
                   multiple
@@ -245,73 +260,6 @@
         </el-scrollbar>
       </div>
     </div>
-    <!-- 漫游式引导 -->
-    <el-tour
-      v-model="tourOpen"
-      :target-area-clickable="false"
-      @close="handleFinishTour"
-    >
-      <el-tour-step
-        title="自定义歌曲组件"
-        description="欢迎使用myNowPlaying，点击开始新手引导"
-        :next-button-props="{ children: '开始' }"
-      />
-      <el-tour-step
-        target=".page-header-btn"
-        title="歌曲组件"
-        description="每个歌曲组件右上角可以进行组件相关操作"
-        placement="bottom"
-        :prev-button-props="{ children: '上一步' }"
-        :next-button-props="{ children: '下一步' }"
-      />
-      <el-tour-step
-        target=".content-right-box"
-        title="控制面板"
-        description="控制面板包含组件筛选功能、组件信息统计、系统配置信息"
-        placement="left"
-        :prev-button-props="{ children: '上一步' }"
-        :next-button-props="{ children: '下一步' }"
-      />
-      <el-tour-step
-        target=".system-box"
-        title="系统信息"
-        description="系统信息可以进行编辑操作"
-        placement="left"
-        :prev-button-props="{ children: '上一步' }"
-        :next-button-props="{ children: '下一步' }"
-      />
-      <el-tour-step
-        target=".header-right"
-        title="系统操作"
-        description="标题栏右侧可以进行系统相关操作"
-        placement="bottom-right"
-        :prev-button-props="{ children: '上一步' }"
-        :next-button-props="{ children: '下一步' }"
-      />
-      <el-tour-step
-        title="右键菜单"
-        description="鼠标右键可以进行组件刷新、页面跳转操作"
-        :prev-button-props="{ children: '上一步' }"
-        :next-button-props="{ children: '下一步' }"
-      />
-      <el-tour-step
-        target=".fade"
-        title="如何使用"
-        description=""
-        placement="bottom"
-        :prev-button-props="{ children: '上一步' }"
-        :next-button-props="{ children: '完成' }"
-      >
-        <div>方法1：复制组件URL，填入直播软件中浏览器源的URL地址。</div>
-        <br />
-        <div>方法2：直接复制根目录URL，填入直播软件中浏览器源的URL地址，再点击浏览器源组件的交互按钮来切换页面。</div>
-        <br />
-        <div>（注意：直播软件中系统配置与浏览器不通用，浏览器只起预览作用，修改系统配置请在直播软件中选中源并点击交互进行修改）</div>
-      </el-tour-step>
-      <template #indicators="{ current, total }">
-        <span style="color: var(--el-tour-text-color);">{{ current + 1 }} / {{ total }}</span>
-      </template>
-    </el-tour>
     <!-- 颜色选取dialog -->
     <ColorSelectDialog
       ref="colorSelectRef"
@@ -325,15 +273,18 @@
   </div>
 </template>
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue';
+import { computed, onMounted, reactive, ref, watch } from 'vue';
 import router from '../router';
 import { ElMessage, ElTooltip, ElBacktop, ElMessageBox, ElInput, ElTag, ElTour, ElTourStep } from 'element-plus';
 import { Edit } from '@element-plus/icons-vue';
-import MyHeader from '../components/common/myHeader.vue';
 import ColorSelectDialog from '../components/colorSelectDialog.vue';
 import RainConfigDialog from '../components/rainConfigDialog.vue';
 import { tagList } from '../dicts/tags';
+import ColorThief from 'colorthief';
+import { getCoverUrl } from '../utils/cover';
+import { useSongStore } from '../stores/song';
 
+const songStore = useSongStore();
 // 颜色选取dialog
 const colorSelectRef = ref(null);
 const handleColorChange = () => {
@@ -350,12 +301,23 @@ const pageList = routeList.filter(item => item.meta.isPage).map(item => {
   item.url = window.location.origin + window.location.pathname + '#' + item.path;
   return item;
 });
+const typeOptions = [
+  {
+    value: 'combined',
+    label: '组合组件',
+  },
+  {
+    value: 'uncombined',
+    label: '独立组件',
+  },
+];
 const params = reactive({
+  type: 'combined',
   name: '',
   tags: Object.values(tagList).map(i => i.label),
 });
 const filterdPageList = computed(() => {
-  return pageList.filter(item => item.meta.title.includes(params.name) && item.meta.tags.some(i => params.tags.includes(i.label)));
+  return pageList.filter(item => item.meta.title.includes(params.name) && item.meta.tags.some(i => params.tags.includes(i.label)) && item.meta.type === params.type);
 });
 
 // 刷新组件
@@ -517,6 +479,30 @@ const editPCConfig = () => {
 const backgroundColor = ref(localStorage.getItem('backgroundColor') || 'rgba(0, 0, 0, 1)');
 const textColor = ref(localStorage.getItem('textColor') || 'rgba(255, 255, 255, 1)');
 const shadowColor = ref(localStorage.getItem('shadowColor') || 'rgba(255, 255, 255, 1)');
+// 提取图片主题色
+const getImgColor = () => {
+  const colorThief = new ColorThief();
+  const img = new Image();
+  img.src = getCoverUrl(songStore.songData?.track?.cover);
+  img.onload = function () {
+    const color = colorThief.getColor(img);
+    backgroundColor.value = `rgba(${color.join(',')}, 1)`;
+    textColor.value = `rgba(${color.map(i => 255 - i).join(',')}, 1)`;
+    shadowColor.value = `rgba(${color.map(i => 255 - i).join(',')}, 1)`;
+  };
+};
+// 监听封面变化
+if (!JSON.parse(localStorage.getItem('isCustomColor'))) {
+  watch(
+    () => songStore.songData?.track?.cover,
+    (newVal, oldVal) => {
+      if (newVal && (newVal !== oldVal)) {
+        // 获取主题色
+        getImgColor();
+      }
+    },
+  );
+};
 const editColor = () => {
   colorSelectRef.value.openDialog();
 };
@@ -532,32 +518,21 @@ const reloadAll = () => {
     item.contentWindow.location.reload();
   });
 };
-// 漫游式引导
-const tourOpen = ref(false);
-const openTour = () => {
-  tourOpen.value = true;
-};
-const handleFinishTour = () => {
-  localStorage.setItem('tour', 'true');
-  tourOpen.value = false;
-};
 
 onMounted(() => {
-  if (localStorage.getItem('tour') !== 'true') {
-    setTimeout(() => {
-      openTour();
-    }, 1000);
-  }
   pageList.forEach(item => {
     copied.value.push(false);
     isRotating.value.push(false);
   });
+  if (!JSON.parse(localStorage.getItem('isCustomColor'))) {
+    getImgColor();
+  }
 });
 </script>
 <style lang="scss" scoped>
 .main {
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
+  width: 100%;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -565,7 +540,7 @@ onMounted(() => {
   background-color: var(--background-color);
 
   .content {
-    height: calc(100% - 70px);
+    height: 100%;
     display: flex;
     flex-direction: row;
 
@@ -747,7 +722,7 @@ onMounted(() => {
           .title {
             font-size: 20px;
             font-weight: bold;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
             border-left: 6px solid #4286f4;
             padding-left: 5px;
           }
@@ -757,6 +732,10 @@ onMounted(() => {
             flex-direction: column;
             align-items: flex-start;
             gap: 5px;
+
+            .el-segmented {
+              --el-border-radius-base: 16px;
+            }
           }
 
           // 单行内容

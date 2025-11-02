@@ -10,6 +10,22 @@
     @closed="handleClose"
   >
     <template #default>
+      <div class="preview-container">
+        <img
+          v-show="songStore.songData?.track?.cover"
+          id="cover"
+          class="cover"
+          :src="songStore.songData?.track?.cover"
+          alt="封面"
+          :style="{ filter: `drop-shadow(0 4px 10px ${colors2.shadowColor})` }"
+        />
+        <div
+          class="preview"
+          :style="{ backgroundColor: colors2.backgroundColor, color: colors2.textColor, filter: `drop-shadow(0 4px 10px ${colors2.shadowColor})` }"
+        >
+          <span>预览文本</span>
+        </div>
+      </div>
       <el-form
         label-width="auto"
         label-position="left"
@@ -17,38 +33,28 @@
       >
         <el-form-item label="取色方案">
           <el-radio-group v-model="isCustomColor">
-            <el-radio :value="false">根据封面取色(实验性功能)</el-radio>
+            <el-radio :value="false">自适应配色(实验性功能)</el-radio>
             <el-radio :value="true">自定义配色</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="颜色搭配">
-          <div class="container">
-            <div class="preview-container">
-              <div
-                class="preview"
-                :style="{ backgroundColor: colors.backgroundColor, color: colors.textColor, filter: `drop-shadow(0 4px 10px ${colors.shadowColor})` }"
-              >
-                <span>预览文本</span>
-              </div>
-            </div>
-            <div>
-              <el-radio-group
-                v-model="key"
-                :disabled="!isCustomColor"
-              >
-                <el-radio value="backgroundColor">背景颜色</el-radio>
-                <el-radio value="textColor">文字颜色</el-radio>
-                <el-radio value="shadowColor">阴影颜色</el-radio>
-              </el-radio-group>
-              <el-color-picker-panel
-                v-model="colors[key]"
-                show-alpha
-                :border="true"
-                color-format="rgb"
-                :predefine="predefineColors"
-                :disabled="!isCustomColor"
-              />
-            </div>
+          <div>
+            <el-radio-group
+              v-model="key"
+              :disabled="!isCustomColor"
+            >
+              <el-radio value="backgroundColor">背景颜色</el-radio>
+              <el-radio value="textColor">文字颜色</el-radio>
+              <el-radio value="shadowColor">阴影颜色</el-radio>
+            </el-radio-group>
+            <el-color-picker-panel
+              v-model="colors[key]"
+              show-alpha
+              :border="true"
+              color-format="rgb"
+              :predefine="predefineColors"
+              :disabled="!isCustomColor"
+            />
           </div>
         </el-form-item>
       </el-form>
@@ -66,9 +72,13 @@
 </template>
 
 <script setup>
-import { reactive, ref, watch } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 import { ElColorPickerPanel } from 'element-plus';
+import { useSongStore } from '../stores/song';
+import ColorThief from 'colorthief';
+import { getCoverUrl } from '../utils/cover';
 
+const songStore = useSongStore();
 // 预定义颜色
 const predefineColors = [
   "rgba(255 , 0, 0, 1)",
@@ -88,11 +98,50 @@ const colors = reactive({
   textColor: localStorage.getItem('textColor') || 'rgba(255, 255, 255, 1)',
   shadowColor: localStorage.getItem('shadowColor') || 'rgba(255, 255, 255, 1)',
 });
+const imgColors = ref({
+  backgroundColor: 'rgba(0, 0, 0, 1)',
+  textColor: 'rgba(255, 255, 255, 1)',
+  shadowColor: 'rgba(255, 255, 255, 1)',
+});
+const colors2 = computed(() => {
+  if (isCustomColor.value) {
+    // 自定义配色
+    return colors;
+  } else {
+    // 自适应配色
+    return imgColors.value;
+  }
+});
 const key = ref('backgroundColor');
 
 const dialogVisible = ref(false);
 const openDialog = () => {
   dialogVisible.value = true;
+  getImgColor();
+};
+// 提取图片主题色
+const getImgColor = () => {
+  const colorThief = new ColorThief();
+  const img = new Image();
+  img.src = getCoverUrl(songStore.songData?.track?.cover);
+  img.onload = function () {
+    const color = colorThief.getColor(img);
+    imgColors.value.backgroundColor = `rgba(${color.join(',')}, 1)`;
+    imgColors.value.textColor = `rgba(${color.map(i => 255 - i).join(',')}, 1)`;
+    imgColors.value.shadowColor = `rgba(${color.map(i => 255 - i).join(',')}, 1)`;
+  };
+};
+// 监听封面变化
+if (!JSON.parse(localStorage.getItem('isCustomColor'))) {
+  watch(
+    () => songStore.songData?.track?.cover,
+    (newVal, oldVal) => {
+      if (newVal && (newVal !== oldVal)) {
+        // 获取主题色
+        getImgColor();
+      }
+    },
+  );
 }
 const handleSubmit = () => {
   localStorage.setItem('isCustomColor', isCustomColor.value);
@@ -112,33 +161,34 @@ const handleClose = () => {
 
 defineExpose({
   openDialog,
-})
+});
 </script>
 
 <style lang="scss" scoped>
-.container {
-  height: 300px;
-  width: 100%;
+.preview-container {
+  flex: 1;
+  height: 200px;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  gap: 20px;
 
-  .preview-container {
-    flex: 1;
-    height: 100%;
+  .cover {
+    height: 130px;
+    width: 130px;
+    aspect-ratio: 1 / 1;
+    border-radius: 10px;
+  }
+
+  .preview {
+    width: 300px;
+    height: 130px;
     display: flex;
+    border-radius: 10px;
 
-    .preview {
+    span {
       margin: auto;
-      width: 60%;
-      height: 50%;
-      display: flex;
-      border-radius: 10px;
-
-      span {
-        margin: auto;
-        font-size: 40px;
-      }
+      font-size: 40px;
     }
   }
 }

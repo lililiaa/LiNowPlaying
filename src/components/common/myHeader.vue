@@ -1,13 +1,17 @@
 <template>
   <div class="header">
-    <img
-      src="../../assets/icons/music.svg"
-      alt="music"
-    >
-    <span>自定义歌曲组件</span>
-    <!-- <span>自定义歌曲组件&ensp;-&ensp;{{ router.currentRoute.value.meta.title }}</span> -->
-    <span class="time">{{ timeNow }}</span>
+    <div class="header-left">
+      <img
+        src="../../assets/icons/music.svg"
+        alt="music"
+      >
+      <span>自定义歌曲组件</span>
+    </div>
+    <div class="header-center">
+      
+    </div>
     <div class="header-right">
+      <span class="time">{{ timeNow }}</span>
       <img
         src="../../assets/icons/email.svg"
         alt="email"
@@ -33,6 +37,73 @@
         @click="openTour"
       >
     </div>
+    <!-- 漫游式引导 -->
+    <el-tour
+      v-model="tourOpen"
+      :target-area-clickable="false"
+      @close="handleFinishTour"
+    >
+      <el-tour-step
+        title="自定义歌曲组件"
+        description="欢迎使用myNowPlaying，点击开始新手引导。"
+        :next-button-props="{ children: '开始' }"
+      />
+      <el-tour-step
+        target=".page-header-btn"
+        title="歌曲组件"
+        description="每个歌曲组件右上角可以进行组件相关操作。"
+        placement="bottom"
+        :prev-button-props="{ children: '上一步' }"
+        :next-button-props="{ children: '下一步' }"
+      />
+      <el-tour-step
+        target=".content-right-box"
+        title="控制面板"
+        description="控制面板包含组件筛选功能、组件信息统计、系统配置信息。"
+        placement="left"
+        :prev-button-props="{ children: '上一步' }"
+        :next-button-props="{ children: '下一步' }"
+      />
+      <el-tour-step
+        target=".system-box"
+        title="系统信息"
+        placement="left"
+        :prev-button-props="{ children: '上一步' }"
+        :next-button-props="{ children: '下一步' }"
+      >
+        <div>系统信息可以进行编辑操作。</div>
+        <br />
+        <div>（注意：直播软件中系统配置与浏览器不通用，浏览器只起预览作用，修改系统配置请在直播软件中选中源并点击交互进行修改）</div>
+      </el-tour-step>
+      <el-tour-step
+        target=".header-right"
+        title="系统操作"
+        description="标题栏右侧可以进行系统相关操作"
+        placement="bottom-end"
+        :prev-button-props="{ children: '上一步' }"
+        :next-button-props="{ children: '下一步' }"
+      />
+      <el-tour-step
+        title="右键菜单"
+        description="鼠标右键可以进行组件刷新、页面跳转操作"
+        :prev-button-props="{ children: '上一步' }"
+        :next-button-props="{ children: '下一步' }"
+      />
+      <el-tour-step
+        target=".fade"
+        title="如何使用"
+        placement="bottom"
+        :prev-button-props="{ children: '上一步' }"
+        :next-button-props="{ children: '完成' }"
+      >
+        <div>方法1：复制组件URL，填入直播软件中浏览器源的URL地址。</div>
+        <br />
+        <div>方法2：直接复制根目录URL，填入直播软件中浏览器源的URL地址，再点击浏览器源组件的交互按钮来切换页面。</div>
+      </el-tour-step>
+      <template #indicators="{ current, total }">
+        <span style="color: var(--el-tour-text-color);">{{ current + 1 }} / {{ total }}</span>
+      </template>
+    </el-tour>
   </div>
 </template>
 
@@ -46,6 +117,8 @@ const timeNow = ref(new Date().toLocaleString());
 let dateInterval = null;
 
 const emit = defineEmits(['openTour']);
+
+const routeList = router.getRoutes().find(i => i.path === '/').children;
 // 联系作者
 const openEmail = () => {
   ElMessageBox.alert('邮箱：3460391727@qq.com', '联系作者', {
@@ -70,12 +143,22 @@ const changTheme = () => {
 const openGithub = () => {
   window.open('https://github.com/lililiaa/LiNowPlaying', '_blank');
 };
-// 如何使用
+// 漫游式引导
+const tourOpen = ref(false);
 const openTour = () => {
-  emit('openTour');
+  tourOpen.value = true;
+};
+const handleFinishTour = () => {
+  localStorage.setItem('tour', 'true');
+  tourOpen.value = false;
 };
 
 onMounted(() => {
+  if (localStorage.getItem('tour') !== 'true') {
+    setTimeout(() => {
+      openTour();
+    }, 1000);
+  }
   dateInterval = setInterval(() => {
     timeNow.value = new Date().toLocaleString();
   }, 1000);
@@ -89,36 +172,60 @@ onBeforeUnmount(() => {
 <style lang="scss" scoped>
 .header {
   width: 100%;
-  height: 70px;
+  height: 60px;
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
-  gap: 20px;
   box-sizing: border-box;
   padding: 0 30px;
   background: #8360c3;
   background: -webkit-linear-gradient(to right, #2ebf91, #8360c3);
   background: linear-gradient(to right, #2ebf91, #8360c3);
-  font-size: 40px;
-  box-shadow: 0 4px 10px var(--shadow-color-hover);
+  box-shadow: 0 0 10px var(--shadow-color-hover);
   z-index: 2;
 
-  img {
-    width: 55px;
-    height: 55px;
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    user-select: none;
+    font-size: 35px;
+
+    img {
+      width: 50px;
+      height: 50px;
+    }
   }
 
-  .time {
-    font-size: 25px;
-    margin-left: auto;
+  .header-center {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+
+    div {
+      display: flex;
+      gap: 5px;
+      user-select: none;
+      cursor: pointer;
+
+      span {
+        font-size: 25px;
+      }
+    }
   }
 
   .header-right {
     display: flex;
     align-items: center;
     gap: 10px;
-    font-size: 25px;
     user-select: none;
+
+    .time {
+      font-size: 22px;
+      margin-right: 10px;
+    }
 
     img {
       width: 30px;

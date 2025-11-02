@@ -7,16 +7,51 @@ import { onBeforeMount, onBeforeUnmount, onMounted, reactive, watch } from 'vue'
 import ContextMenu from '@imengyu/vue3-context-menu';
 import router from './router';
 import { useSongStore } from './stores/song';
+import { ElMessageBox } from 'element-plus';
 
 const menuData = reactive({
-  items: router.getRoutes().filter(route => route.meta.title).map((route) => ({
-    label: route.meta.title,
-    icon: "icon-yemian",
-    onClick: () => {
-      router.push(route.path);
+  items: [
+    {
+      label: '组合组件',
+      icon: 'icon-yemian',
+      children: [],
     },
-  })),
+    {
+      label: '独立组件',
+      icon: 'icon-yemian',
+      children: [],
+    },
+  ],
 });
+const setMenuData = () => {
+  router.getRoutes().filter(route => route.meta.title).forEach(route => {
+    if (route.meta.type === 'combined') {
+      menuData.items.find(item => item.label === '组合组件').children.push({
+        label: route.meta.title,
+        icon: "icon-yemian",
+        onClick: () => {
+          router.push(route.path);
+        },
+      });
+    } else if (route.meta.type === 'uncombined') {
+      menuData.items.find(item => item.label === '独立组件').children.push({
+        label: route.meta.title,
+        icon: "icon-yemian",
+        onClick: () => {
+          router.push(route.path);
+        },
+      });
+    } else {
+      menuData.items.push({
+        label: route.meta.title,
+        icon: "icon-yemian",
+        onClick: () => {
+          router.push(route.path);
+        },
+      });
+    }
+  });
+};
 // 初始化漫游式引导
 if (localStorage.getItem('tour') === null) {
   localStorage.setItem('tour', 'false');
@@ -45,8 +80,14 @@ document.addEventListener('contextmenu', (e) => {
         label: '清除缓存',
         icon: 'icon-qingchuhuancun',
         onClick: () => {
-          localStorage.clear();
-          location.reload();
+          ElMessageBox.confirm('清除缓存会丢失系统配置，是否继续？', '警告', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+          }).then(() => {
+            localStorage.clear();
+            location.reload();
+          });
         }
       },
     ],
@@ -123,6 +164,7 @@ if (window === window.parent) {
 
   let intervalId = null;
   onMounted(() => {
+    setMenuData();
     songStore.fetchSongData();
     intervalId = setInterval(songStore.fetchSongData, localStorage.getItem("queryTime") || 1000);
   });

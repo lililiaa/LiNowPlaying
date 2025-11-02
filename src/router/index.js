@@ -6,88 +6,120 @@ import { tagList } from '../dicts/tags';
 const routes = [
   {
     path: '/',
+    component: () => import('../layout/index.vue'),
     redirect: '/home',
     meta: {
       isPage: false,
     },
+    children: [
+      {
+        path: '/home',
+        name: 'Home',
+        component: () => import('../pages/Home.vue'),
+        meta: {
+          isPage: false,
+          title: '组件预览',
+        },
+      },
+    ],
   },
   {
-    path: '/home',
-    name: 'Home',
-    component: () => import('../pages/Home.vue'),
+    path: '/component1',
+    name: 'Component1',
+    component: () => import('../pages/uncombined/cover.vue'),
     meta: {
-      isPage: false,
-      title: '组件预览',
+      isPage: true,
+      title: '歌曲封面',
+      tags: [tagList.custom],
+      type: 'uncombined',
+    },
+  },
+  {
+    path: '/component2',
+    name: 'Component2',
+    component: () => import('../pages/uncombined/background.vue'),
+    meta: {
+      isPage: true,
+      title: '背景',
+      tags: [tagList.custom],
+      type: 'uncombined',
     },
   },
   {
     path: '/home1',
     name: 'Home1',
-    component: () => import('../pages/items/Home1.vue'),
+    component: () => import('../pages/combined/Home1.vue'),
     meta: {
       isPage: true,
       title: '歌曲组件1',
       tags: [tagList.custom],
+      type: 'combined',
     },
   },
   {
     path: '/home2',
     name: 'Home2',
-    component: () => import('../pages/items/Home2.vue'),
+    component: () => import('../pages/combined/Home2.vue'),
     meta: {
       isPage: true,
       title: '歌曲组件2',
       tags: [tagList.custom],
+      type: 'combined',
     },
   },
   {
     path: '/home3',
     name: 'Home3',
-    component: () => import('../pages/items/Home3.vue'),
+    component: () => import('../pages/combined/Home3.vue'),
     meta: {
       isPage: true,
       title: '歌曲组件3',
       tags: [tagList.custom],
+      type: 'combined',
     },
   },
   {
     path: '/home4',
     name: 'Home4',
-    component: () => import('../pages/items/Home4.vue'),
+    component: () => import('../pages/combined/Home4.vue'),
     meta: {
       isPage: true,
       title: '歌曲组件4',
       tags: [tagList.custom],
+      type: 'combined',
     },
   },
   {
     path: '/home5',
     name: 'Home5',
-    component: () => import('../pages/items/Home5.vue'),
+    component: () => import('../pages/combined/Home5.vue'),
     meta: {
       isPage: true,
       title: '都市天际线1',
       tags: [tagList.fixed, tagList.csl1],
+      type: 'combined',
     },
   },
   {
     path: '/home6',
     name: 'Home6',
-    component: () => import('../pages/items/Home6.vue'),
+    component: () => import('../pages/combined/Home6.vue'),
     meta: {
       isPage: true,
       title: '卡片',
       tags: [tagList.custom],
+      type: 'combined',
     },
   },
   {
     path: '/home7',
     name: 'Home7',
-    component: () => import('../pages/items/Home7.vue'),
+    component: () => import('../pages/combined/Home7.vue'),
     meta: {
       isPage: true,
       title: 'rain',
       tags: [tagList.custom],
+      type: 'combined',
     },
   },
 ];

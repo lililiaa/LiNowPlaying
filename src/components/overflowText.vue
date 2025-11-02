@@ -84,7 +84,7 @@ $text-transition-time: 8s;
     .marquee-content {
       display: flex;
       justify-content: v-bind(contentAlign);
-      gap: 10px;
+      gap: 5px;
       float: left;
       white-space: nowrap;
       min-width: 100%;

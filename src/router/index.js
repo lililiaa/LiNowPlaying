@@ -24,8 +24,8 @@ const routes = [
     ],
   },
   {
-    path: '/component1',
-    name: 'Component1',
+    path: '/cover1',
+    name: 'Cover1',
     component: () => import('../pages/uncombined/cover.vue'),
     meta: {
       isPage: true,
@@ -35,12 +35,23 @@ const routes = [
     },
   },
   {
-    path: '/component2',
-    name: 'Component2',
-    component: () => import('../pages/uncombined/background.vue'),
+    path: '/cover2',
+    name: '/Cover2',
+    component: () => import('../pages/uncombined/coverRound.vue'),
     meta: {
       isPage: true,
-      title: '背景',
+      title: '歌曲封面(圆)',
+      tags: [tagList.custom],
+      type: 'uncombined',
+    },
+  },
+  {
+    path: '/lyric',
+    name: 'Lyric',
+    component: () => import('../pages/uncombined/lyric.vue'),
+    meta: {
+      isPage: true,
+      title: '歌词',
       tags: [tagList.custom],
       type: 'uncombined',
     },

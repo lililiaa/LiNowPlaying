@@ -17,25 +17,20 @@
       }"
     >
       <div class="cover">
-        <img
+        <transition
           v-show="songStore.songData?.track?.cover"
-          id="cover"
-          :class="{ 'changing': songStore.isChanging }"
-          :style="{ 'animation-play-state': songStore.songData?.player?.isPaused ? 'paused' : 'running' }"
-          :src="songStore.songData?.track?.cover"
-          alt="封面"
-        />
-        <img
-          v-show="songStore.songData?.track?.cover"
-          class="old-cover"
-          :class="{ 'changing': songStore.isChanging }"
-          :style="{ 'animation-play-state': songStore.songData?.player?.isPaused ? 'paused' : 'running' }"
-          :src="oldCover"
-          alt="封面"
-        />
+          name="slide"
+          mode="default"
+        >
+          <img
+            id="cover"
+            :src="songStore.songData?.track?.cover"
+            :key="songStore.songData?.track?.cover"
+            alt="封面"
+          />
+        </transition>
         <img
           v-show="!songStore.songData?.track?.cover"
-          :class="{ 'changing': songStore.isChanging }"
           style="box-sizing:border-box;padding: 30px;color: #fff;"
           src="../../assets/icons/music.svg"
           alt=""
@@ -168,14 +163,29 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-@keyframes slide-left {
-  from {
-    transform: translateX(100%);
-  }
+.slide-enter-active,
+.slide-leave-active {
+  transition: all 1s ease 0.3s;
+}
 
-  to {
-    transform: translateX(0);
-  }
+.slide-enter-from {
+  transform: translateX(100%);
+}
+
+.slide-leave-to {
+  transform: translateX(-100%);
+}
+
+.slide-enter-active {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.slide-leave-active {
+  position: absolute;
+  width: 100%;
+  height: 100%;
 }
 
 .main {
@@ -210,31 +220,6 @@ onMounted(() => {
     img {
       width: 100%;
       height: 100%;
-      position: absolute;
-      top: 0;
-      left: 0;
-
-      &::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        right: 100%;
-        width: inherit;
-        height: inherit;
-        background-image: var(--old-cover);
-      }
-    }
-
-    .old-cover {
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      top: 0;
-      left: -100%;
-    }
-
-    .changing {
-      animation: slide-left 1s ease;
     }
   }
 

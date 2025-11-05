@@ -80,7 +80,7 @@ document.addEventListener('contextmenu', (e) => {
         label: '清除缓存',
         icon: 'icon-qingchuhuancun',
         onClick: () => {
-          ElMessageBox.confirm('清除缓存会丢失系统配置，是否继续？', '警告', {
+          ElMessageBox.confirm('清除缓存会重置全部系统配置，是否继续？', '警告', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning',

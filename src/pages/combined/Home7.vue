@@ -21,48 +21,64 @@
             id="rainCanvas"
             ref="rainCanvas"
           ></canvas>
-          <div class="song-container">
-            <overflow-text
-              v-if="songStore.songData?.track?.title"
-              :color="textColor"
-              :font-size="fontSizeBig"
-              is-bold="bold"
-            >{{ songStore.songData?.track?.title }}</overflow-text>
-            <span
-              v-if="songStore.songData?.track?.title && songStore.songData?.track?.author"
-              class="separate"
-            >-</span>
-            <overflow-text
-              v-if="songStore.songData?.track?.author"
-              :color="textColor"
-              :font-size="fontSizeSmall"
-              is-bold="bold"
-            >{{ songStore.songData?.track?.author }}</overflow-text>
-            <span v-if="!songStore.songData?.track?.title && !songStore.songData?.track?.author">暂无歌曲信息</span>
-          </div>
-          <div class="lyric-container">
-            <template v-if="songStore.lyricData.lyric.length > 0">
+          <transition
+            name="lyric"
+            mode="out-in"
+          >
+            <div
+              class="song-container"
+              :key="songStore.songData?.track?.title"
+            >
+              <overflow-text
+                v-if="songStore.songData?.track?.title"
+                :color="textColor"
+                :font-size="fontSizeBig"
+                is-bold="bold"
+              >{{ songStore.songData?.track?.title }}</overflow-text>
               <span
-                v-if="songStore.lyricData.translatedLyric.length === 0"
-                ref="lyricRef"
-                class="lyric-line"
-              >{{ songStore.lyricData.lyric[currentLyricIndex]?.length > 0 ?
-                (songStore.lyricData.lyric[currentLyricIndex][2] || '......')
-                : '......' }}</span>
-              <div
+                v-if="songStore.songData?.track?.title && songStore.songData?.track?.author"
+                class="separate"
+              >-</span>
+              <overflow-text
+                v-if="songStore.songData?.track?.author"
+                :color="textColor"
+                :font-size="fontSizeSmall"
+                is-bold="bold"
+              >{{ songStore.songData?.track?.author }}</overflow-text>
+              <span v-if="!songStore.songData?.track?.title && !songStore.songData?.track?.author">暂无歌曲信息</span>
+            </div>
+          </transition>
+          <transition
+            name="lyric"
+            mode="out-in"
+          >
+            <div
+              class="lyric-container"
+              :key="currentLyricIndex"
+            >
+              <template v-if="songStore.lyricData.lyric.length > 0">
+                <span
+                  v-if="songStore.lyricData.translatedLyric.length === 0"
+                  ref="lyricRef"
+                  class="lyric-line"
+                >{{ songStore.lyricData.lyric[currentLyricIndex]?.length > 0 ?
+                  (songStore.lyricData.lyric[currentLyricIndex][2] || '......')
+                  : '......' }}</span>
+                <div
+                  v-else
+                  ref="lyricRef"
+                  class="lyric-line-translated"
+                >
+                  <span class="original">{{ originalLyric }}</span>
+                  <span class="translated">{{ translatedLyric }}</span>
+                </div>
+              </template>
+              <span
                 v-else
-                ref="lyricRef"
-                class="lyric-line-translated"
-              >
-                <span class="original">{{ originalLyric }}</span>
-                <span class="translated">{{ translatedLyric }}</span>
-              </div>
-            </template>
-            <span
-              v-else
-              class="lyric-empty"
-            >暂无歌词</span>
-          </div>
+                class="lyric-empty"
+              >暂无歌词</span>
+            </div>
+          </transition>
         </div>
         <!-- 路灯 -->
         <div class="street-light">
@@ -99,7 +115,6 @@ import { useSongStore } from '../../stores/song';
 import { computed, onMounted, onUnmounted, reactive, ref, watch } from 'vue';
 import ColorThief from 'colorthief';
 import { getCoverUrl } from '../../utils/cover';
-import gsap from 'gsap';
 
 const songStore = useSongStore();
 
@@ -128,7 +143,7 @@ class Raindrop {
       this.x = Math.random() * 1.2 * this.canvasWidth;
     }
     this.length = Math.random() * 20 + 20;
-    this.width = Math.random() * 1 + 2;
+    this.width = Math.random() * 1 + 3;
     this.speedFactor = Math.random() * 0.5 + 0.7;
   }
   // 更新雨滴位置
@@ -235,21 +250,6 @@ watch(currentLyricIndex, (newVal, oldVal) => {
       }
     }
   }
-  if (newVal !== oldVal && lyricRef.value) {
-    gsap.fromTo(
-      lyricRef.value,
-      {
-        opacity: 0,
-        y: 40,
-      },
-      {
-        opacity: 1,
-        y: 0,
-        duration: 1,
-        ease: 'power4.out',
-      }
-    );
-  }
 });
 // 网页标题
 const titleData = reactive({
@@ -314,6 +314,17 @@ function animation() {
 $font-size-big: v-bind(fontSizeBig);
 $font-size-medium: v-bind(fontSizeMedium);
 $font-size-small: v-bind(fontSizeSmall);
+
+.lyric-enter-active,
+.lyric-leave-active {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.lyric-enter-from,
+.lyric-leave-to {
+  opacity: 0;
+  transform: translateY(20px);
+}
 
 .main {
   width: 1700px;

@@ -9,6 +9,7 @@
       class="cover"
       :key="songStore.songData?.track?.cover"
       :class="{ 'changing': songStore.isChanging }"
+      :style="{ 'animation-play-state': songStore.songData?.player?.isPaused ? 'paused' : 'running' }"
       :src="songStore.songData?.track?.cover"
       alt="封面"
     />
@@ -64,6 +65,17 @@ onMounted(() => {
 // 背景过渡时间
 $bg-transition-time: 2s;
 
+// 旋转动画
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @keyframes fade {
   0% {
     opacity: 0;
@@ -87,11 +99,11 @@ $bg-transition-time: 2s;
   .cover {
     height: 100%;
     aspect-ratio: 1 / 1;
-    border-radius: 10px;
+    border-radius: 50%;
     transition: box-shadow $bg-transition-time ease, filter $bg-transition-time ease;
-    // box-shadow: 0 4px 10px 0 var(--shadow-color);
-    filter: drop-shadow(0 4px 10px var(--shadow-color));
-    animation: fade 2s ease;
+    // box-shadow: 0 0 10px 0 var(--shadow-color);
+    filter: drop-shadow(0 0 10px var(--shadow-color));
+    animation: rotate 20s linear infinite, fade 2s ease;
 
     .cover.changing {
       animation: fade-scale 1s ease;

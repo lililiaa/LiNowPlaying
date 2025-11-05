@@ -56,18 +56,22 @@
                     placement="top"
                     effect="dark"
                   >
-                    <img
-                      v-if="!copied[index]"
-                      class="fade"
-                      src="../assets/icons/copy.svg"
-                      alt="copy"
+                    <transition
+                      name="fade"
+                      mode="out-in"
+                      :appear="false"
                     >
-                    <img
-                      v-else
-                      class="fade"
-                      src="../assets/icons/success.svg"
-                      alt="success"
-                    >
+                      <img
+                        v-if="!copied[index]"
+                        src="../assets/icons/copy.svg"
+                        alt="copy"
+                      >
+                      <img
+                        v-else
+                        src="../assets/icons/success.svg"
+                        alt="success"
+                      >
+                    </transition>
                   </el-tooltip>
                 </div>
                 <div @click.stop="openNow(item)">
@@ -373,7 +377,12 @@ const editQueryTime = () => {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     inputValue: localStorage.getItem('queryTime') || '-',
-    inputPattern: /^[0-9]+$/,
+    inputValidator: (value) => {
+      if (value === "") return '请输入请求间隔';
+      if (isNaN(value)) return '请输入数字';
+      if (value < 100) return '请求间隔不能小于100ms';
+      return true;
+    },
     inputErrorMessage: '请输入数字',
     draggable: true,
     closeOnClickModal: false,
@@ -633,18 +642,14 @@ onMounted(() => {
                 height: 100%;
               }
 
-              .fade {
-                animation: fade 1s ease;
+              .fade-enter-active,
+              .fade-leave-active {
+                transition: opacity 0.15s ease-out;
               }
 
-              @keyframes fade {
-                0% {
-                  opacity: 0;
-                }
-
-                100% {
-                  opacity: 1;
-                }
+              .fade-enter-from,
+              .fade-leave-to {
+                opacity: 0;
               }
 
               .refresh-rotate {

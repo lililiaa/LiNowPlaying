@@ -46,6 +46,7 @@
           <img
             v-show="!songStore.songData?.track?.cover"
             :class="{ 'changing': songStore.isChanging }"
+            :style="{ 'animation-play-state': songStore.songData?.player?.isPaused ? 'paused' : 'running' }"
             style="box-sizing:border-box;padding: 30px;color: #fff;"
             src="../../assets/icons/music.svg"
             alt=""

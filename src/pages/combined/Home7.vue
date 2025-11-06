@@ -142,7 +142,7 @@ class Raindrop {
     } else {
       this.x = Math.random() * 1.2 * this.canvasWidth;
     }
-    this.length = Math.random() * 20 + 20;
+    this.length = Math.random() * 10 + 30;
     this.width = Math.random() * 1 + 3;
     this.speedFactor = Math.random() * 0.5 + 0.7;
   }
@@ -155,7 +155,7 @@ class Raindrop {
     this.x += speedX;
     this.y += speedY;
 
-    if (this.y > this.canvasHeight + 10) {
+    if (this.y > this.canvasHeight + 30) {
       this.reset();
     }
   }
@@ -383,6 +383,8 @@ $font-size-small: v-bind(fontSizeSmall);
         margin-right: 100px;
         width: 1300px;
         height: 100px;
+        box-sizing: border-box;
+        padding-bottom: 10px;
         overflow: hidden;
         z-index: 3;
         display: flex;
@@ -400,7 +402,6 @@ $font-size-small: v-bind(fontSizeSmall);
         .lyric-line {
           width: 100%;
           font-size: $font-size-big;
-          -webkit-box-flex: below 5px;
         }
 
         .lyric-line-translated {

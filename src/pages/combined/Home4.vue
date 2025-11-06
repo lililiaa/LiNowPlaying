@@ -9,22 +9,26 @@
       :style="{ '--theme-color': themeColor, '--text-color': textColor, '--bg-color': themeColorList[2] || textColor, '--shadow-color': shadowColor, '--stress-color': themeColorList[3] }"
     >
       <div class="top-container">
-        <img
+        <transition
           v-show="songStore.songData?.track?.cover"
-          id="cover"
-          class="cover"
-          :class="{ 'changing': songStore.isChanging }"
-          :src="songStore.songData?.track?.cover"
-          alt="封面"
-        />
+          name="fade"
+          mode="out-in"
+        >
+          <img
+            id="cover"
+            class="cover"
+            :key="songStore.songData?.track?.cover"
+            :src="songStore.songData?.track?.cover"
+            alt="封面"
+          />
+        </transition>
         <img
           v-show="!songStore.songData?.track?.cover"
           class="cover"
-          :class="{ 'changing': songStore.isChanging }"
           style="box-sizing:border-box;padding: 30px;color: #fff;"
           src="../../assets/icons/music.svg"
           alt=""
-        >
+        />
         <div class="info-container">
           <div class="top-info">
             <div
@@ -216,6 +220,11 @@ $lyric-font-size-small: 40px;
   filter: drop-shadow(0 4px 10px var(--shadow-color));
 }
 
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
 .main {
   width: 1200px;
   height: 400px;
@@ -236,11 +245,7 @@ $lyric-font-size-small: 40px;
       height: 100%;
       aspect-ratio: 1/1;
       background-color: var(--theme-color);
-    }
-
-    .cover.changing {
-      animation: fade-scale 1s ease;
-      transform-origin: 50% 0%;
+      transition: opacity 0.5s ease;
     }
 
     @keyframes fade-scale {

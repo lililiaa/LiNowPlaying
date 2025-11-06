@@ -8,7 +8,6 @@ export const useSongStore = defineStore("song", {
       lyric: [],
       translatedLyric: [],
     },
-    isChanging: false,
   }),
   getters: {
 
@@ -49,13 +48,6 @@ export const useSongStore = defineStore("song", {
         this.lyricData = {};
         console.error(error);
       }
-    },
-    /**
-     * 修改歌曲变更状态
-     * @param {boolean} status 
-     */
-    setChangingStatus(status) {
-      this.isChanging = status;
     },
     /**
      * 重置歌曲信息

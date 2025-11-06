@@ -70,7 +70,7 @@ const currentLyricIndex = computed(() => {
   // 滚动位置
   let scrollPosition = 0;
   if (songStore.lyricData.translatedLyric.length === 0) {
-    scrollPosition = -(index - 3) * 100;
+    scrollPosition = -(index - 4) * 100;
   } else {
     scrollPosition = -(index - 2) * 160;
   }
@@ -109,6 +109,7 @@ if (!JSON.parse(localStorage.getItem('isCustomColor'))) {
     },
   );
 }
+// 根据路由参数设置歌词对齐方式
 const textAlign = ref('center');
 const setTextAlign = () => {
   let align = router.currentRoute.value.query?.align;

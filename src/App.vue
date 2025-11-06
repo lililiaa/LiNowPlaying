@@ -150,14 +150,8 @@ if (window === window.parent) {
     () => songStore.songData?.track?.cover,
     (newVal, oldVal) => {
       if (newVal && (newVal !== oldVal)) {
-        // 开始变化
-        songStore.setChangingStatus(true);
         // 获取歌词信息
         songStore.getLyricData();
-        // 动画结束重置状态
-        setTimeout(() => {
-          songStore.setChangingStatus(false);
-        }, 2000);
       }
     },
   );
@@ -185,7 +179,7 @@ if (window === window.parent) {
 
   const channel = new BroadcastChannel('song-channel');
   watch(
-    () => [songStore.songData, songStore.lyricData, songStore.isChanging],
+    () => [songStore.songData, songStore.lyricData],
     (newVal) => {
       channel.postMessage(JSON.stringify(newVal));
     },
@@ -195,10 +189,9 @@ if (window === window.parent) {
   onMounted(() => {
     const channel = new BroadcastChannel('song-channel');
     channel.onmessage = (e) => {
-      const [songData, lyricData, isChanging] = JSON.parse(e.data);
+      const [songData, lyricData] = JSON.parse(e.data);
       songStore.songData = songData;
       songStore.lyricData = lyricData;
-      songStore.isChanging = isChanging;
     }
     onBeforeMount(() => {
       channel.close();

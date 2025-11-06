@@ -3,23 +3,26 @@
     class="main"
     :style="{ '--shadow-color': shadowColor }"
   >
-    <img
-      v-show="songStore.songData?.track?.cover"
-      id="cover"
-      class="cover"
-      :key="songStore.songData?.track?.cover"
-      :class="{ 'changing': songStore.isChanging }"
-      :src="songStore.songData?.track?.cover"
-      alt="封面"
-    />
-    <img
-      v-show="!songStore.songData?.track?.cover"
-      class="cover"
-      :class="{ 'changing': songStore.isChanging }"
-      style="box-sizing:border-box;padding: 30px;color: #fff;"
-      src="../../assets/icons/music.svg"
-      alt=""
+    <transition
+      name="fade"
+      mode="out-in"
     >
+      <img
+        v-if="songStore.songData?.track?.cover"
+        id="cover"
+        class="cover"
+        :key="songStore.songData?.track?.cover"
+        :src="songStore.songData?.track?.cover"
+        alt="封面"
+      />
+      <img
+        v-else
+        class="cover"
+        style="box-sizing:border-box;padding: 30px;color: #fff;"
+        src="../../assets/icons/music.svg"
+        alt=""
+      />
+    </transition>
   </div>
 </template>
 
@@ -74,6 +77,16 @@ $bg-transition-time: 2s;
   }
 }
 
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 1s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
 .main {
   width: 100%;
   height: 100%;
@@ -88,27 +101,27 @@ $bg-transition-time: 2s;
     height: 100%;
     aspect-ratio: 1 / 1;
     border-radius: 10px;
-    transition: box-shadow $bg-transition-time ease, filter $bg-transition-time ease;
+    // transition: box-shadow $bg-transition-time ease, filter $bg-transition-time ease;
     // box-shadow: 0 4px 10px 0 var(--shadow-color);
     filter: drop-shadow(0 4px 10px var(--shadow-color));
-    animation: fade 2s ease;
+    // animation: fade 2s ease;
 
-    .cover.changing {
-      animation: fade-scale 1s ease;
-      transform-origin: 50% 0%;
-    }
+    // .cover.changing {
+    //   animation: fade-scale 1s ease;
+    //   transform-origin: 50% 0%;
+    // }
 
-    @keyframes fade-scale {
-      0% {
-        opacity: 0;
-        transform: scale(0.8);
-      }
+    // @keyframes fade-scale {
+    //   0% {
+    //     opacity: 0;
+    //     transform: scale(0.8);
+    //   }
 
-      100% {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
+    //   100% {
+    //     opacity: 1;
+    //     transform: scale(1);
+    //   }
+    // }
   }
 }
 </style>

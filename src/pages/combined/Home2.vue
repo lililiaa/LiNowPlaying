@@ -8,22 +8,26 @@
       class="song-container"
       :style="{ '--theme-color': themeColor, '--text-color': textColor, '--bg-color': themeColorList[2] || textColor, '--shadow-color': shadowColor, '--stress-color': themeColorList[3] }"
     >
-      <img
+      <transition
         v-show="songStore.songData?.track?.cover"
-        id="cover"
-        class="cover"
-        :class="{ 'changing': songStore.isChanging }"
-        :src="songStore.songData?.track?.cover"
-        alt="封面"
-      />
+        name="fade"
+        mode="out-in"
+      >
+        <img
+          id="cover"
+          class="cover"
+          :key="songStore.songData?.track?.cover"
+          :src="songStore.songData?.track?.cover"
+          alt="封面"
+        />
+      </transition>
       <img
         v-show="!songStore.songData?.track?.cover"
         class="cover"
-        :class="{ 'changing': songStore.isChanging }"
         style="box-sizing:border-box;padding: 30px;color: #fff;"
         src="../../assets/icons/music.svg"
         alt=""
-      >
+      />
       <div class="basic-info">
         <div
           v-if="extraTextList.some(i => i.length > 0)"
@@ -252,11 +256,28 @@ $font-size-small: 35px;
   }
 }
 
+@keyframes fade-scale {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 %box {
   border-radius: $border-radius;
   transition: box-shadow $bg-transition-time ease, filter $bg-transition-time ease;
   // box-shadow: 0 4px 10px 0 var(--shadow-color);
   filter: drop-shadow(0 4px 10px var(--shadow-color));
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 
 .song-container {
@@ -275,23 +296,7 @@ $font-size-small: 35px;
     aspect-ratio: 1/1;
     @extend %box;
     background-color: var(--theme-color);
-  }
-
-  .cover.changing {
-    animation: fade-scale 1s ease;
-    transform-origin: 50% 0%;
-  }
-
-  @keyframes fade-scale {
-    0% {
-      opacity: 0;
-      transform: scale(0.8);
-    }
-
-    100% {
-      opacity: 1;
-      transform: scale(1);
-    }
+    transition: opacity 0.5s ease;
   }
 
   .basic-info {

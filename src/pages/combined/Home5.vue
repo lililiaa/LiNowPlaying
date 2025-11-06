@@ -31,35 +31,38 @@
       <!-- 内容 -->
       <div class="content">
         <!-- 封面 -->
-        <div
-          class="cover"
-          :key="songStore.songData?.track?.cover"
+        <transition
+          name="fade"
+          mode="out-in"
         >
-          <img
-            v-show="songStore.songData?.track?.cover"
-            id="cover"
-            :class="{ 'changing': songStore.isChanging }"
-            :style="{ 'animation-play-state': songStore.songData?.player?.isPaused ? 'paused' : 'running' }"
-            :src="songStore.songData?.track?.cover"
-            alt="封面"
-          />
-          <img
-            v-show="!songStore.songData?.track?.cover"
-            :class="{ 'changing': songStore.isChanging }"
-            :style="{ 'animation-play-state': songStore.songData?.player?.isPaused ? 'paused' : 'running' }"
-            style="box-sizing:border-box;padding: 30px;color: #fff;"
-            src="../../assets/icons/music.svg"
-            alt=""
+          <div
+            class="cover"
+            :key="songStore.songData?.track?.cover"
           >
-          <ElProgress
-            class="progress-circle"
-            type="circle"
-            :percentage="progress"
-            :show-text="false"
-            :width="210"
-            color="#2a3338"
-          />
-        </div>
+            <img
+              id="cover"
+              v-show="songStore.songData?.track?.cover"
+              :style="{ 'animation-play-state': songStore.songData?.player?.isPaused ? 'paused' : 'running' }"
+              :src="songStore.songData?.track?.cover"
+              alt="封面"
+            />
+            <img
+              v-show="!songStore.songData?.track?.cover"
+              :style="{ 'animation-play-state': songStore.songData?.player?.isPaused ? 'paused' : 'running' }"
+              style="box-sizing:border-box;padding: 30px;color: #fff;"
+              src="../../assets/icons/music.svg"
+              alt=""
+            >
+            <ElProgress
+              class="progress-circle"
+              type="circle"
+              :percentage="progress"
+              :show-text="false"
+              :width="210"
+              color="#2a3338"
+            />
+          </div>
+        </transition>
         <!-- 歌名&歌手 -->
         <div class="song-info">
           <overflow-text
@@ -205,6 +208,16 @@ $font-size-small: v-bind(fontSizeSmall);
   }
 }
 
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
 .main {
   height: 320px;
   width: 1800px;
@@ -253,7 +266,7 @@ $font-size-small: v-bind(fontSizeSmall);
       width: 210px;
       position: relative;
       overflow: hidden;
-      animation: fade-scale 1s ease;
+      // animation: fade-scale 1s ease;
       display: flex;
       justify-content: center;
       align-items: center;

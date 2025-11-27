@@ -80,14 +80,71 @@ document.addEventListener('contextmenu', (e) => {
         label: '清除缓存',
         icon: 'icon-qingchuhuancun',
         onClick: () => {
+          let countdown = 3;
+          const confirmButtonText = `确定(${countdown})`;
           ElMessageBox.confirm('清除缓存会重置全部系统配置，是否继续？', '警告', {
-            confirmButtonText: '确定',
+            confirmButtonText: confirmButtonText,
             cancelButtonText: '取消',
             type: 'warning',
+            beforeClose: (action, instance, done) => {
+              if (action === 'confirm') {
+                if (countdown > 0) {
+                  return;
+                }
+                done();
+              } else {
+                done();
+              }
+            }
           }).then(() => {
             localStorage.clear();
             location.reload();
           });
+          const confirmButton = document.querySelector('.el-message-box__btns .el-button--primary');
+          if (countdown > 0) {
+            if (confirmButton) {
+              confirmButton.innerText = `确定(${countdown})`;
+              confirmButton.disabled = true;
+              confirmButton.classList.add('is-disabled');
+              confirmButton.setAttribute('disabled', 'disabled');
+              confirmButton.style.cursor = 'not-allowed';
+              confirmButton.style.opacity = '0.6';
+            }
+          } else {
+            clearInterval(timer);
+            if (confirmButton) {
+              confirmButton.innerText = '确定';
+              confirmButton.disabled = false;
+              confirmButton.classList.remove('is-disabled');
+              confirmButton.removeAttribute('disabled');
+              confirmButton.style.cursor = 'pointer';
+              confirmButton.style.opacity = '1';
+            }
+          }
+          const timer = setInterval(() => {
+            countdown--;
+            const confirmButton = document.querySelector('.el-message-box__btns .el-button--primary');
+            if (countdown > 0) {
+              if (confirmButton) {
+                confirmButton.innerText = `确定(${countdown})`;
+                confirmButton.disabled = true;
+                confirmButton.classList.add('is-disabled');
+                confirmButton.setAttribute('disabled', 'disabled');
+                confirmButton.style.cursor = 'not-allowed';
+                confirmButton.style.opacity = '0.6';
+              }
+            } else {
+              clearInterval(timer);
+              if (confirmButton) {
+                confirmButton.innerText = '确定';
+                confirmButton.disabled = false;
+                confirmButton.classList.remove('is-disabled');
+                confirmButton.removeAttribute('disabled');
+                confirmButton.style.cursor = 'pointer';
+                confirmButton.style.opacity = '1';
+              }
+            }
+          }, 1000)
         }
       },
     ],
@@ -142,6 +199,13 @@ const setIsCustomColor = () => {
     localStorage.setItem('isCustomColor', 'false');
   }
 };
+// 初始化侧边菜单折叠状态
+const setMenuFold = () => {
+  let menuFold = localStorage.getItem('menuFold');
+  if (!menuFold) {
+    localStorage.setItem('menuFold', 'false');
+  }
+};
 // 获取歌曲信息
 const songStore = useSongStore();
 if (window === window.parent) {
@@ -169,6 +233,7 @@ if (window === window.parent) {
     setExtraInfo();
     setRain();
     setIsCustomColor();
+    setMenuFold();
   });
 
   onBeforeUnmount(() => {

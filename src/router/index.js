@@ -112,9 +112,9 @@ const routes = [
     },
   },
   {
-    path: '/home6',
-    name: 'Home6',
-    component: () => import('../pages/combined/Home6.vue'),
+    path: '/card1',
+    name: 'card1',
+    component: () => import('../pages/combined/card1.vue'),
     meta: {
       isPage: true,
       title: '卡片',
@@ -123,13 +123,24 @@ const routes = [
     },
   },
   {
-    path: '/home7',
-    name: 'Home7',
-    component: () => import('../pages/combined/Home7.vue'),
+    path: '/rain',
+    name: 'rain',
+    component: () => import('../pages/combined/rain.vue'),
     meta: {
       isPage: true,
       title: 'rain',
       tags: [tagList.custom],
+      type: 'combined',
+    },
+  },
+  {
+    path: '/stardewValley',
+    name: '星露谷物语',
+    component: () => import('../pages/combined/stardewValley.vue'),
+    meta: {
+      isPage: true,
+      title: '星露谷物语',
+      tags: [tagList.fixed, tagList.stardewValley],
       type: 'combined',
     },
   },

@@ -6,6 +6,7 @@ import 'element-plus/dist/index.css'
 import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css'
 import ContextMenu from '@imengyu/vue3-context-menu'
 import { createPinia } from 'pinia'
+// import 'amfe-flexible'
 
 const pinia = createPinia();
 const app = createApp(App);

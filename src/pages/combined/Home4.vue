@@ -263,7 +263,7 @@ $lyric-font-size-small: 40px;
     .bg-box {
       @extend %box;
       box-sizing: border-box;
-      padding: 10px 20px;
+      padding: 0 20px;
       background-color: var(--theme-color);
       transition: background-color $bg-transition-time ease;
     }
@@ -288,7 +288,7 @@ $lyric-font-size-small: 40px;
           max-width: 500px;
           display: flex;
           flex-direction: column;
-          justify-content: space-around;
+          justify-content: space-evenly;
           align-items: center;
           box-sizing: border-box;
 
@@ -328,7 +328,7 @@ $lyric-font-size-small: 40px;
           width: 0;
           display: flex;
           flex-direction: column;
-          justify-content: space-around;
+          justify-content: space-evenly;
 
           span {
             font-size: $font-size-big;
@@ -342,7 +342,7 @@ $lyric-font-size-small: 40px;
         @extend %box;
         width: 100%;
         box-sizing: border-box;
-        padding: 8px 20px;
+        padding: 0 20px;
         background-color: var(--theme-color);
         transition: background-color $bg-transition-time ease;
         display: flex;
@@ -458,17 +458,17 @@ $lyric-font-size-small: 40px;
           .original {
             font-size: $lyric-font-size-medium;
             transform: translateY(10px);
-            opacity: 0.8;
             filter: blur(2px);
           }
 
           .translated {
             font-size: $lyric-font-size-big;
-            transform: translateY(-10px);
+            transform: translateY(-15px);
           }
         }
 
         &:not(.active) {
+          opacity: 0.8;
           filter: blur(1px);
         }
       }

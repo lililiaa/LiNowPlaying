@@ -352,7 +352,6 @@ $font-size-small: v-bind(fontSizeSmall);
           align-items: center;
           justify-content: center;
           box-sizing: border-box;
-          padding: 20px 0;
           font-size: $font-size-small;
           opacity: 0.8;
           transition: all 0.5s ease-in-out;
@@ -374,14 +373,14 @@ $font-size-small: v-bind(fontSizeSmall);
 
             .original {
               font-size: $font-size-medium;
-              transform: translateY(10px);
+              transform: translateY(15px);
               opacity: 0.8;
               filter: blur(2px);
             }
 
             .translated {
               font-size: $font-size-big;
-              transform: translateY(-10px);
+              transform: translateY(-15px);
             }
           }
 

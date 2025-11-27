@@ -643,7 +643,6 @@ $font-size-small: 35px;
         align-items: center;
         justify-content: space-around;
         box-sizing: border-box;
-        padding: 10px 0;
         color: var(--text-color);
         font-size: 38px;
         opacity: 0.8;
@@ -665,14 +664,14 @@ $font-size-small: 35px;
 
           .original {
             font-size: 45px;
-            transform: translateY(10px);
+            transform: translateY(5px);
             opacity: 0.8;
             filter: blur(2px);
           }
 
           .translated {
             font-size: 55px;
-            transform: translateY(-10px);
+            transform: translateY(-15px);
           }
         }
 

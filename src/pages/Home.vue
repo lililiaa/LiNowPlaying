@@ -4,6 +4,7 @@
     <div class="content">
       <!-- 左侧内容 -->
       <el-scrollbar
+        ref="leftScrollbarRef"
         height="100%"
         style="flex: 1;"
         always
@@ -121,14 +122,18 @@
         <el-backtop
           :target="'.el-scrollbar__wrap'"
           :visibility-height="200"
-          :right="350"
+          :right="isCollapse ? 70 : 350"
           :bottom="40"
           class="back-top"
         />
       </el-scrollbar>
       <!-- 右侧内容 -->
-      <div class="content-right-box">
+      <div
+        class="content-right-box"
+        :class="isCollapse ? 'content-right-box-fold' : ''"
+      >
         <el-scrollbar
+          v-if="!isCollapse"
           height="100%"
           always
         >
@@ -140,6 +145,7 @@
                 <el-segmented
                   v-model="params.type"
                   :options="typeOptions"
+                  @change="handleTypeChange"
                 >
                   <template #default="scope">
                     <span>{{ scope.item.label }}</span>
@@ -260,8 +266,24 @@
                 </el-icon>
               </div>
             </div>
+            <div
+              class="expand-btn"
+              @click="toggleCollapse"
+            >
+              <el-icon>
+                <Expand />
+              </el-icon>
+            </div>
           </div>
         </el-scrollbar>
+        <div
+          v-else
+          @click="toggleCollapse"
+        >
+          <el-icon>
+            <Fold />
+          </el-icon>
+        </div>
       </div>
     </div>
     <!-- 颜色选取dialog -->
@@ -279,8 +301,8 @@
 <script setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue';
 import router from '../router';
-import { ElMessage, ElTooltip, ElBacktop, ElMessageBox, ElInput, ElTag, ElTour, ElTourStep } from 'element-plus';
-import { Edit } from '@element-plus/icons-vue';
+import { ElMessage, ElTooltip, ElBacktop, ElMessageBox, ElInput, ElTag } from 'element-plus';
+import { Edit, Fold, Expand } from '@element-plus/icons-vue';
 import ColorSelectDialog from '../components/colorSelectDialog.vue';
 import RainConfigDialog from '../components/rainConfigDialog.vue';
 import { tagList } from '../dicts/tags';
@@ -305,6 +327,7 @@ const pageList = routeList.filter(item => item.meta.isPage).map(item => {
   item.url = window.location.origin + window.location.pathname + '#' + item.path;
   return item;
 });
+const leftScrollbarRef = ref(null);
 const typeOptions = [
   {
     value: 'combined',
@@ -315,6 +338,10 @@ const typeOptions = [
     label: '独立组件',
   },
 ];
+const handleTypeChange = (value) => {
+  params.type = value;
+  leftScrollbarRef.value.setScrollTop(0);
+};
 const params = reactive({
   type: 'combined',
   name: '',
@@ -520,6 +547,12 @@ const rainConfig = JSON.parse(localStorage.getItem('rainConfig') || {});
 const editRainConfig = () => {
   rainConfigRef.value.openDialog();
 };
+// 切换折叠擦边菜单
+const isCollapse = ref(JSON.parse(localStorage.getItem('menuFold')) || false);
+const toggleCollapse = () => {
+  isCollapse.value = !isCollapse.value;
+  localStorage.setItem('menuFold', JSON.stringify(isCollapse.value));
+};
 // 重新加载所有iframe
 const reloadAll = () => {
   let iframes = document.querySelectorAll('iframe');
@@ -697,6 +730,7 @@ onMounted(() => {
     .back-top {
       background-color: var(--background-color);
       box-shadow: 0 0 6px var(--shadow-color-hover);
+      transition: right 0.5s ease;
     }
 
     .content-right-box {
@@ -706,14 +740,15 @@ onMounted(() => {
       justify-content: flex-start;
       box-sizing: border-box;
       border-radius: 10px;
-      box-shadow: 0 0 10px var(--shadow-color-hover);
+      box-shadow: 0 0 10px var(--shadow-color);
       color: var(--text-color);
       font-size: 15px;
-      transition: all 0.3s ease;
+      transition: all 0.3s ease, width 0.5s ease;
 
       .content-right {
         display: flex;
         flex-direction: column;
+        position: relative;
 
         // 模块
         &>div:not(.divider) {
@@ -797,6 +832,35 @@ onMounted(() => {
           height: 1px;
           background-color: var(--shadow-color);
         }
+
+        .expand-btn {
+          width: min-content !important;
+          position: absolute;
+          top: 0;
+          right: 0;
+          font-size: 22px;
+          user-select: none;
+          cursor: pointer;
+        }
+      }
+    }
+
+    .content-right-box-fold {
+      width: 40px;
+      font-size: 22px;
+      user-select: none;
+      cursor: pointer;
+
+      &:hover {
+        box-shadow: 0 0 10px var(--shadow-color-hover);
+      }
+
+      div {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
       }
     }
   }

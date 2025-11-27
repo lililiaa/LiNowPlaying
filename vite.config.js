@@ -5,6 +5,7 @@ import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import path from 'path'
 import legacy from '@vitejs/plugin-legacy'
+import postCssPxToRem from 'postcss-pxtorem'
 
 const repo = "myNowPlaying";
 const INVALID_CHAR_REGEX = /[\x00-\x1F\x7F<>*#"{}|^[\]`;?:&=+$,]/g;
@@ -52,7 +53,23 @@ export default defineConfig({
       scss: {
         additionalData: '@use "@/styles/variables.scss" as *;'
       }
-    }
+    },
+    // postcss: {
+    //   plugins: [
+    //     postCssPxToRem({
+    //       rootValue: 192,
+    //       propList: ['*'],
+    //       exclude: (file) => {
+    //         if (/src[\\/]pages[\\/]combined/.test(file)) {
+    //           return true;
+    //         } else if (/src[\\/]pages[\\/]uncombined/.test(file)) {
+    //           return true;
+    //         }
+    //         return false;
+    //       }
+    //     })
+    //   ]
+    // }
   },
   server: {
     proxy: {
